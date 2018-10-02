@@ -217,5 +217,26 @@ $("#search-btn").on("click", function(){
         });
     });
 
+    // temporary spot for ajax call to Zomato APi to test query retrieval
+    // Atlanta, GA: id - 288, country_id = 216, state_id = 78
+    const cityURL = "https://developers.zomato.com/api/v2.1/cities?q=atlanta&count=5&apikey=15f74e22d1ba3367c6e02399a5e343f4";
+
+    $.ajax({
+        url: cityURL,
+        method: "GET"
+    }).then(function(response) {
+        console.log(response);
+    });
+
+    // searching for restaurants using Atlanta city_id (288) and string ("leon") in restaurant name
+    const restaurantURL = "https://developers.zomato.com/api/v2.1/search?entity_id=288&q=leon&count=3&apikey=15f74e22d1ba3367c6e02399a5e343f4";
+
+    $.ajax({
+        url: restaurantURL,
+        method: "GET"
+    }).then(function(response){
+        console.log(response);
+    });
+
 });
 
