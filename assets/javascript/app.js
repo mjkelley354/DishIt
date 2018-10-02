@@ -25,7 +25,7 @@ function createTestData() {
 
     writeDishData(0, "beef taco", 0, 2, 1, 1, 2, 2, 2, 5, "");
     writeDishData(1, "cheese pizza", 1, 2, 1, 4, 2, 1, 2, 3, "");
-    writeDishData(2, "cheese burger", 2, 2, 2, 3, 1, 1, 1, 4, "");
+    writeDishData(2, "cheeseburger", 2, 2, 2, 3, 1, 1, 1, 4, "");
 
     writeRatingData(0, 0, 0, "Awesome Tacos!", 1, 1, 2, 2, 1, 4, "");
     writeRatingData(1, 1, 1, "Best Pizza in Decatur!!", 1, 2, 3, 1, 1, 5, "");
