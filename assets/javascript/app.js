@@ -23,7 +23,7 @@ function createTestData() {
     writeRestaurantData(1, "", "Sapporo de Napoli", "", "", "Atlanta", "30033", "Italian");
     writeRestaurantData(2, "", "Grindhouse Killer Burgers", "", "", "Atlanta", "30033", "American");
 
-    writeDishData(0, "beef taco", 0, 2, 1, 1, 2, 2, 2, 5, "");
+    writeDishData(0, "beef taco supreme", 0, 2, 1, 1, 2, 2, 2, 5, "");
     writeDishData(1, "cheese pizza", 1, 2, 1, 4, 2, 1, 2, 3, "");
     writeDishData(2, "cheeseburger", 2, 2, 2, 3, 1, 1, 1, 4, "");
 
