@@ -10,88 +10,92 @@ const config = {
 
 firebase.initializeApp(config);
 
-database = firebase.database();
+db = firebase.database();
 
 
 // create test data in firebase
 function createTestData() {
-    writeUserData(0, "Larry", "larry@gmail.com", "30030");
-    writeUserData(1, "Moe", "moe@gmail.com", "30030");
-    writeUserData(2, "Curly", "curly@gmail.com", "30030");
+    writeUserData(0, "Larry", "larry@gmail.com", "Atlanta", "Georgia");
+    writeUserData(1, "Moe", "moe@gmail.com", "Atlanta", "Georgia");
+    writeUserData(2, "Curly", "curly@gmail.com", "Atlanta", "Georgia");
 
-    writeRestaurantData(0, "", "Taqueria del Sol", "30030", "Mexican");
-    writeRestaurantData(1, "", "Sapporo de Napoli", "30030", "Italian");
-    writeRestaurantData(2, "", "Grindhouse Killer Burgers", "30030", "American");
+    writeRestaurantData(0, "", "Taqueria del Sol", "", "", "Atlanta", "30033", "Mexican");
+    writeRestaurantData(1, "", "Sapporo de Napoli", "", "", "Atlanta", "30033", "Italian");
+    writeRestaurantData(2, "", "Grindhouse Killer Burgers", "", "", "Atlanta", "30033", "American");
 
-    writeDishData(0, "taco", 0, 2, 1, 1, 2, 2, 2, 5, "");
-    writeDishData(1, "pizza", 1, 2, 1, 4, 2, 1, 2, 3, "");
-    writeDishData(2, "burger", 2, 2, 2, 3, 1, 1, 1, 4, "");
+    writeDishData(0, "beef taco", 0, 2, 1, 1, 2, 2, 2, 5, "");
+    writeDishData(1, "cheese pizza", 1, 2, 1, 4, 2, 1, 2, 3, "");
+    writeDishData(2, "cheeseburger", 2, 2, 2, 3, 1, 1, 1, 4, "");
 
     writeRatingData(0, 0, 0, "Awesome Tacos!", 1, 1, 2, 2, 1, 4, "");
     writeRatingData(1, 1, 1, "Best Pizza in Decatur!!", 1, 2, 3, 1, 1, 5, "");
     writeRatingData(2, 2, 2, "Burgers are better than FarmBurger and shakes too!", 1, 2, 2, 2, 1, 4, "");
 }
 
-function writeUserData(userId, name, email, zipCode) {
-    firebase.database().ref('users/' + userId).set({
-        name: name,
-        email: email,
-        zipCode : zipCode
+function writeUserData(userId, name, email, city, state) {
+    db.ref('users/' + userId).set({
+        name,
+        email,
+        city,
+        state,
     });
 }
 
 function writeRatingData(ratingId, dishId, userId, text, sourScale, sweetScale, spicyScale,
-                       saltyScale, umamiScale, rating, image) {
-    firebase.database().ref('ratings/' + ratingId).set({
-        dishId: dishId,
-        userId: userId,
-        text: text,
-        sourScale: sourScale,
-        sweetScale: sweetScale,
-        spicyScale: spicyScale,
-        saltyScale: saltyScale,
-        umamiScale: umamiScale,
-        rating: rating,
-        image: image
+    saltyScale, umamiScale, rating, image) {
+    db.ref('ratings/' + ratingId).set({
+        dishId,
+        userId,
+        text,
+        sourScale,
+        sweetScale,
+        spicyScale,
+        saltyScale,
+        umamiScale,
+        rating,
+        image
     });
 }
 
-function writeRestaurantData(restaurantId, zumatoId, name, zipCode, cuisine) {
-    firebase.database().ref('restaurants/' + restaurantId).set({
-        zumatoId: zumatoId,
-        name: name,
-        zipCode : zipCode,
-        cuisine: cuisine
+function writeRestaurantData(restaurantId, zumatoId, name, address, locality, city, zipCode, cuisine) {
+    db.ref('restaurants/' + restaurantId).set({
+        zumatoId,
+        name,
+        address,
+        locality,
+        city,
+        zipCode,
+        cuisine
     });
 }
 
 function writeDishData(dishId, name, restaurantId, price, avgSourScale, avgSweetScale, avgSpicyScale,
                         avgSaltyScale, avgUmamiScale, avgRating, image) {
-    firebase.database().ref('dishes/' + dishId).set({
-        name: name,
-        restaurantId: restaurantId,
-        price: price,
-        avgSourScale: avgSourScale,
-        avgSweetScale: avgSweetScale,
-        avgSpicyScale: avgSpicyScale,
-        avgSaltyScale: avgSaltyScale,
-        avgUmamiScale: avgUmamiScale,
-        avgRating: avgRating,
-        image: image
+    db.ref('dishes/' + dishId).set({
+        name,
+        restaurantId,
+        price,
+        avgSourScale,
+        avgSweetScale,
+        avgSpicyScale,
+        avgSaltyScale,
+        avgUmamiScale,
+        avgRating,
+        image
     });
 }
 
 function getTopX(recordsToReturn){
-    let dishes = firebase.database().ref("dishes");
-    let restaurants = firebase.database().ref("restaurants");
+    let dishes = db.ref("dishes");
+    let restaurants = db.ref("restaurants");
 
-    let topX = [];
+    // let topX = [];
 
     // get the top x dishes and then push them into the topX array (by dishId)
     dishes.orderByChild("avgRating").limitToLast(recordsToReturn).on("child_added", function(snapshot) {
-        topX.push(snapshot.ref.key);
         console.log(snapshot.ref.key);
-        let keyValue = snapshot.ref.key;
+        const keyValue = snapshot.ref.key;
+        // topX.push(keyValue);
 
         dishes.child("/" + keyValue).once("value", function(dishesSnapshot) {
             restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function(restaurantSnapshot) {
@@ -117,36 +121,17 @@ function getTopX(recordsToReturn){
 }
 
 function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, dishImage, dishPrice) {
-    let newTile = $("<div>")
-        .attr("class", "dish-tile")
-        .attr("id", dishId);
-
-    let image = $("<img>")
-        .attr("class", "dish-tile-img")
-        .attr("src", dishImage);
-    newTile.append(image);
-
-    let name = $("<div>")
-        .attr("class", "dish-tile-name")
-        .text(dishName);
-    newTile.append(name);
-
-    let restaurant = $("<div>")
-        .attr("class", "dish-tile-restaurant")
-        .text(restaurantName);
-    newTile.append(restaurant);
-
-    let rating = $("<div>")
-        .attr("class", "dish-tile-rating")
-        .text(avgRating);
-    newTile.append(rating);
-
-    let price = $("<div>")
-        .attr("class", "dish-tile-price")
-        .text(getPrice(dishPrice));
-    newTile.append(price);
-
-    $(".tile-div").append(newTile);
+    $(".tile-div").prepend(
+        `
+            <div class="dish-tile" id="${dishId}">
+                <img class="dish-tile-img" src="${dishImage}">
+                <div class="dish-tile-name">${dishName}</div>
+                <div class="dish-tile-restaurant">${restaurantName}</div>
+                <div class="dish-tile-rating">${avgRating}</div>
+                <div class="dish-tile-price">${getPrice(dishPrice)}</div>
+            </div>
+        `
+    )
 }
 
 function getPrice(price) {
@@ -178,11 +163,80 @@ $(document).ready(function(){
         do not uncomment unless you want to add test data
         back to firebase
     */
-    //createTestData();
+    // createTestData();
 
     // get top 20 records by average rating
     getTopX(20);
 
+
+});
+
+// on click of search button, determine if dish name contains search string
+$("#search-btn").on("click", function(){
+
+    // empty screen of existing results
+    $(".tile-div").empty();
+
+    // capture search string
+    const searchInput = $("#search-input").val();
+    console.log(searchInput);
+
+    var dishes = db.ref('dishes');
+    var restaurants = db.ref('restaurants');
+
+    // for each dish in order of avgRating...
+    dishes.orderByChild("avgRating").on('value', function(snapshot) {
+        snapshot.forEach(function(childSnapshot) {
+
+            // if dish name contains search string, display results on screen
+            if(childSnapshot.val().name.includes(searchInput)) {
+                console.log(childSnapshot.val().name);
+                const keyValue = childSnapshot.ref.key;
+
+                dishes.child("/"+keyValue).once('value', function(dishesSnapshot) {
+                    restaurants.child("/"+dishesSnapshot.val().restaurantId).once('value', function(restaurantSnapshot) {
+                        /* console.log("dishId: ", keyValue);
+                        console.log("dishName: ", dishesSnapshot.val().name);
+                        console.log("restaurantId: ", dishesSnapshot.val().restaurantId);
+                        console.log("restaurantName: ", restaurantSnapshot.val().name);
+                        console.log("image: ", dishesSnapshot.val().image);
+                        console.log("cost: ", dishesSnapshot.val().price); */
+
+                        createTile(keyValue,
+                            dishesSnapshot.val().name,
+                            dishesSnapshot.val().restaurantId,
+                            restaurantSnapshot.val().name,
+                            dishesSnapshot.val().avgRating, 
+                            dishesSnapshot.val().image,
+                            dishesSnapshot.val().price);
+                    });
+                });
+            } else {
+                // add message if no search results are found and show button to add new rating for dish
+            };
+        });
+    });
+
+    // temporary spot for ajax call to Zomato APi to test query retrieval
+    // Atlanta, GA: id - 288, country_id = 216, state_id = 78
+    const cityURL = "https://developers.zomato.com/api/v2.1/cities?q=atlanta&count=5&apikey=15f74e22d1ba3367c6e02399a5e343f4";
+
+    $.ajax({
+        url: cityURL,
+        method: "GET"
+    }).then(function(response) {
+        console.log(response);
+    });
+
+    // searching for restaurants using Atlanta city_id (288) and string ("leon") in restaurant name
+    const restaurantURL = "https://developers.zomato.com/api/v2.1/search?entity_id=288&q=leon&count=3&apikey=15f74e22d1ba3367c6e02399a5e343f4";
+
+    $.ajax({
+        url: restaurantURL,
+        method: "GET"
+    }).then(function(response){
+        console.log(response);
+    });
 
 });
 
