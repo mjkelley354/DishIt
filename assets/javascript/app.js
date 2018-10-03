@@ -10,8 +10,7 @@ const config = {
 
 firebase.initializeApp(config);
 
-db = firebase.database();
-
+const db = firebase.database();
 
 // create test data in firebase
 function createTestData() {
@@ -86,8 +85,8 @@ function writeDishData(dishId, name, restaurantId, price, avgSourScale, avgSweet
 }
 
 function getTopX(recordsToReturn){
-    let dishes = db.ref("dishes");
-    let restaurants = db.ref("restaurants");
+    const dishes = db.ref("dishes");
+    const restaurants = db.ref("restaurants");
 
     // let topX = [];
 
@@ -184,6 +183,7 @@ $("#search-btn").on("click", function(){
 
     var dishes = db.ref('dishes');
     var restaurants = db.ref('restaurants');
+    let matches = 0;
 
     // for each dish in order of avgRating...
     dishes.orderByChild("avgRating").on('value', function(snapshot) {
@@ -191,6 +191,7 @@ $("#search-btn").on("click", function(){
 
             // if dish name contains search string, display results on screen
             if(childSnapshot.val().name.includes(searchInput)) {
+                matches++;
                 console.log(childSnapshot.val().name);
                 const keyValue = childSnapshot.ref.key;
 
@@ -212,41 +213,91 @@ $("#search-btn").on("click", function(){
                             dishesSnapshot.val().price);
                     });
                 });
-            } else {
-                // add message if no search results are found and show button to add new rating for dish
-            };
+            }; 
         });
+        console.log(matches);
+        // displays message if no search results retured
+        if(matches===0) {
+            noResults();
+        }
     });
-
-    // temporary spot for ajax call to Zomato APi to test query retrieval
-    // Atlanta, GA: id - 288, country_id = 216, state_id = 78
-    const cityURL = "https://developers.zomato.com/api/v2.1/cities?q=atlanta&count=5&apikey=15f74e22d1ba3367c6e02399a5e343f4";
-
-    $.ajax({
-        url: cityURL,
-        method: "GET"
-    }).then(function(response) {
-        console.log(response);
-    });
-
-
-    
-
 });
 
+// returns message if no search results returned.
+// this section requires some UI work
+function noResults() {
+    $(".tile-div").append(
+        `
+            <h2 class="text-center block pt-5">No dishes match your search</h2>
+            <p><i>Try searching a generic name of a dish (e.g. pizza) or an ingredient (e.g. cheese)</i></p>
+            <button class="btn btn-outline-success d-flex justify-content-center add-dish-btn" type="button">Rate a new dish!</button>
+        `
+    );
+};
+
+// returns name of restaurant when dish tile class (in list) is clicked
 $(document).on("click", ".dish-tile", function(){
-    console.log($(this).attr("restaurant"));
+    // populate dish info from firebase
+
+    // get restaurant data from Yelp - this bit of code will be moved to add/rate form eventually
+    getRestaurant($(this).attr("restaurant"));
 });
 
+// get restaurant information from yelp
 function getRestaurant(name) {
+    console.log(name);
 
-// searching for restaurants using Atlanta city_id (288) and string ("leon") in restaurant name
-const restaurantURL = `https://developers.zomato.com/api/v2.1/search?entity_id=288&q=${name}&count=3&apikey=15f74e22d1ba3367c6e02399a5e343f4`;
+    const restaurantURL = `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?` + $.param({
+        term: name,
+        location: "Atlanta, GA",
+        categories: "restaurants",
+        limit: 2,
+    });
 
     $.ajax({
         url: restaurantURL,
-        method: "GET"
+        method: "GET",
+        headers: {
+            'Authorization': 'Bearer lC3zgwezYWCKbJZW03Yepl4A52o_fhrqd9a1x0_MapVxItu97aAHOUOGfsRzDJswOWzWlaHv0zvw8keaePumFEkXJWyOgcTcLg7ekQOQ9skybUd_wy02lE3hnQy0W3Yx',
+        }
     }).then(function(response){
         console.log(response);
+        const restaurants = response.businesses;
+        for (var i in restaurants) {
+            const id = restaurants[i].id;
+            const price = restaurants[i].price;
+            const rName = restaurants[i].name;
+            const location = restaurants[i].location;
+            const coordinates = restaurants[i].coordinates;
+            const phone = restaurants[i].phone;
+
+            console.log(id, price, rName, location, coordinates, phone);
+            showRestOptions(rName, location);
+        };
     });
-}
+};
+
+// use this function to create radio button options for user to select correct restaurant from list of returned responses from Yelp
+function showRestOptions(rName, location) {
+    console.log(rName, location);
+    // code radio buttons below - show on add rating for new dish page
+    // use class rest-option for radio button options
+};
+
+$(document).on("click", ".rest-option-select", function () {
+    // call selectRestaurant function - pass id
+})
+
+function selectRestaurant(response) {
+    const dishes = db.ref("dishes");
+    const restaurants = db.ref("restaurants");
+
+    // select restaurant by ID
+    // if id matches existing restaurant Id in firebase, do not add
+    // else, push new restaurant to firebase. get response from ajax call?
+    restaurants.on("value", function(snapshot) {
+        console.log(snapshot.val());
+        console.log('Hi');
+        // wip
+    });
+};
