@@ -12,6 +12,32 @@ firebase.initializeApp(config);
 
 db = firebase.database();
 
+const storageService = firebase.storage();
+let storageRef = storageService.ref();
+let selectedFile;
+
+document.querySelector(".file-select").addEventListener("change", function (e) {
+        selectedFile = e.target.files[0];
+    }
+);
+
+document.querySelector(".file-submit").addEventListener("click", function (e) {
+    //create a child directory called images, and place the file inside this directory
+    const uploadTask = storageRef.child(`images/${selectedFile.name}`).put(selectedFile);
+    uploadTask.on('state_changed', (snapshot) => {
+        // Observe state change events such as progress, pause, and resume
+        var downloadURL = uploadTask.snapshot.downloadURL;
+        console.log(downloadURL);
+    }, (error) => {
+        // Handle unsuccessful uploads
+        console.log(error);
+    }, () => {
+        // Do something once upload is complete
+        console.log('success');
+    });
+});
+
+
 
 // create test data in firebase
 function createTestData() {
@@ -107,13 +133,17 @@ function getTopX(recordsToReturn){
                 console.log("image: ", dishesSnapshot.val().image);
                 console.log("cost: ", dishesSnapshot.val().price);*/
 
+
                 createTile(keyValue,
                     dishesSnapshot.val().name,
                     dishesSnapshot.val().restaurantId,
                     restaurantSnapshot.val().name,
-                    dishesSnapshot.val().avgRating, 
+                    dishesSnapshot.val().avgRating,
                     dishesSnapshot.val().image,
                     dishesSnapshot.val().price);
+
+
+                //https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg
 
             });
         });
@@ -239,4 +269,6 @@ $("#search-btn").on("click", function(){
     });
 
 });
+
+
 
