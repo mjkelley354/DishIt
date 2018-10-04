@@ -10,8 +10,7 @@ const config = {
 
 firebase.initializeApp(config);
 
-
-db = firebase.database();
+const db = firebase.database();
 
 const storageService = firebase.storage();
 let storageRef = storageService.ref();
@@ -44,10 +43,6 @@ document.querySelector(".file-submit").addEventListener("click", function (e) {
         console.log('success');
     });
 });
-
-
-
-const db = firebase.database();
 
 // create test data in firebase
 function createTestData() {
