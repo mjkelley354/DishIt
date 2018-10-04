@@ -10,8 +10,42 @@ const config = {
 
 firebase.initializeApp(config);
 
+
 db = firebase.database();
 
+const storageService = firebase.storage();
+let storageRef = storageService.ref();
+let selectedFile;
+
+// following event listeners is used to work with buttons added to support image upload
+// by someone adding a rating
+document.querySelector(".file-select").addEventListener("change", function (e) {
+        selectedFile = e.target.files[0];
+    }
+);
+
+// following event listeners is used to work with buttons added to support image upload
+// by someone adding a rating
+document.querySelector(".file-submit").addEventListener("click", function (e) {
+    //create a child directory called images, and place the file inside this directory
+    const uploadTask = storageRef.child(`images/${selectedFile.name}`).put(selectedFile);
+    uploadTask.on('state_changed', (snapshot) => {
+        // Observe state change events such as progress, pause, and resume
+
+        // the downloadURL is critical to capture here
+        // TODO: on image upload capture URL and save to firebase in the .image property so we can use it to access image later
+        var downloadURL = uploadTask.snapshot.downloadURL;
+        console.log(downloadURL);
+    }, (error) => {
+        // Handle unsuccessful uploads
+        console.log(error);
+    }, () => {
+        // Do something once upload is complete
+        console.log('success');
+    });
+});
+
+const db = firebase.database();
 
 // create test data in firebase
 function createTestData() {
@@ -85,15 +119,15 @@ function writeDishData(dishId, name, restaurantId, price, avgSourScale, avgSweet
     });
 }
 
-function getTopX(recordsToReturn) {
-    let dishes = db.ref("dishes");
-    let restaurants = db.ref("restaurants");
+function getTopX(recordsToReturn){
+    const dishes = db.ref("dishes");
+    const restaurants = db.ref("restaurants");
 
     // let topX = [];
 
     // get the top x dishes and then push them into the topX array (by dishId)
-    dishes.orderByChild("avgRating").limitToLast(recordsToReturn).on("child_added", function (snapshot) {
-        console.log(snapshot.ref.key);
+
+   dishes.orderByChild("avgRating").limitToLast(recordsToReturn).on("child_added", function(snapshot) {
         const keyValue = snapshot.ref.key;
         // topX.push(keyValue);
 
@@ -106,6 +140,8 @@ function getTopX(recordsToReturn) {
                 console.log("restaurantName: ", restaurantSnapshot.val().name);
                 console.log("image: ", dishesSnapshot.val().image);
                 console.log("cost: ", dishesSnapshot.val().price);*/
+                
+
 
                 createTile(keyValue,
                     dishesSnapshot.val().name,
@@ -182,7 +218,7 @@ function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, d
 
         <div id="${divId}" " class=" collapse show" aria-labelledby="${headId}" data-parent="#accordionExample">
             <div class="card-body">
-                Dish Data Here
+                Dish Data Here      
             </div>
         </div>
     </div>
@@ -217,6 +253,52 @@ function getPrice(price) {
     return ratingValue;
 }
 
+function setValues(stepIncrease) {
+    return function (event, ui) {
+        var slider = $("#" + this.id);
+        var currentValues = slider.slider("values");
+        var step = slider.slider("option")["step"];
+        // 2 - can be changed
+        if (!(Math.abs(ui.values[0] - currentValues[0]) == stepIncrease * step || Math.abs(ui.values[1] - currentValues[1]) == stepIncrease * step)){
+            return false;
+        };
+        slider.slider("values", ui.values);
+        var currentValues = slider.slider("values");
+        $("#" + this.id + "-values").html(currentValues[0] + ' - ' + currentValues[1]);
+    };
+};
+
+
+$( ".slider-1-10" ).slider({
+    range: true,
+    min: 1,
+    max: 10,
+    step: 1,
+    values: [1, 10],
+    slide: setValues(1),
+    create: function(event, ui) {
+        var slider = $("#" + this.id);
+        var currentValues = slider.slider("values");
+        $("#" + this.id + "-values").html(currentValues[0] + ' - ' + currentValues[1]);
+    }
+});
+
+$( ".slider-1-4" ).slider({
+    range: true,
+    min: 1,
+    max: 4,
+    step: 1,
+    values: [1, 4],
+    slide: setValues(1),
+    create: function(event, ui) {
+        var slider = $("#" + this.id);
+        var currentValues = slider.slider("values");
+        $("#" + this.id + "-values").html(currentValues[0] + ' ' + currentValues[1]);
+    }
+});
+
+
+
 // when page loads
 $(document).ready(function () {
 
@@ -232,6 +314,10 @@ $(document).ready(function () {
 
 });
 
+$(".filter-icon").on("click", function () {
+    $(".filter-modal").modal('show');
+});
+
 // on click of search button, determine if dish name contains search string
 $("#search-btn").on("click", function () {
 
@@ -244,13 +330,16 @@ $("#search-btn").on("click", function () {
 
     var dishes = db.ref('dishes');
     var restaurants = db.ref('restaurants');
+    let matches = 0;
 
     // for each dish in order of avgRating...
     dishes.orderByChild("avgRating").on('value', function (snapshot) {
         snapshot.forEach(function (childSnapshot) {
 
             // if dish name contains search string, display results on screen
-            if (childSnapshot.val().name.includes(searchInput)) {
+              if(childSnapshot.val().name.includes(searchInput)) {
+                matches++;
+                
                 console.log(childSnapshot.val().name);
                 const keyValue = childSnapshot.ref.key;
 
@@ -272,31 +361,97 @@ $("#search-btn").on("click", function () {
                             dishesSnapshot.val().price);
                     });
                 });
-            } else {
-                // add message if no search results are found and show button to add new rating for dish
-            };
+            }; 
         });
+        console.log(matches);
+        // displays message if no search results retured
+        if(matches===0) {
+            noResults();
+        }
     });
+});
 
-    // temporary spot for ajax call to Zomato APi to test query retrieval
-    // Atlanta, GA: id - 288, country_id = 216, state_id = 78
-    const cityURL = "https://developers.zomato.com/api/v2.1/cities?q=atlanta&count=5&apikey=15f74e22d1ba3367c6e02399a5e343f4";
+// returns message if no search results returned.
+// this section requires some UI work
+function noResults() {
+    $(".tile-div").append(
+        `
+            <h2 class="text-center block pt-5">No dishes match your search</h2>
+            <p><i>Try searching a generic name of a dish (e.g. pizza) or an ingredient (e.g. cheese)</i></p>
+            <button class="btn btn-outline-success d-flex justify-content-center add-dish-btn" type="button">Rate a new dish!</button>
+        `
+    );
+};
 
-    $.ajax({
-        url: cityURL,
-        method: "GET"
-    }).then(function (response) {
-        console.log(response);
+
+// returns name of restaurant when dish tile class (in list) is clicked
+$(document).on("click", ".dish-tile", function(){
+    // populate dish info from firebase
+
+    // get restaurant data from Yelp - this bit of code will be moved to add/rate form eventually
+    getRestaurant($(this).attr("restaurant"));
+});
+
+// get restaurant information from yelp
+function getRestaurant(name) {
+    console.log(name);
+
+    const restaurantURL = `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?` + $.param({
+        term: name,
+        location: "Atlanta, GA",
+        categories: "restaurants",
+        limit: 2,
     });
-
-    // searching for restaurants using Atlanta city_id (288) and string ("leon") in restaurant name
-    const restaurantURL = "https://developers.zomato.com/api/v2.1/search?entity_id=288&q=leon&count=3&apikey=15f74e22d1ba3367c6e02399a5e343f4";
 
     $.ajax({
         url: restaurantURL,
-        method: "GET"
-    }).then(function (response) {
-        console.log(response);
-    });
+        method: "GET",
+        headers: {
+            'Authorization': 'Bearer lC3zgwezYWCKbJZW03Yepl4A52o_fhrqd9a1x0_MapVxItu97aAHOUOGfsRzDJswOWzWlaHv0zvw8keaePumFEkXJWyOgcTcLg7ekQOQ9skybUd_wy02lE3hnQy0W3Yx',
+        }
+    }).then(function(response){
 
+        console.log(response);
+        const restaurants = response.businesses;
+        for (var i in restaurants) {
+            const id = restaurants[i].id;
+            const price = restaurants[i].price;
+            const rName = restaurants[i].name;
+            const location = restaurants[i].location;
+            const coordinates = restaurants[i].coordinates;
+            const phone = restaurants[i].phone;
+
+            console.log(id, price, rName, location, coordinates, phone);
+            showRestOptions(rName, location);
+        };
+    });
+};
+
+// use this function to create radio button options for user to select correct restaurant from list of returned responses from Yelp
+function showRestOptions(rName, location) {
+    console.log(rName, location);
+    // code radio buttons below - show on add rating for new dish page
+    // use class rest-option for radio button options
+};
+$(".apply-filter").on("click", function (){
+    // TODO:  query firebase for filtered data
 });
+
+$(document).on("click", ".rest-option-select", function () {
+    // call selectRestaurant function - pass id
+})
+
+function selectRestaurant(response) {
+    const dishes = db.ref("dishes");
+    const restaurants = db.ref("restaurants");
+
+    // select restaurant by ID
+    // if id matches existing restaurant Id in firebase, do not add
+    // else, push new restaurant to firebase. get response from ajax call?
+    restaurants.on("value", function(snapshot) {
+        console.log(snapshot.val());
+        console.log('Hi');
+        // wip
+    });
+};
+
