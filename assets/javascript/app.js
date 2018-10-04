@@ -10,6 +10,43 @@ const config = {
 
 firebase.initializeApp(config);
 
+
+db = firebase.database();
+
+const storageService = firebase.storage();
+let storageRef = storageService.ref();
+let selectedFile;
+
+// following event listeners is used to work with buttons added to support image upload
+// by someone adding a rating
+document.querySelector(".file-select").addEventListener("change", function (e) {
+        selectedFile = e.target.files[0];
+    }
+);
+
+// following event listeners is used to work with buttons added to support image upload
+// by someone adding a rating
+document.querySelector(".file-submit").addEventListener("click", function (e) {
+    //create a child directory called images, and place the file inside this directory
+    const uploadTask = storageRef.child(`images/${selectedFile.name}`).put(selectedFile);
+    uploadTask.on('state_changed', (snapshot) => {
+        // Observe state change events such as progress, pause, and resume
+
+        // the downloadURL is critical to capture here
+        // TODO: on image upload capture URL and save to firebase in the .image property so we can use it to access image later
+        var downloadURL = uploadTask.snapshot.downloadURL;
+        console.log(downloadURL);
+    }, (error) => {
+        // Handle unsuccessful uploads
+        console.log(error);
+    }, () => {
+        // Do something once upload is complete
+        console.log('success');
+    });
+});
+
+
+
 const db = firebase.database();
 
 // create test data in firebase
@@ -283,6 +320,10 @@ function showRestOptions(rName, location) {
     // code radio buttons below - show on add rating for new dish page
     // use class rest-option for radio button options
 };
+
+$(".apply-filter").on("click", function (){
+    // TODO:  query firebase for filtered data
+});
 
 $(document).on("click", ".rest-option-select", function () {
     // call selectRestaurant function - pass id
