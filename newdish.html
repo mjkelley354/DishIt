@@ -17,7 +17,7 @@
     <title>Dish It - Add New Dish</title>
 </head>
 
-<body>
+<body data-title="newdish-page">
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">Dish It</a>
@@ -28,70 +28,78 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <!--
-                    <li class="nav-item active">
-                            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Dropdown
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#">Disabled</a>
-                        </li>
-                        -->
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="newdish.html">Add New Dish</a>
+                </li>
+                <!-- <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Dropdown
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </li> -->
 
             </ul>
-            <form onsubmit="return false;" class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" id="search-input" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="button" id="search-btn">Search</button>
-            </form>
-
         </div>
     </nav>
 
     <div class="container">
         <form class="w-100">
             <div class="row location">
-                    <div class="col-4 form-group">
-                            <label class="form-label" for="city-input">City</label>
-                            <input type="text" class="form-control" id="city-input" required="true">
-                        </div>
-                        <div class="col-4 form-group">
-                            <label class="form-label" for="state-input">State</label>
-                            <select id="state-input" class="form-control" required="true"></select>
-                        </div>
-                    <div class="col-2 form-group d-flex align-items-end">
-                        <button class="btn" id="search-restaurant">Find City</button>
-                    </div>
+                <div class="col-6 form-group">
+                    <label class="form-label" for="city-input">City</label>
+                    <input type="text" class="form-control" id="city-input" value="Atlanta" placeholder="Atlanta">
+                </div>
+                <div class="col-3 form-group">
+                    <label class="form-label" for="state-input">State</label>
+                    <!-- change this to dropdown once js logic is fixed -->
+                    <input id="state-input" class="form-control" value="GA" placeholder="GA"></input>
+                </div>
+                <!--  <div class="col-3 form-group d-flex align-items-end">
+                    <button class="btn" id="find-city">Find City</button>
+                </div> -->
             </div>
+            <div class="row" id="location-results"></div>
             <div class="row restaurant">
-
+                <div class="col-9 form-group">
+                    <label class="form-label" for="restaurant-input">Restaurant Name</label>
+                    <input type="text" class="form-control" id="restaurant-input">
+                </div>
+                <div class="col-3 form-group d-flex align-items-end">
+                    <button class="btn" id="find-restaurant">Find Restaurant</button>
+                </div>
             </div>
             <div class="row dish-rating">
+                    Rating: <div id="slider-rating-range-values" class="d-inline-block"></div>
+                    <div id="slider-rating-range" class="slider-1-4"></div>
+            </div>
+            <div class="row dish-flavor">
+
+            </div>
+            <div class="row comment">
 
             </div>
         </form>
-
-
     </div>
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="assets/javascript/app.js" async defer></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
+    <!-- supports slider -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="assets/javascript/app.js" async defer></script>
+
 
 </body>
 

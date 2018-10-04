@@ -18,14 +18,14 @@ let selectedFile;
 
 // following event listeners is used to work with buttons added to support image upload
 // by someone adding a rating
-document.querySelector(".file-select").addEventListener("change", function (e) {
+$(".file-select").on("change", function (e) {
         selectedFile = e.target.files[0];
     }
 );
 
 // following event listeners is used to work with buttons added to support image upload
 // by someone adding a rating
-document.querySelector(".file-submit").addEventListener("click", function (e) {
+$(".file-submit").on("click", function (e) {
     //create a child directory called images, and place the file inside this directory
     const uploadTask = storageRef.child(`images/${selectedFile.name}`).put(selectedFile);
     uploadTask.on('state_changed', (snapshot) => {
@@ -200,9 +200,51 @@ $(document).ready(function(){
     // get top 20 records by average rating
     getTopX(20);
 
+    // TODO: trying to auto-populate state field on newdish.html - the below does not work
+    /* const states = ["AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IA", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NE", "NH", "NV", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
 
+    for (var i; i < states.length; i++) {
+        const state = states[i];
+        $("#state-input").append(
+            `
+                <option value="${states[i]}">${states[i]}</option>
+            `
+        )
+    } */
 });
 
+if ($("body").attr("data-title") === "index-page") {
+
+    $(document).ready(function(){
+
+        /* following line calls the function which adds test data.
+            do not uncomment unless you want to add test data
+            back to firebase
+        */
+        // createTestData();
+    
+        // get top 20 records by average rating
+        getTopX(20);    
+    });
+};
+
+if ($("body").attr("data-title") === "newdish-page") {
+    $(document).ready(function(){
+    
+        // TODO: trying to auto-populate state field on newdish.html - the below does not work
+        /* const states = ["AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IA", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NE", "NH", "NV", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+    
+        for (var i; i < states.length; i++) {
+            const state = states[i];
+            $("#state-input").append(
+                `
+                    <option value="${states[i]}">${states[i]}</option>
+                `
+            )
+        } */
+    
+    });
+};
 // on click of search button, determine if dish name contains search string
 $("#search-btn").on("click", function(){
 
@@ -276,7 +318,7 @@ $(document).on("click", ".dish-tile", function(){
 });
 
 // get restaurant information from yelp
-function getRestaurant(name) {
+function getRestaurant(location, name) {
     console.log(name);
 
     const restaurantURL = `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?` + $.param({
@@ -337,3 +379,15 @@ function selectRestaurant(response) {
         // wip
     });
 };
+
+$(".find-restaurant").on("click", function(){
+    event.preventDefault();
+
+    alert("hi");
+    const location = $("#city-input").val().trim() + ", " + $("#state-input").val().trim();
+    const rName = $("#restaurant-input").val().trim();
+    
+    console.log(location, rName);
+
+    //getRestaurant(location, rName);
+})
