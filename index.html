@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
         integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
 
+    <!-- supports slider -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+
     <link rel="stylesheet" type="text/css" href="assets/styles/styles.css">
 
 
@@ -47,12 +50,52 @@
                 <li class="nav-item">
                     <a class="nav-link disabled" href="#">Disabled</a>
                 </li>
+
                 -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-filter filter-icon"></i></a>
+                </li>
             </ul>
             <form onsubmit="return false;" class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" id="search-input" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="button" id="search-btn">Search</button>
             </form>
+
+
+            <div class="modal filter-modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Filter Results</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-center">
+                            Price: <div id="slider-price-range-values" class="d-inline-block"></div>
+                            <div id="slider-price-range" class="slider-1-4"></div>
+                            Rating: <div id="slider-rating-range-values" class="d-inline-block"></div>
+                            <div id="slider-rating-range" class="slider-1-4"></div>
+                            Sour: <div id="slider-sour-range-values" class="d-inline-block"></div>
+                            <div id="slider-sour-range" class="slider-1-10"></div>
+                            Sweet: <div id="slider-sweet-range-values" class="d-inline-block"></div>
+                            <div id="slider-sweet-range" class="slider-1-10"></div>
+                            Spicy: <div id="slider-spicy-range-values" class="d-inline-block"></div>
+                            <div id="slider-spicy-range" class="slider-1-10"></div>
+                            Salty: <div id="slider-salty-range-values" class="d-inline-block"></div>
+                            <div id="slider-salty-range" class="slider-1-10"></div>
+                            Umami: <div id="slider-umami-range-values" class="d-inline-block"></div>
+                            <div id="slider-umami-range" class="slider-1-10"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary apply-filter">Apply</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
     </nav>
 
@@ -66,9 +109,11 @@
     </div>
 
 
-    <img id="myimg">
 
 
+
+    <!-- following div is used to upload image files to firebase cloud storage.  These should be included in whatever div
+        opens to enable the user to add a new rating.  -->
     <div id="filesubmit">
         <input type="file" class="file-select" accept="image/*"/>
         <button class="file-submit">SUBMIT</button>
@@ -87,6 +132,8 @@
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
     <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
+    <!-- supports slider -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="./assets/javascript/app.js"></script>
 </body>
 </html>
