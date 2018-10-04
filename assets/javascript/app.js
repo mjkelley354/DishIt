@@ -45,8 +45,6 @@ document.querySelector(".file-submit").addEventListener("click", function (e) {
     });
 });
 
-
-
 const db = firebase.database();
 
 // create test data in firebase
@@ -129,7 +127,6 @@ function getTopX(recordsToReturn){
 
     // get the top x dishes and then push them into the topX array (by dishId)
     dishes.orderByChild("avgRating").limitToLast(recordsToReturn).on("child_added", function(snapshot) {
-        console.log(snapshot.ref.key);
         const keyValue = snapshot.ref.key;
         // topX.push(keyValue);
 
@@ -144,11 +141,12 @@ function getTopX(recordsToReturn){
                 console.log("cost: ", dishesSnapshot.val().price);*/
                 
 
+
                 createTile(keyValue,
                     dishesSnapshot.val().name,
                     dishesSnapshot.val().restaurantId,
                     restaurantSnapshot.val().name,
-                    dishesSnapshot.val().avgRating, 
+                    dishesSnapshot.val().avgRating,
                     dishesSnapshot.val().image,
                     dishesSnapshot.val().price);
 
@@ -193,6 +191,52 @@ function getPrice(price) {
     return ratingValue;
 }
 
+function setValues(stepIncrease) {
+    return function (event, ui) {
+        var slider = $("#" + this.id);
+        var currentValues = slider.slider("values");
+        var step = slider.slider("option")["step"];
+        // 2 - can be changed
+        if (!(Math.abs(ui.values[0] - currentValues[0]) == stepIncrease * step || Math.abs(ui.values[1] - currentValues[1]) == stepIncrease * step)){
+            return false;
+        };
+        slider.slider("values", ui.values);
+        var currentValues = slider.slider("values");
+        $("#" + this.id + "-values").html(currentValues[0] + ' - ' + currentValues[1]);
+    };
+};
+
+
+$( ".slider-1-10" ).slider({
+    range: true,
+    min: 1,
+    max: 10,
+    step: 1,
+    values: [1, 10],
+    slide: setValues(1),
+    create: function(event, ui) {
+        var slider = $("#" + this.id);
+        var currentValues = slider.slider("values");
+        $("#" + this.id + "-values").html(currentValues[0] + ' - ' + currentValues[1]);
+    }
+});
+
+$( ".slider-1-4" ).slider({
+    range: true,
+    min: 1,
+    max: 4,
+    step: 1,
+    values: [1, 4],
+    slide: setValues(1),
+    create: function(event, ui) {
+        var slider = $("#" + this.id);
+        var currentValues = slider.slider("values");
+        $("#" + this.id + "-values").html(currentValues[0] + ' ' + currentValues[1]);
+    }
+});
+
+
+
 // when page loads
 $(document).ready(function(){
 
@@ -206,6 +250,10 @@ $(document).ready(function(){
     getTopX(20);
 
 
+});
+
+$(".filter-icon").on("click", function () {
+    $(".filter-modal").modal('show');
 });
 
 // on click of search button, determine if dish name contains search string
