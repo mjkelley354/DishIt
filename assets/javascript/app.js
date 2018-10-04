@@ -70,7 +70,7 @@ function writeRestaurantData(restaurantId, zumatoId, name, address, locality, ci
 }
 
 function writeDishData(dishId, name, restaurantId, price, avgSourScale, avgSweetScale, avgSpicyScale,
-                        avgSaltyScale, avgUmamiScale, avgRating, image) {
+    avgSaltyScale, avgUmamiScale, avgRating, image) {
     db.ref('dishes/' + dishId).set({
         name,
         restaurantId,
@@ -85,20 +85,20 @@ function writeDishData(dishId, name, restaurantId, price, avgSourScale, avgSweet
     });
 }
 
-function getTopX(recordsToReturn){
+function getTopX(recordsToReturn) {
     let dishes = db.ref("dishes");
     let restaurants = db.ref("restaurants");
 
     // let topX = [];
 
     // get the top x dishes and then push them into the topX array (by dishId)
-    dishes.orderByChild("avgRating").limitToLast(recordsToReturn).on("child_added", function(snapshot) {
+    dishes.orderByChild("avgRating").limitToLast(recordsToReturn).on("child_added", function (snapshot) {
         console.log(snapshot.ref.key);
         const keyValue = snapshot.ref.key;
         // topX.push(keyValue);
 
-        dishes.child("/" + keyValue).once("value", function(dishesSnapshot) {
-            restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function(restaurantSnapshot) {
+        dishes.child("/" + keyValue).once("value", function (dishesSnapshot) {
+            restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function (restaurantSnapshot) {
 
                 /*console.log("dishId: ", keyValue);
                 console.log("dishName: ", dishesSnapshot.val().name);
@@ -111,7 +111,7 @@ function getTopX(recordsToReturn){
                     dishesSnapshot.val().name,
                     dishesSnapshot.val().restaurantId,
                     restaurantSnapshot.val().name,
-                    dishesSnapshot.val().avgRating, 
+                    dishesSnapshot.val().avgRating,
                     dishesSnapshot.val().image,
                     dishesSnapshot.val().price);
 
@@ -120,18 +120,79 @@ function getTopX(recordsToReturn){
     });
 }
 
+let i = 1;
+    let newId =``;
+    let expandedToggle = "true";
 function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, dishImage, dishPrice) {
+
+    console.log(i);
+    console.log(expandedToggle);
+
+    switch (i) {
+        case 1: 
+        newId = "One";
+        break;
+        case 2: 
+        newId = "Two";
+        break;
+        case 3:
+        newId = "Three";
+        break;
+        case 4:
+        newId = "Four";
+        break;
+        case 5:
+        newId = "Five";
+        break;
+        case 6:
+        newId = "Six";
+        break;
+        default:
+        break;
+    } 
+        console.log(newId);
+        var accordionDiv = (`accordion${i}`);
+        var divId = (`collapse${newId}`);
+        var headId = (`heading${newId}`);
+        var targetDiv = (`#collapse${newId}`);
+        console.log(divId);
+        console.log(headId);
+        console.log (targetDiv);
+        console.log("accordion", accordionDiv);
+
     $(".tile-div").prepend(
-        `
-            <div class="dish-tile" id="${dishId}">
-                <img class="dish-tile-img" src="${dishImage}">
-                <div class="dish-tile-name">${dishName}</div>
-                <div class="dish-tile-restaurant">${restaurantName}</div>
-                <div class="dish-tile-rating">${avgRating}</div>
-                <div class="dish-tile-price">${getPrice(dishPrice)}</div>
+`
+<div class="${accordionDiv}" id="accordionExample">
+
+    <div class="card">
+        <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="${targetDiv}"
+                    aria-expanded="${expandedToggle}" aria-controls="${divId}">
+                    <div class="dish-tile" id="${dishId}" restaurant="${restaurantName}">
+                        <img class="dish-tile-img" src="${dishImage}">
+                        <span class="dish-tile-name">&nbsp &nbsp ${dishName}</span>
+                        <span class="dish-tile-restaurant">&nbsp &nbsp &nbsp &nbsp ${restaurantName}</span>
+                        <span class="dish-tile-rating">&nbsp &nbsp &nbsp &nbsp ${avgRating}</span>
+                        <span class="dish-tile-price">&nbsp &nbsp &nbsp &nbsp ${getPrice(dishPrice)}</span>
+                    </div>
+                </button>
+            </h5>
+        </div>
+
+        <div id="${divId}" " class=" collapse show" aria-labelledby="${headId}" data-parent="#accordionExample">
+            <div class="card-body">
+                Dish Data Here
             </div>
-        `
+        </div>
+    </div>
+</div>
+`
     )
+i++
+expandedToggle = "false";
+console.log(expandedToggle);
+console.log("after prepend " + i);
 }
 
 function getPrice(price) {
@@ -157,7 +218,7 @@ function getPrice(price) {
 }
 
 // when page loads
-$(document).ready(function(){
+$(document).ready(function () {
 
     /* following line calls the function which adds test data.
         do not uncomment unless you want to add test data
@@ -172,7 +233,7 @@ $(document).ready(function(){
 });
 
 // on click of search button, determine if dish name contains search string
-$("#search-btn").on("click", function(){
+$("#search-btn").on("click", function () {
 
     // empty screen of existing results
     $(".tile-div").empty();
@@ -185,16 +246,16 @@ $("#search-btn").on("click", function(){
     var restaurants = db.ref('restaurants');
 
     // for each dish in order of avgRating...
-    dishes.orderByChild("avgRating").on('value', function(snapshot) {
-        snapshot.forEach(function(childSnapshot) {
+    dishes.orderByChild("avgRating").on('value', function (snapshot) {
+        snapshot.forEach(function (childSnapshot) {
 
             // if dish name contains search string, display results on screen
-            if(childSnapshot.val().name.includes(searchInput)) {
+            if (childSnapshot.val().name.includes(searchInput)) {
                 console.log(childSnapshot.val().name);
                 const keyValue = childSnapshot.ref.key;
 
-                dishes.child("/"+keyValue).once('value', function(dishesSnapshot) {
-                    restaurants.child("/"+dishesSnapshot.val().restaurantId).once('value', function(restaurantSnapshot) {
+                dishes.child("/" + keyValue).once('value', function (dishesSnapshot) {
+                    restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function (restaurantSnapshot) {
                         /* console.log("dishId: ", keyValue);
                         console.log("dishName: ", dishesSnapshot.val().name);
                         console.log("restaurantId: ", dishesSnapshot.val().restaurantId);
@@ -206,7 +267,7 @@ $("#search-btn").on("click", function(){
                             dishesSnapshot.val().name,
                             dishesSnapshot.val().restaurantId,
                             restaurantSnapshot.val().name,
-                            dishesSnapshot.val().avgRating, 
+                            dishesSnapshot.val().avgRating,
                             dishesSnapshot.val().image,
                             dishesSnapshot.val().price);
                     });
@@ -224,7 +285,7 @@ $("#search-btn").on("click", function(){
     $.ajax({
         url: cityURL,
         method: "GET"
-    }).then(function(response) {
+    }).then(function (response) {
         console.log(response);
     });
 
@@ -234,9 +295,8 @@ $("#search-btn").on("click", function(){
     $.ajax({
         url: restaurantURL,
         method: "GET"
-    }).then(function(response){
+    }).then(function (response) {
         console.log(response);
     });
 
 });
-
