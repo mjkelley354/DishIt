@@ -11,11 +11,17 @@ const config = {
 firebase.initializeApp(config);
 
 
-db = firebase.database();
+const db = firebase.database();
+
 
 const storageService = firebase.storage();
 let storageRef = storageService.ref();
 let selectedFile;
+
+let userName = "";
+let userEmail = "";
+let userCity = "";
+let userState = "";
 
 // following event listeners is used to work with buttons added to support image upload
 // by someone adding a rating
@@ -45,7 +51,7 @@ document.querySelector(".file-submit").addEventListener("click", function (e) {
     });
 });
 
-const db = firebase.database();
+
 
 // create test data in firebase
 function createTestData() {
@@ -264,7 +270,7 @@ function setValues(stepIncrease) {
         };
         slider.slider("values", ui.values);
         var currentValues = slider.slider("values");
-        $("#" + this.id + "-values").html(currentValues[0] + ' - ' + currentValues[1]);
+        $("#" + this.id + "-values").html(currentValues[0] + ' to ' + currentValues[1]);
     };
 };
 
@@ -279,7 +285,7 @@ $( ".slider-1-10" ).slider({
     create: function(event, ui) {
         var slider = $("#" + this.id);
         var currentValues = slider.slider("values");
-        $("#" + this.id + "-values").html(currentValues[0] + ' - ' + currentValues[1]);
+        $("#" + this.id + "-values").html(currentValues[0] + ' to ' + currentValues[1]);
     }
 });
 
@@ -293,7 +299,7 @@ $( ".slider-1-4" ).slider({
     create: function(event, ui) {
         var slider = $("#" + this.id);
         var currentValues = slider.slider("values");
-        $("#" + this.id + "-values").html(currentValues[0] + ' ' + currentValues[1]);
+        $("#" + this.id + "-values").html(currentValues[0] + ' to ' + currentValues[1]);
     }
 });
 
@@ -311,8 +317,22 @@ $(document).ready(function () {
     // get top 20 records by average rating
     getTopX(20);
 
+    readLocalStorage();
 
 });
+
+function readLocalStorage() {
+    // get user info from localstorage if it exists
+    userName = localStorage.getItem("dish-it-user");
+    userEmail = localStorage.getItem("dish-it-email");
+    userCity = localStorage.getItem("dish-it-city");
+    userState = localStorage.getItem("dish-it-state");
+
+    // if we don't have data in local storage then user doesn't exists, so show the add user modal
+    if (userName == null || userEmail == null || userCity == null || userState == null) {
+        $(".user-modal").modal('show');
+    }
+}
 
 $(".filter-icon").on("click", function () {
     $(".filter-modal").modal('show');
@@ -434,7 +454,11 @@ function showRestOptions(rName, location) {
     // use class rest-option for radio button options
 };
 $(".apply-filter").on("click", function (){
-    // TODO:  query firebase for filtered data
+    // loop though each card
+    $('.card').each(function(index, obj){
+        // if card properties not within filter criteria then hide card
+
+    });
 });
 
 $(document).on("click", ".rest-option-select", function () {
@@ -455,3 +479,17 @@ function selectRestaurant(response) {
     });
 };
 
+
+// save favorites to local storage
+function saveFavorites(){
+    localStorage.setItem("dish-it-user", userName);
+    localStorage.setItem("dish-it-email", userEmail);
+    localStorage.setItem("dish-it-city", userCity);
+    localStorage.setItem("dish-it-state", userState);
+}
+
+$(".save-user").on("click", function() {
+    // TODO: capture the data from the form on the modal into the global user variables and then save to firebase
+    saveFavorites();
+    //writeUserData(x, y, z....);
+});
