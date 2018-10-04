@@ -138,6 +138,7 @@ function getTopX(recordsToReturn){
                 console.log("restaurantName: ", restaurantSnapshot.val().name);
                 console.log("image: ", dishesSnapshot.val().image);
                 console.log("cost: ", dishesSnapshot.val().price);*/
+                
 
 
                 createTile(keyValue,
@@ -156,7 +157,7 @@ function getTopX(recordsToReturn){
 function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, dishImage, dishPrice) {
     $(".tile-div").prepend(
         `
-            <div class="dish-tile" id="${dishId}">
+            <div class="dish-tile" id="${dishId}" restaurant="${restaurantName}">
                 <img class="dish-tile-img" src="${dishImage}">
                 <div class="dish-tile-name">${dishName}</div>
                 <div class="dish-tile-restaurant">${restaurantName}</div>
@@ -311,8 +312,19 @@ $("#search-btn").on("click", function(){
         console.log(response);
     });
 
-    // searching for restaurants using Atlanta city_id (288) and string ("leon") in restaurant name
-    const restaurantURL = "https://developers.zomato.com/api/v2.1/search?entity_id=288&q=leon&count=3&apikey=15f74e22d1ba3367c6e02399a5e343f4";
+
+    
+
+});
+
+$(document).on("click", ".dish-tile", function(){
+    console.log($(this).attr("restaurant"));
+});
+
+function getRestaurant(name) {
+
+// searching for restaurants using Atlanta city_id (288) and string ("leon") in restaurant name
+const restaurantURL = `https://developers.zomato.com/api/v2.1/search?entity_id=288&q=${name}&count=3&apikey=15f74e22d1ba3367c6e02399a5e343f4`;
 
     $.ajax({
         url: restaurantURL,
@@ -320,12 +332,4 @@ $("#search-btn").on("click", function(){
     }).then(function(response){
         console.log(response);
     });
-
-});
-
-
-$(".apply-filter").on("click", function (){
-    // TODO:  query firebase for filtered data
-});
-
-
+}
