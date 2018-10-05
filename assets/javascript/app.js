@@ -188,6 +188,78 @@ function getPrice(price) {
     return ratingValue;
 }
 
+function setValues(stepIncrease) {
+    return function (event, ui) {
+        var slider = $("#" + this.id);
+        var currentValues = slider.slider("values");
+        var step = slider.slider("option")["step"];
+        // 2 - can be changed
+        if (!(Math.abs(ui.values[0] - currentValues[0]) == stepIncrease * step || Math.abs(ui.values[1] - currentValues[1]) == stepIncrease * step)){
+            return false;
+        };
+        slider.slider("values", ui.values);
+        var currentValues = slider.slider("values");
+        $("#" + this.id + "-values").html(currentValues[0] + ' to ' + currentValues[1]);
+    };
+};
+
+$(".slider-rate-1-5").slider({
+    range: false,
+    min: 1,
+    max: 5,
+    step: 1,
+    change: function (event, ui) {
+        let userRating = $("#dish-rating").slider("value");
+        console.log(userRating);
+        calculateRatingAvg(userRating);
+    }
+});
+
+$(".slider-rate-1-10").slider({
+    range: false,
+    min: 1,
+    max: 5,
+    step: 1,
+    change: function (event, ui) {
+        let userRating = $("#dish-rating").slider("value");
+        console.log(userRating);
+        calculateRatingAvg(userRating);
+    }
+});
+
+function calculateRatingAvg(num) {
+    //TODO: calculate rating avg and store values in local storage for future calculation
+};
+
+$( ".slider-1-10" ).slider({
+    range: true,
+    min: 1,
+    max: 10,
+    step: 1,
+    values: [1, 10],
+    slide: setValues(1),
+    create: function(event, ui) {
+        var slider = $("#" + this.id);
+        var currentValues = slider.slider("values");
+        $("#" + this.id + "-values").html(currentValues[0] + ' to ' + currentValues[1]);
+    }
+});
+
+$( ".slider-1-4" ).slider({
+    range: true,
+    min: 1,
+    max: 4,
+    step: 1,
+    values: [1, 4],
+    slide: setValues(1),
+    create: function(event, ui) {
+        var slider = $("#" + this.id);
+        var currentValues = slider.slider("values");
+        $("#" + this.id + "-values").html(currentValues[0] + ' to ' + currentValues[1]);
+    }
+});
+
+
 // when page loads
 $(document).ready(function(){
 

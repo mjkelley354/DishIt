@@ -55,11 +55,11 @@
         <form class="w-100">
             <div class="row location">
                 <div class="col-6 form-group">
-                    <label class="form-label" for="city-input">City</label>
+                    <label class="form-label" for="city-input"><strong>City</strong></label>
                     <input type="text" class="form-control" id="city-input" value="Atlanta" placeholder="Atlanta">
                 </div>
                 <div class="col-3 form-group">
-                    <label class="form-label" for="state-input">State</label>
+                    <label class="form-label" for="state-input"><strong>State</strong></label>
                     <!-- change this to dropdown once js logic is fixed -->
                     <input id="state-input" class="form-control" value="GA" placeholder="GA"></input>
                 </div>
@@ -70,23 +70,99 @@
             <div class="row" id="location-results"></div>
             <div class="row restaurant">
                 <div class="col-9 form-group">
-                    <label class="form-label" for="restaurant-input">Restaurant Name</label>
+                    <label class="form-label" for="restaurant-input"><strong>Restaurant Name</strong></label>
                     <input type="text" class="form-control" id="restaurant-input">
                 </div>
                 <div class="col-3 form-group d-flex align-items-end">
                     <button class="btn" id="find-restaurant">Find Restaurant</button>
                 </div>
+                <div class="col-12 restaurant-options">
+                    <p>Select the correct restaurant by address</p>
+                    <div class="restaurant-results"></div>
+                </div>
+            </div>
+            <div class="row dish-details">
+                <div class="col-6">
+                    <form>
+                        <label class="form-label" for="dish-name-input"><strong>Dish Name</strong></label>
+                        <input type="text" class="form-control" id="dish-name-input">
+                    </form>
+                </div>
+                <div class="col-6">
+                    <form>
+                            <img id="myimg">
+                            <!-- following div is used to upload image files to firebase cloud storage.  These should be included in whatever div
+                                opens to enable the user to add a new rating.  -->
+                            <div id="filesubmit">
+                                <input type="file" class="file-select" accept="image/*" />
+                                <button class="file-submit">SUBMIT</button>
+                            </div>
+                    </form>
+                </div>
             </div>
             <div class="row dish-rating">
-                    Rating: <div id="slider-rating-range-values" class="d-inline-block"></div>
-                    <div id="slider-rating-range" class="slider-1-4"></div>
+                <div class="col-12 form-group">
+                    <form>
+                        <h5 class="form-label" for="rate-dish">How was the dish at this restaurant?</h5>
+                        <div class="w-100 d-flex justify-content-between">
+                            <p>"The Worst!" - 1</p>
+                            <p>"Fine" - 3</p>
+                            <p>"The Best!" - 5</p>
+                        </div>
+                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
+                        <div class="slider-rate-1-5" id="dish-rating"></div>
+                    </form>
+                </div>
             </div>
             <div class="row dish-flavor">
+                <div class="col-12 form-group">
+                    <form>
+                        <h5 class="form-label" for="rate-dish">Judge the flavor profile</h5>
+                        <p>Sour</p>
+                        <div class="w-100 d-flex justify-content-between">
+                            <p>"Not sour" - 1</p>
+                            <p>"A little tart" - 5</p>
+                            <p>"Mouth puckering" - 10</p>
+                        </div>
+                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
+                        <div class="slider-rate-1-5 mb-2" id="dish-rating"></div>
+                        <p>Sweet</p>
+                        <div class="w-100 d-flex justify-content-between">
+                            <p>"Not sweet" - 1</p>
+                            <p>"Balanced" - 5</p>
+                            <p>"Sugar overload" - 10</p>
+                        </div>
+                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
+                        <div class="slider-rate-1-5 mb-2" id="dish-rating"></div>
+                        <p>Spicy</p>
+                        <div class="w-100 d-flex justify-content-between">
+                            <p>"Not spicy" - 1</p>
+                            <p>"I can handle this" - 5</p>
+                            <p>"Call 911" - 10</p>
+                        </div>
+                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
+                        <div class="slider-rate-1-5 mb-2" id="dish-rating"></div>
+                        <p>Salty</p>
+                        <div class="w-100 d-flex justify-content-between">
+                            <p>"Not salty" - 1</p>
+                            <p>"Balanced" - 5</p>
+                            <p>"Water, please" - 10</p>
+                        </div>
+                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
+                        <div class="slider-rate-1-5 mb-2" id="dish-rating"></div>
+                        <p>Umami</p>
+                        <div class="w-100 d-flex justify-content-between">
+                            <p>"Not meaty" - 1</p>
+                            <p>"Savory" - 5</p>
+                            <p>"Pure MSG" - 10</p>
+                        </div>
+                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
+                        <div class="slider-rate-1-5 mb-2" id="dish-rating"></div>
+                    </form>
+                </div>
+                <div class="row comment">
 
-            </div>
-            <div class="row comment">
-
-            </div>
+                </div>
         </form>
     </div>
 
