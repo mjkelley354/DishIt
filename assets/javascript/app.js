@@ -23,6 +23,10 @@ let userEmail = "";
 let userCity = "";
 let userState = "";
 
+// google map object
+let map;
+let mapPins = [];
+
 // following event listeners is used to work with buttons added to support image upload
 // by someone adding a rating
 document.querySelector(".file-select").addEventListener("change", function (e) {
@@ -338,6 +342,10 @@ $(".filter-icon").on("click", function () {
     $(".filter-modal").modal('show');
 });
 
+$(".map-icon").on("click", function () {
+    $(".map-modal").modal('show');
+});
+
 // on click of search button, determine if dish name contains search string
 $("#search-btn").on("click", function () {
 
@@ -441,11 +449,26 @@ function getRestaurant(name) {
             const coordinates = restaurants[i].coordinates;
             const phone = restaurants[i].phone;
 
+            var restaurantLatLong = {lat: coordinates.latitude, lng: coordinates.longitude};
+            addToMap(rName, restaurantLatLong);
+
+
             console.log(id, price, rName, location, coordinates, phone);
             showRestOptions(rName, location);
         };
     });
 };
+
+function addToMap(restaurauntName, position){
+    // add a marker and an infowindow to map
+    // TODO: figure out how to hide the info window if you aren't on mouseover
+    var marker = new google.maps.Marker({position: position, map: map});
+    var infowindow =  new google.maps.InfoWindow({
+        content: restaurauntName,
+        map: map,
+        position: position
+    });
+}
 
 // use this function to create radio button options for user to select correct restaurant from list of returned responses from Yelp
 function showRestOptions(rName, location) {
@@ -493,3 +516,30 @@ $(".save-user").on("click", function() {
     saveFavorites();
     //writeUserData(x, y, z....);
 });
+
+// initializes the map object
+function initMap() {
+    // The location of Atlanta
+    var atlanta = {lat: 33.753746, lng: -84.386330};
+    // The map, centered at Atlanta
+    map = new google.maps.Map(
+        document.getElementById('map_canvas'), {zoom: 10, center: atlanta});
+    // The marker, positioned at Atlanta
+    //var marker = new google.maps.Marker({position: atlanta, map: map});
+
+
+}
+
+// resize the map to fit on the modal
+$(".map-modal").on('show.bs.modal', function(event) {
+    $("#location-map").css("width", "100%");
+    $("#map_canvas").css("width", "100%");
+});
+
+// Trigger map resize event after modal shown
+$(".map-modal").on('shown.bs.modal', function() {
+    google.maps.event.trigger(map, "resize");
+    myLatlng = new google.maps.LatLng(33.753746, -84.386330)
+    map.setCenter(myLatlng);
+});
+

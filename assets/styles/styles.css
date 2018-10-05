@@ -1,4 +1,4 @@
-img {
+.dish-tile-image {
     border-radius: 50%;
   height: 200px;
     width: 200px;
@@ -7,5 +7,6 @@ img {
 span {
     box-shadow: none;
     display: inline-block;
-    }   
+    }
+
 
