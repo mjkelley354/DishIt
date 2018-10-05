@@ -16,6 +16,11 @@ const storageService = firebase.storage();
 let storageRef = storageService.ref();
 let selectedFile;
 
+let userName = "";
+let userEmail = "";
+let userCity = "";
+let userState = "";
+
 // following event listeners is used to work with buttons added to support image upload
 // by someone adding a rating
 $(".file-select").on("change", function (e) {
@@ -101,7 +106,7 @@ function writeRestaurantData(restaurantId, zumatoId, name, address, locality, ci
 }
 
 function writeDishData(dishId, name, restaurantId, price, avgSourScale, avgSweetScale, avgSpicyScale,
-                        avgSaltyScale, avgUmamiScale, avgRating, image) {
+    avgSaltyScale, avgUmamiScale, avgRating, image) {
     db.ref('dishes/' + dishId).set({
         name,
         restaurantId,
@@ -116,20 +121,20 @@ function writeDishData(dishId, name, restaurantId, price, avgSourScale, avgSweet
     });
 }
 
-function getTopX(recordsToReturn){
+function getTopX(recordsToReturn) {
     const dishes = db.ref("dishes");
     const restaurants = db.ref("restaurants");
 
     // let topX = [];
 
     // get the top x dishes and then push them into the topX array (by dishId)
-    dishes.orderByChild("avgRating").limitToLast(recordsToReturn).on("child_added", function(snapshot) {
-        console.log(snapshot.ref.key);
+
+    dishes.orderByChild("avgRating").limitToLast(recordsToReturn).on("child_added", function (snapshot) {
         const keyValue = snapshot.ref.key;
         // topX.push(keyValue);
 
-        dishes.child("/" + keyValue).once("value", function(dishesSnapshot) {
-            restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function(restaurantSnapshot) {
+        dishes.child("/" + keyValue).once("value", function (dishesSnapshot) {
+            restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function (restaurantSnapshot) {
 
                 /*console.log("dishId: ", keyValue);
                 console.log("dishName: ", dishesSnapshot.val().name);
@@ -137,13 +142,14 @@ function getTopX(recordsToReturn){
                 console.log("restaurantName: ", restaurantSnapshot.val().name);
                 console.log("image: ", dishesSnapshot.val().image);
                 console.log("cost: ", dishesSnapshot.val().price);*/
-                
+
+
 
                 createTile(keyValue,
                     dishesSnapshot.val().name,
                     dishesSnapshot.val().restaurantId,
                     restaurantSnapshot.val().name,
-                    dishesSnapshot.val().avgRating, 
+                    dishesSnapshot.val().avgRating,
                     dishesSnapshot.val().image,
                     dishesSnapshot.val().price);
 
@@ -152,18 +158,59 @@ function getTopX(recordsToReturn){
     });
 }
 
+let i = 1;
+
 function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, dishImage, dishPrice) {
+
+    console.log(i);
+
+
     $(".tile-div").prepend(
         `
-            <div class="dish-tile" id="${dishId}" restaurant="${restaurantName}">
-                <img class="dish-tile-img" src="${dishImage}">
-                <div class="dish-tile-name">${dishName}</div>
-                <div class="dish-tile-restaurant">${restaurantName}</div>
-                <div class="dish-tile-rating">${avgRating}</div>
-                <div class="dish-tile-price">${getPrice(dishPrice)}</div>
+<div class="{accordion" id="accordionExample">
+
+    <div class="card">
+        <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}">
+                    <div class="dish-tile" id="${dishId}" restaurant="${restaurantName}">
+                        <img class="dish-tile-img" src="${dishImage}">
+                        <span class="dish-tile-name">&nbsp &nbsp ${dishName}</span>
+                        <span class="dish-tile-restaurant">&nbsp &nbsp &nbsp &nbsp ${restaurantName}</span>
+                        <span class="dish-tile-rating">&nbsp &nbsp &nbsp &nbsp ${avgRating}</span>
+                        <span class="dish-tile-price">&nbsp &nbsp &nbsp &nbsp ${getPrice(dishPrice)}</span>
+                    </div>
+                </button>
+            </h5>
+        </div>
+
+        <div id="collapse${i}" class=" collapse show">
+            <div class="card-body">
+            Sour: <div class="slider-show-1-10" id="${dishId}-sour-value"></div>
+            Sweet: <div class="slider-show-1-10" id="${dishId}-sweet-value"></div>
+            Spicy: <div class="slider-show-1-10" id="${dishId}-spicy-value"></div>
+            Salty: <div class="slider-show-1-10" id="${dishId}-salty-value"></div>
+            Umami: <div class="slider-show-1-10" id="${dishId}-umami-value"></div>
             </div>
-        `
+        </div>
+    </div>
+</div>
+`
     )
+    i++
+
+    console.log("after prepend " + i);
+    $(".slider-show-1-10").slider({
+        range: false,
+        min: 1,
+        max: 10,
+        step: 1,
+        create: function (event, ui) {
+            //fix this to pull from firebase and fix dishid reference
+            let num = `$("${dishId}-sour-value").slider("value", 7)`;
+            console.log("dish:", dishId);
+        }
+    });
 }
 
 function getPrice(price) {
@@ -194,7 +241,7 @@ function setValues(stepIncrease) {
         var currentValues = slider.slider("values");
         var step = slider.slider("option")["step"];
         // 2 - can be changed
-        if (!(Math.abs(ui.values[0] - currentValues[0]) == stepIncrease * step || Math.abs(ui.values[1] - currentValues[1]) == stepIncrease * step)){
+        if (!(Math.abs(ui.values[0] - currentValues[0]) == stepIncrease * step || Math.abs(ui.values[1] - currentValues[1]) == stepIncrease * step)) {
             return false;
         };
         slider.slider("values", ui.values);
@@ -238,21 +285,21 @@ $( ".slider-1-10" ).slider({
     step: 1,
     values: [1, 10],
     slide: setValues(1),
-    create: function(event, ui) {
+    create: function (event, ui) {
         var slider = $("#" + this.id);
         var currentValues = slider.slider("values");
         $("#" + this.id + "-values").html(currentValues[0] + ' to ' + currentValues[1]);
     }
 });
 
-$( ".slider-1-4" ).slider({
+$(".slider-1-4").slider({
     range: true,
     min: 1,
     max: 4,
     step: 1,
     values: [1, 4],
     slide: setValues(1),
-    create: function(event, ui) {
+    create: function (event, ui) {
         var slider = $("#" + this.id);
         var currentValues = slider.slider("values");
         $("#" + this.id + "-values").html(currentValues[0] + ' to ' + currentValues[1]);
@@ -261,7 +308,7 @@ $( ".slider-1-4" ).slider({
 
 
 // when page loads
-$(document).ready(function(){
+$(document).ready(function () {
 
     /* following line calls the function which adds test data.
         do not uncomment unless you want to add test data
@@ -283,6 +330,25 @@ $(document).ready(function(){
             `
         )
     } */
+    readLocalStorage();
+
+});
+
+function readLocalStorage() {
+    // get user info from localstorage if it exists
+    userName = localStorage.getItem("dish-it-user");
+    userEmail = localStorage.getItem("dish-it-email");
+    userCity = localStorage.getItem("dish-it-city");
+    userState = localStorage.getItem("dish-it-state");
+
+    // if we don't have data in local storage then user doesn't exists, so show the add user modal
+    if (userName == null || userEmail == null || userCity == null || userState == null) {
+        $(".user-modal").modal('show');
+    }
+}
+
+$(".filter-icon").on("click", function () {
+    $(".filter-modal").modal('show');
 });
 
 if ($("body").attr("data-title") === "index-page") {
@@ -318,7 +384,7 @@ if ($("body").attr("data-title") === "newdish-page") {
     });
 };
 // on click of search button, determine if dish name contains search string
-$("#search-btn").on("click", function(){
+$("#search-btn").on("click", function () {
 
     // empty screen of existing results
     $(".tile-div").empty();
@@ -332,17 +398,18 @@ $("#search-btn").on("click", function(){
     let matches = 0;
 
     // for each dish in order of avgRating...
-    dishes.orderByChild("avgRating").on('value', function(snapshot) {
-        snapshot.forEach(function(childSnapshot) {
+    dishes.orderByChild("avgRating").on('value', function (snapshot) {
+        snapshot.forEach(function (childSnapshot) {
 
             // if dish name contains search string, display results on screen
-            if(childSnapshot.val().name.includes(searchInput)) {
+            if (childSnapshot.val().name.includes(searchInput)) {
                 matches++;
+
                 console.log(childSnapshot.val().name);
                 const keyValue = childSnapshot.ref.key;
 
-                dishes.child("/"+keyValue).once('value', function(dishesSnapshot) {
-                    restaurants.child("/"+dishesSnapshot.val().restaurantId).once('value', function(restaurantSnapshot) {
+                dishes.child("/" + keyValue).once('value', function (dishesSnapshot) {
+                    restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function (restaurantSnapshot) {
                         /* console.log("dishId: ", keyValue);
                         console.log("dishName: ", dishesSnapshot.val().name);
                         console.log("restaurantId: ", dishesSnapshot.val().restaurantId);
@@ -354,16 +421,16 @@ $("#search-btn").on("click", function(){
                             dishesSnapshot.val().name,
                             dishesSnapshot.val().restaurantId,
                             restaurantSnapshot.val().name,
-                            dishesSnapshot.val().avgRating, 
+                            dishesSnapshot.val().avgRating,
                             dishesSnapshot.val().image,
                             dishesSnapshot.val().price);
                     });
                 });
-            }; 
+            };
         });
         console.log(matches);
         // displays message if no search results retured
-        if(matches===0) {
+        if (matches === 0) {
             noResults();
         }
     });
@@ -381,8 +448,9 @@ function noResults() {
     );
 };
 
+
 // returns name of restaurant when dish tile class (in list) is clicked
-$(document).on("click", ".dish-tile", function(){
+$(document).on("click", ".dish-tile", function () {
     // populate dish info from firebase
 
     // get restaurant data from Yelp - this bit of code will be moved to add/rate form eventually
@@ -406,7 +474,8 @@ function getRestaurant(location, name) {
         headers: {
             'Authorization': 'Bearer lC3zgwezYWCKbJZW03Yepl4A52o_fhrqd9a1x0_MapVxItu97aAHOUOGfsRzDJswOWzWlaHv0zvw8keaePumFEkXJWyOgcTcLg7ekQOQ9skybUd_wy02lE3hnQy0W3Yx',
         }
-    }).then(function(response){
+    }).then(function (response) {
+
         console.log(response);
         const restaurants = response.businesses;
         for (var i in restaurants) {
@@ -429,9 +498,12 @@ function showRestOptions(rName, location) {
     // code radio buttons below - show on add rating for new dish page
     // use class rest-option for radio button options
 };
+$(".apply-filter").on("click", function () {
+    // loop though each card
+    $('.card').each(function (index, obj) {
+        // if card properties not within filter criteria then hide card
 
-$(".apply-filter").on("click", function (){
-    // TODO:  query firebase for filtered data
+    });
 });
 
 $(document).on("click", ".rest-option-select", function () {
@@ -445,7 +517,7 @@ function selectRestaurant(response) {
     // select restaurant by ID
     // if id matches existing restaurant Id in firebase, do not add
     // else, push new restaurant to firebase. get response from ajax call?
-    restaurants.on("value", function(snapshot) {
+    restaurants.on("value", function (snapshot) {
         console.log(snapshot.val());
         console.log('Hi');
         // wip
@@ -463,3 +535,17 @@ $(".find-restaurant").on("click", function(){
 
     //getRestaurant(location, rName);
 })
+
+// save favorites to local storage
+function saveFavorites() {
+    localStorage.setItem("dish-it-user", userName);
+    localStorage.setItem("dish-it-email", userEmail);
+    localStorage.setItem("dish-it-city", userCity);
+    localStorage.setItem("dish-it-state", userState);
+}
+
+$(".save-user").on("click", function () {
+    // TODO: capture the data from the form on the modal into the global user variables and then save to firebase
+    saveFavorites();
+    //writeUserData(x, y, z....);
+});
