@@ -13,7 +13,7 @@ firebase.initializeApp(config);
 const db = firebase.database();
 
 const storageService = firebase.storage();
-const storageRef = storageService.ref();
+let storageRef = storageService.ref();
 let selectedFile;
 
 // array to hold dish objects
