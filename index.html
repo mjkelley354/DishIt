@@ -11,6 +11,7 @@
         crossorigin="anonymous">
     <!-- supports slider -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <link rel="stylesheet" href="assets/styles/jquery.range.css">
     <link rel="stylesheet" type="text/css" href="assets/styles/styles.css">
     <title>Dish It</title>
 
@@ -70,8 +71,8 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body text-center">
-                    Price: <div id="slider-price-range-values" class="d-inline-block"></div>
+                <div class="modal-body">
+                    <!--Price: <div id="slider-price-range-values" class="d-inline-block"></div>
                     <div id="slider-price-range" class="slider-1-4"></div>
                     Rating: <div id="slider-rating-range-values" class="d-inline-block"></div>
                     <div id="slider-rating-range" class="slider-1-4"></div>
@@ -84,7 +85,71 @@
                     Salty: <div id="slider-salty-range-values" class="d-inline-block"></div>
                     <div id="slider-salty-range" class="slider-1-10"></div>
                     Umami: <div id="slider-umami-range-values" class="d-inline-block"></div>
-                    <div id="slider-umami-range" class="slider-1-10"></div>
+                    <div id="slider-umami-range" class="slider-1-10"></div> -->
+                    <div class="container">
+                        <div class="row slider-row">
+                            <div class="col-md-2">
+                                Price:
+                            </div>
+                            <div class="col-md-10">
+                                <input id="slider-price-range" class="range-slider-1-4" type="hidden" value="1, 4">
+                            </div>
+                        </div>
+
+                        <div class="row slider-row">
+                            <div class="col-md-2">
+                                Rating:
+                            </div>
+                            <div class="col-md-10">
+                                <input id="slider-rating-range" class="range-slider-1-4" type="hidden" value="1, 4">
+                            </div>
+                        </div>
+
+                        <div class="row slider-row">
+                            <div class="col-md-2">
+                                Sour:
+                            </div>
+                            <div class="col-md-10">
+                                <input id="slider-sour-range" class="range-slider-1-10" type="hidden" value="1, 4">
+                            </div>
+                        </div>
+
+                        <div class="row slider-row">
+                            <div class="col-md-2">
+                                Sweet:
+                            </div>
+                            <div class="col-md-10">
+                                <input id="slider-sweet-range" class="range-slider-1-10" type="hidden" value="1, 4">
+                            </div>
+                        </div>
+
+                        <div class="row slider-row">
+                            <div class="col-md-2">
+                                Spicy:
+                            </div>
+                            <div class="col-md-10">
+                                <input id="slider-spicy-range" class="range-slider-1-10" type="hidden" value="1, 4">
+                            </div>
+                        </div>
+
+                        <div class="row slider-row">
+                            <div class="col-md-2">
+                                Salty:
+                            </div>
+                            <div class="col-md-10">
+                                <input id="slider-salty-range" class="range-slider-1-10" type="hidden" value="1, 4">
+                            </div>
+                        </div>
+
+                        <div class="row slider-row">
+                            <div class="col-md-2">
+                                Umami:
+                            </div>
+                            <div class="col-md-10">
+                                <input id="slider-umami-range" class="range-slider-1-10" type="hidden" value="1, 4">
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary apply-filter">Apply</button>
@@ -168,9 +233,9 @@
     <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
     <!-- supports slider -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDurJrMJJ3BabzpN4CuHVEbMarLLBzmHz4&callback=initMap"
         async defer></script>
+    <script src="./assets/javascript/jquery.range-min.js"></script>
     <script src="./assets/javascript/app.js"></script>
 
 </body>

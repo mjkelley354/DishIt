@@ -16,6 +16,9 @@ const storageService = firebase.storage();
 const storageRef = storageService.ref();
 let selectedFile;
 
+// array to hold dish objects
+let dishArray = [];
+
 let userName = "";
 let userEmail = "";
 let userCity = "";
@@ -139,13 +142,34 @@ function getTopX(recordsToReturn) {
                 console.log("image: ", dishesSnapshot.val().image);
                 console.log("cost: ", dishesSnapshot.val().price);*/
 
-                createTile(keyValue,
+                // commenting out the call to createTile in lieu of
+                //  A) creating an object here
+                //  B) using createTile to loop through elements in the array to create a tile for each
+                // createTile(keyValue,
+                //     dishesSnapshot.val().name,
+                //     dishesSnapshot.val().restaurantId,
+                //     restaurantSnapshot.val().name,
+                //     dishesSnapshot.val().avgRating,
+                //     dishesSnapshot.val().image,
+                //     dishesSnapshot.val().price);
+
+                newDish(keyValue,
                     dishesSnapshot.val().name,
                     dishesSnapshot.val().restaurantId,
                     restaurantSnapshot.val().name,
                     dishesSnapshot.val().avgRating,
+                    dishesSnapshot.val().avgSourScale,
+                    dishesSnapshot.val().avgSweetScale,
+                    dishesSnapshot.val().avgSpicyScale,
+                    dishesSnapshot.val().avgSaltyScale,
+                    dishesSnapshot.val().avgUmamiScale,
                     dishesSnapshot.val().image,
-                    dishesSnapshot.val().price);
+                    dishesSnapshot.val().price,
+                    0,
+                    0);
+
+                // create tiles from the dishArray data
+                createTiles();
 
                 // call getRestaurant to add to map
                 //getRestaurant(restaurantSnapshot.val().name);
@@ -153,6 +177,31 @@ function getTopX(recordsToReturn) {
         });
     });
 };
+
+function newDish(dishId, name, restaurauntId, restaurantName, avgRating, avgSourScale,
+                 avgSweetScale, avgSpicyScale, avgSaltyScale, avgUmamiScale, imgUrl, price,
+                 latitude, longitude) {
+    let theDish = {
+        dishId: dishId,
+        name: name,
+        restaurauntId: restaurauntId,
+        restaurantName: restaurantName,
+        restaurantName: restaurantName,
+        avgRating: avgRating,
+        avgSourScale: avgSourScale,
+        avgSweetScale: avgSweetScale,
+        avgSpicyScale: avgSpicyScale,
+        avgSaltyScale: avgSaltyScale,
+        avgUmamiScale: avgUmamiScale,
+        imgUrl: imgUrl,
+        price: price,
+        latitude: latitude,
+        longitude: longitude
+        }
+
+    // add the dish to the array
+    dishArray.push(theDish);
+}
 
 let i = 1;
 
@@ -192,6 +241,44 @@ function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, d
             console.log("dish:", dishId);
         }
     });
+}
+
+function createTiles() {
+    for (let i = 0; i < dishArray.length; i++){
+        $(".tile-div").prepend(
+            `
+                <div class="card">
+                    <div class="card-header dish-tile-box" id="heading${i}" dish-id-value="${dishArray[i].dishId}">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}">
+                                <div class="dish-tile" id="${dishArray[i].dishId}" restaurant="${dishArray[i].restaurantId}">
+                                    <img class="dish-tile-img" src="${dishArray[i].imgUrl}">
+                                    <span class="dish-tile-name">&nbsp &nbsp ${dishArray[i].name}</span>
+                                    <span class="dish-tile-restaurant">&nbsp &nbsp &nbsp &nbsp ${dishArray[i].restaurantName}</span>
+                                    <span class="dish-tile-rating">&nbsp &nbsp &nbsp &nbsp ${dishArray[i].avgRating}</span>
+                                    <span class="dish-tile-price">&nbsp &nbsp &nbsp &nbsp ${getPrice(dishArray[i].price)}</span>
+                                </div>
+                            </button>
+                        </h5>
+                    </div>
+                </div>
+            `);
+
+        // not sure what below is doing exactly but commenting out for now
+        // i++
+        //
+        // $(".slider-show-1-10").slider({
+        //     range: false,
+        //     min: 1,
+        //     max: 10,
+        //     step: 1,
+        //     create: function (event, ui) {
+        //         //fix this to pull from firebase and fix dishid reference
+        //         let num = `$("${dishId}-sour-value").slider("value", 7)`;
+        //         console.log("dish:", dishId);
+        //     }
+        // });
+    }
 }
 
 $(document).on("click", ".dish-tile-box", function() {
@@ -413,13 +500,34 @@ $("#search-btn").on("click", function () {
                         console.log("image: ", dishesSnapshot.val().image);
                         console.log("cost: ", dishesSnapshot.val().price); */
 
-                        createTile(keyValue,
+                        // commenting out the call to createTile in lieu of
+                        //  A) creating an object here
+                        //  B) using createTile to loop through elements in the array to create a tile for each
+                        // createTile(keyValue,
+                        //     dishesSnapshot.val().name,
+                        //     dishesSnapshot.val().restaurantId,
+                        //     restaurantSnapshot.val().name,
+                        //     dishesSnapshot.val().avgRating,
+                        //     dishesSnapshot.val().image,
+                        //     dishesSnapshot.val().price);
+
+                        newDish(keyValue,
                             dishesSnapshot.val().name,
                             dishesSnapshot.val().restaurantId,
                             restaurantSnapshot.val().name,
                             dishesSnapshot.val().avgRating,
+                            dishesSnapshot.val().avgSourScale,
+                            dishesSnapshot.val().avgSweetScale,
+                            dishesSnapshot.val().avgSpicyScale,
+                            dishesSnapshot.val().avgSaltyScale,
+                            dishesSnapshot.val().avgUmamiScale,
                             dishesSnapshot.val().image,
-                            dishesSnapshot.val().price);
+                            dishesSnapshot.val().price,
+                            0,
+                            0);
+
+                        // create tiles from the dishArray data
+                        createTiles();
 
                         getRestaurant(restaurantSnapshot.val().name);
                     });
@@ -607,5 +715,18 @@ $(".map-modal").on('shown.bs.modal', function() {
 // by someone adding a rating
 $(".file-select").on("change", function (e) {
     selectedFile = e.target.files[0];
-}
-);
+});
+
+$('.range-slider-1-4').jRange({
+    from: 1,
+    to: 4,
+    scale: [1,2,3,4],
+    isRange : true
+});
+
+$('.range-slider-1-10').jRange({
+    from: 1,
+    to: 10,
+    scale: [1,2,3,4,5,6,7,8,9,10],
+    isRange : true
+});

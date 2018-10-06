@@ -4,6 +4,8 @@
     <list default="true" id="70a63274-58f7-45eb-be11-be545e4e8889" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/javascript/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/javascript/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/styles/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/assets/styles/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -18,9 +20,11 @@
     <session id="-807477211">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
+          <entry key="project.closed" value="1" />
           <entry key="project.open.time.0" value="1" />
+          <entry key="project.open.time.18" value="1" />
           <entry key="project.open.time.5" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.opened" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -39,36 +43,36 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="css" value="103" />
-          <entry key="html" value="1448" />
-          <entry key="js" value="7042" />
+          <entry key="css" value="153" />
+          <entry key="html" value="1776" />
+          <entry key="js" value="8002" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="CSS" value="103" />
-          <entry key="HTML" value="1448" />
-          <entry key="JavaScript" value="7042" />
+          <entry key="CSS" value="153" />
+          <entry key="HTML" value="1778" />
+          <entry key="JavaScript" value="8000" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/assets/javascript/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2569">
-              <caret line="409" column="22" selection-start-line="409" selection-start-column="9" selection-end-line="409" selection-end-column="22" />
+            <state relative-caret-position="201">
+              <caret line="708" column="45" lean-forward="true" selection-start-line="708" selection-start-column="45" selection-end-line="708" selection-end-column="45" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/assets/styles/styles.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="18" lean-forward="true" selection-start-column="18" selection-end-line="1" selection-end-column="23" />
+            <state relative-caret-position="204">
+              <caret line="12" column="1" lean-forward="true" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -76,14 +80,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1002">
-              <caret line="147" column="10" lean-forward="true" selection-start-line="147" selection-start-column="10" selection-end-line="147" selection-end-column="10" />
-              <folding>
-                <element signature="e#3369#3376#1" expanded="true" />
-                <element signature="e#6011#6018#1" expanded="true" />
-                <element signature="e#7268#7275#1" expanded="true" />
-                <element signature="n#style#0;n#div#0;n#div#1;n#div#1;n#div#0;n#div#0;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
-              </folding>
+            <state relative-caret-position="176">
+              <caret line="143" column="50" selection-start-line="143" selection-start-column="50" selection-end-line="143" selection-end-column="50" />
             </state>
           </provider>
         </entry>
@@ -110,6 +108,7 @@
       <find>yelp</find>
       <find>map</find>
       <find>addToMap</find>
+      <find>creat</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -120,9 +119,9 @@
       <list>
         <option value="$PROJECT_DIR$/map-test.html" />
         <option value="$PROJECT_DIR$/assets/javascript/map-test.js" />
-        <option value="$PROJECT_DIR$/assets/styles/styles.css" />
-        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/assets/javascript/app.js" />
+        <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/assets/styles/styles.css" />
       </list>
     </option>
   </component>
@@ -207,11 +206,12 @@
       <updated>1538256441109</updated>
       <workItem from="1538256445134" duration="5407000" />
       <workItem from="1538303010859" duration="12975000" />
+      <workItem from="1538856032421" duration="2995000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="51964000" />
+    <option name="totallyTimeSpent" value="55907000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
@@ -262,20 +262,8 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/assets/javascript/map-test.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="1" lean-forward="true" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/map-test.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="9" lean-forward="true" selection-start-line="18" selection-start-column="9" selection-end-line="18" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/javascript/map-test.js" />
+    <entry file="file://$PROJECT_DIR$/map-test.html" />
     <entry file="file://$PROJECT_DIR$/assets/cheese-pizza.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="476">
@@ -285,28 +273,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1002">
-          <caret line="147" column="10" lean-forward="true" selection-start-line="147" selection-start-column="10" selection-end-line="147" selection-end-column="10" />
-          <folding>
-            <element signature="e#3369#3376#1" expanded="true" />
-            <element signature="e#6011#6018#1" expanded="true" />
-            <element signature="e#7268#7275#1" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#1;n#div#1;n#div#0;n#div#0;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/assets/styles/styles.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="18" lean-forward="true" selection-start-column="18" selection-end-line="1" selection-end-column="23" />
+        <state relative-caret-position="176">
+          <caret line="143" column="50" selection-start-line="143" selection-start-column="50" selection-end-line="143" selection-end-column="50" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/assets/javascript/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2569">
-          <caret line="409" column="22" selection-start-line="409" selection-start-column="9" selection-end-line="409" selection-end-column="22" />
+        <state relative-caret-position="201">
+          <caret line="708" column="45" lean-forward="true" selection-start-line="708" selection-start-column="45" selection-end-line="708" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/styles/styles.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="1" lean-forward="true" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
         </state>
       </provider>
     </entry>
