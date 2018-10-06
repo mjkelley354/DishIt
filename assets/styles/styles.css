@@ -8,3 +8,7 @@ span {
     box-shadow: none;
     display: inline-block;
 }
+
+.slider-row {
+    margin-top: 15px;
+}
