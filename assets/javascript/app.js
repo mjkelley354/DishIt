@@ -160,6 +160,8 @@ function getTopX(recordsToReturn) {
                     dishesSnapshot.val().image,
                     dishesSnapshot.val().price);
 
+                // call getRestaurant to add to map
+                getRestaurant(restaurantSnapshot.val().name);
             });
         });
     });
@@ -369,6 +371,8 @@ $("#search-btn").on("click", function () {
                             dishesSnapshot.val().avgRating,
                             dishesSnapshot.val().image,
                             dishesSnapshot.val().price);
+
+                        getRestaurant(restaurantSnapshot.val().name);
                     });
                 });
             };
@@ -442,13 +446,27 @@ function getRestaurant(name) {
 };
 
 function addToMap(restaurauntName, position){
-    // add a marker and an infowindow to map
-    // TODO: figure out how to hide the info window if you aren't on mouseover
-    var marker = new google.maps.Marker({position: position, map: map});
-    var infowindow =  new google.maps.InfoWindow({
+    // add a marker
+    let marker = new google.maps.Marker({position: position, map: map});
+
+    // add an info window which shows details of dish / restauraunt
+    /* TODO: add additional content to "content" property with whatever we want to show on the infoWindow, content can take form of HTML
+    */
+    marker.info =  new google.maps.InfoWindow({
         content: restaurauntName,
         map: map,
         position: position
+    });
+
+    // close the infoWindow as it will remain open by default
+    marker.info.close();
+
+    //add event listeners for mousover and mouseout to show/hide the infoWindoow
+    google.maps.event.addListener(marker, 'mouseover', function() {
+        marker.info.open(map, marker);
+    });
+    google.maps.event.addListener(marker, 'mouseout', function() {
+        marker.info.close();
     });
 }
 
