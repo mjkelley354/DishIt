@@ -303,6 +303,20 @@ $(".slider-1-4").slider({
     }
 });
 
+$(".slider-1-5").slider({
+    range: true,
+    min: 1,
+    max: 5,
+    step: 1,
+    values: [1, 5],
+    slide: setValues(1),
+    create: function (event, ui) {
+        var slider = $("#" + this.id);
+        var currentValues = slider.slider("values");
+        $("#" + this.id + "-values").html(currentValues[0] + ' to ' + currentValues[1]);
+    }
+});
+
 function readLocalStorage() {
     // get user info from localstorage if it exists
     userName = localStorage.getItem("dish-it-user");
@@ -331,29 +345,9 @@ if ($("body").attr("data-title") === "index-page") {
         // createTestData();
     
         // get top 20 records by average rating
-        //getTopX(20);    
+        getTopX(20);
 
-        /* following line calls the function which adds test data.
-        do not uncomment unless you want to add test data
-        back to firebase
-    */
-    // createTestData();
-
-    // get top 20 records by average rating
-    getTopX(20);
-
-    // TODO: trying to auto-populate state field on newdish.html - the below does not work
-    /* const states = ["AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IA", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NE", "NH", "NV", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
-
-    for (var i; i < states.length; i++) {
-        const state = states[i];
-        $("#state-input").append(
-            `
-                <option value="${states[i]}">${states[i]}</option>
-            `
-        )
-    } */
-    readLocalStorage();
+        readLocalStorage();
     });
 };
 
