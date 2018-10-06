@@ -125,7 +125,6 @@ function getTopX(recordsToReturn) {
     // let topX = [];
 
     // get the top x dishes and then push them into the topX array (by dishId)
-
     dishes.orderByChild("avgRating").limitToLast(recordsToReturn).on("child_added", function (snapshot) {
         const keyValue = snapshot.ref.key;
         // topX.push(keyValue);
@@ -153,7 +152,7 @@ function getTopX(recordsToReturn) {
             });
         });
     });
-}
+};
 
 let i = 1;
 
@@ -161,26 +160,25 @@ function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, d
 
     console.log(i);
 
-
     $(".tile-div").prepend(
     `
-    <div class="card">
-        <div class="card-header dish-tile-box" id="heading${i}" dish-id-value="${dishId}">
-            <h5 class="mb-0">
-                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}">
-                    <div class="dish-tile" id="${dishId}" restaurant="${restaurantName}">
-                        <img class="dish-tile-img" src="${dishImage}">
-                        <span class="dish-tile-name">&nbsp &nbsp ${dishName}</span>
-                        <span class="dish-tile-restaurant">&nbsp &nbsp &nbsp &nbsp ${restaurantName}</span>
-                        <span class="dish-tile-rating">&nbsp &nbsp &nbsp &nbsp ${avgRating}</span>
-                        <span class="dish-tile-price">&nbsp &nbsp &nbsp &nbsp ${getPrice(dishPrice)}</span>
-                    </div>
-                </button>
-            </h5>
+        <div class="card">
+            <div class="card-header dish-tile-box" id="heading${i}" dish-id-value="${dishId}">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}">
+                        <div class="dish-tile" id="${dishId}" restaurant="${restaurantName}">
+                            <img class="dish-tile-img" src="${dishImage}">
+                            <span class="dish-tile-name">&nbsp &nbsp ${dishName}</span>
+                            <span class="dish-tile-restaurant">&nbsp &nbsp &nbsp &nbsp ${restaurantName}</span>
+                            <span class="dish-tile-rating">&nbsp &nbsp &nbsp &nbsp ${avgRating}</span>
+                            <span class="dish-tile-price">&nbsp &nbsp &nbsp &nbsp ${getPrice(dishPrice)}</span>
+                        </div>
+                    </button>
+                </h5>
+            </div>
         </div>
-    </div>
     `
-    )
+    );
     i++
 
     $(".slider-show-1-10").slider({
@@ -200,7 +198,7 @@ $(document).on("click", ".dish-tile-box", function() {
     console.log($(this));
     console.log($(this).attr("dish-id-value"));
 
-    {/* <div id="collapse${i}" class=" collapse">
+    /* <div id="collapse${i}" class=" collapse">
             <div class="card-body">
             Sour: <div class="slider-show-1-10" id="${dishId}-sour-value"></div>
             Sweet: <div class="slider-show-1-10" id="${dishId}-sweet-value"></div>
@@ -208,7 +206,7 @@ $(document).on("click", ".dish-tile-box", function() {
             Salty: <div class="slider-show-1-10" id="${dishId}-salty-value"></div>
             Umami: <div class="slider-show-1-10" id="${dishId}-umami-value"></div>
             </div>
-        </div> */}
+        </div> */
 
 });
 
@@ -305,34 +303,6 @@ $(".slider-1-4").slider({
     }
 });
 
-
-// when page loads
-$(document).ready(function () {
-
-    /* following line calls the function which adds test data.
-        do not uncomment unless you want to add test data
-        back to firebase
-    */
-    // createTestData();
-
-    // get top 20 records by average rating
-    getTopX(20);
-
-    // TODO: trying to auto-populate state field on newdish.html - the below does not work
-    /* const states = ["AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IA", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NE", "NH", "NV", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
-
-    for (var i; i < states.length; i++) {
-        const state = states[i];
-        $("#state-input").append(
-            `
-                <option value="${states[i]}">${states[i]}</option>
-            `
-        )
-    } */
-    readLocalStorage();
-
-});
-
 function readLocalStorage() {
     // get user info from localstorage if it exists
     userName = localStorage.getItem("dish-it-user");
@@ -354,14 +324,36 @@ if ($("body").attr("data-title") === "index-page") {
 
     $(document).ready(function(){
 
-        /* following line calls the function which adds test data.
-            do not uncomment unless you want to add test data
-            back to firebase
-        */
+        // following line calls the function which adds test data.
+        //    do not uncomment unless you want to add test data
+        //    back to firebase
+        
         // createTestData();
     
         // get top 20 records by average rating
-        getTopX(20);    
+        //getTopX(20);    
+
+        /* following line calls the function which adds test data.
+        do not uncomment unless you want to add test data
+        back to firebase
+    */
+    // createTestData();
+
+    // get top 20 records by average rating
+    getTopX(20);
+
+    // TODO: trying to auto-populate state field on newdish.html - the below does not work
+    /* const states = ["AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IA", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NE", "NH", "NV", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+
+    for (var i; i < states.length; i++) {
+        const state = states[i];
+        $("#state-input").append(
+            `
+                <option value="${states[i]}">${states[i]}</option>
+            `
+        )
+    } */
+    readLocalStorage();
     });
 };
 
@@ -596,8 +588,6 @@ function initMap() {
         document.getElementById('map_canvas'), {zoom: 10, center: atlanta});
     // The marker, positioned at Atlanta
     //var marker = new google.maps.Marker({position: atlanta, map: map});
-
-
 }
 
 // resize the map to fit on the modal
