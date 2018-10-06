@@ -25,26 +25,22 @@ let userState = "";
 let map;
 let mapPins = [];
 
-// following event listeners is used to work with buttons added to support image upload
-// by someone adding a rating
-$(".file-submit").on("click", function (e) {
-    //create a child directory called images, and place the file inside this directory
-    const uploadTask = storageRef.child(`images/${selectedFile.name}`).put(selectedFile);
-    uploadTask.on('state_changed', (snapshot) => {
-        // Observe state change events such as progress, pause, and resume
+if ($("body").attr("data-title") === "index-page") {
 
-        // the downloadURL is critical to capture here
-        // TODO: on image upload capture URL and save to firebase in the .image property so we can use it to access image later
-        var downloadURL = uploadTask.snapshot.downloadURL;
-        console.log(downloadURL);
-    }, (error) => {
-        // Handle unsuccessful uploads
-        console.log(error);
-    }, () => {
-        // Do something once upload is complete
-        console.log('success');
+    $(document).ready(function(){
+
+        // following line calls the function which adds test data.
+        //    do not uncomment unless you want to add test data
+        //    back to firebase
+        
+        // createTestData();
+    
+        // get top 20 records by average rating
+        getTopX(20);
+
+        readLocalStorage();
     });
-});
+};
 
 // create test data in firebase
 function createTestData() {
@@ -63,7 +59,7 @@ function createTestData() {
     writeRatingData(0, 0, 0, "Awesome Tacos!", 1, 1, 2, 2, 1, 4, "");
     writeRatingData(1, 1, 1, "Best Pizza in Decatur!!", 1, 2, 3, 1, 1, 5, "");
     writeRatingData(2, 2, 2, "Burgers are better than FarmBurger and shakes too!", 1, 2, 2, 2, 1, 4, "");
-}
+};
 
 function writeUserData(userId, name, email, city, state) {
     db.ref('users/' + userId).set({
@@ -72,7 +68,7 @@ function writeUserData(userId, name, email, city, state) {
         city,
         state,
     });
-}
+};
 
 function writeRatingData(ratingId, dishId, userId, text, sourScale, sweetScale, spicyScale,
     saltyScale, umamiScale, rating, image) {
@@ -88,7 +84,7 @@ function writeRatingData(ratingId, dishId, userId, text, sourScale, sweetScale, 
         rating,
         image
     });
-}
+};
 
 function writeRestaurantData(restaurantId, zumatoId, name, address, locality, city, zipCode, cuisine) {
     db.ref('restaurants/' + restaurantId).set({
@@ -100,7 +96,7 @@ function writeRestaurantData(restaurantId, zumatoId, name, address, locality, ci
         zipCode,
         cuisine
     });
-}
+};
 
 function writeDishData(dishId, name, restaurantId, price, avgSourScale, avgSweetScale, avgSpicyScale,
     avgSaltyScale, avgUmamiScale, avgRating, image) {
@@ -116,13 +112,22 @@ function writeDishData(dishId, name, restaurantId, price, avgSourScale, avgSweet
         avgRating,
         image
     });
-}
+};
 
 function getTopX(recordsToReturn) {
     const dishes = db.ref("dishes");
     const restaurants = db.ref("restaurants");
 
     // let topX = [];
+
+    $(".tile-div").append(
+        `
+            <table class="w-100 rounded table text-center">
+                <tbody id="dish-list">
+                </tbody>
+            </table>
+        `
+    );
 
     // get the top x dishes and then push them into the topX array (by dishId)
     dishes.orderByChild("avgRating").limitToLast(recordsToReturn).on("child_added", function (snapshot) {
@@ -160,25 +165,21 @@ function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, d
 
     console.log(i);
 
-    $(".tile-div").prepend(
-    `
-        <div class="card">
-            <div class="card-header dish-tile-box" id="heading${i}" dish-id-value="${dishId}">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}">
-                        <div class="dish-tile" id="${dishId}" restaurant="${restaurantName}">
-                            <img class="dish-tile-img" src="${dishImage}">
-                            <span class="dish-tile-name">&nbsp &nbsp ${dishName}</span>
-                            <span class="dish-tile-restaurant">&nbsp &nbsp &nbsp &nbsp ${restaurantName}</span>
-                            <span class="dish-tile-rating">&nbsp &nbsp &nbsp &nbsp ${avgRating}</span>
-                            <span class="dish-tile-price">&nbsp &nbsp &nbsp &nbsp ${getPrice(dishPrice)}</span>
-                        </div>
-                    </button>
-                </h5>
-            </div>
-        </div>
-    `
+    $("tbody").prepend(
+        `
+            <tr class="dish-tile-box dish-tile" id="heading${i}" dish-id-value="${dishId}" data-toggle="collapse" data-target="#collapse${i}">
+                <td><img class="dish-tile-img" src=${dishImage}"></td>
+                <td class="align-middle">${dishName}</td>
+                <td class="align-middle">${restaurantName}</td>
+                <td class="align-middle">${avgRating}</td>
+                <td class="align-middle">${getPrice(dishPrice)}</td>
+            </tr>
+            <tr>
+                <td colspan=5 class="collapse" id="collapse${i}">placeholder</td>
+            </tr>
+        `
     );
+
     i++
 
     $(".slider-show-1-10").slider({
@@ -334,44 +335,6 @@ $(".filter-icon").on("click", function () {
     $(".filter-modal").modal('show');
 });
 
-if ($("body").attr("data-title") === "index-page") {
-
-    $(document).ready(function(){
-
-        // following line calls the function which adds test data.
-        //    do not uncomment unless you want to add test data
-        //    back to firebase
-        
-        // createTestData();
-    
-        // get top 20 records by average rating
-        getTopX(20);
-
-        readLocalStorage();
-    });
-};
-
-if ($("body").attr("data-title") === "newdish-page") {
-    $(document).ready(function(){
-    
-        // TODO: trying to auto-populate state field on newdish.html - the below does not work
-        /* const states = ["AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IA", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NE", "NH", "NV", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
-    
-        for (var i; i < states.length; i++) {
-            const state = states[i];
-            $("#state-input").append(
-                `
-                    <option value="${states[i]}">${states[i]}</option>
-                `
-            )
-        } */
-    
-    });
-};
-
-$(".map-icon").on("click", function () {
-    $(".map-modal").modal('show');
-});
 
 // on click of search button, determine if dish name contains search string
 $("#search-btn").on("click", function () {
@@ -442,7 +405,6 @@ function noResults() {
     );
 };
 
-
 // returns name of restaurant when dish tile class (in list) is clicked
 $(document).on("click", ".dish-tile", function () {
     // populate dish info from firebase
@@ -490,6 +452,27 @@ function getRestaurant(location, name) {
     });
 };
 
+
+// FAVORITE DISH
+// save favorites to local storage
+function saveFavorites() {
+    localStorage.setItem("dish-it-user", userName);
+    localStorage.setItem("dish-it-email", userEmail);
+    localStorage.setItem("dish-it-city", userCity);
+    localStorage.setItem("dish-it-state", userState);
+};
+
+
+// ADD NEW USER
+$(".save-user").on("click", function () {
+    // TODO: capture the data from the form on the modal into the global user variables and then save to firebase
+    saveFavorites();
+    //writeUserData(x, y, z....);
+});
+
+
+// MAP
+// initializes the map object
 function addToMap(restaurauntName, position){
     // add a marker
     let marker = new google.maps.Marker({position: position, map: map});
@@ -513,9 +496,95 @@ function addToMap(restaurauntName, position){
     google.maps.event.addListener(marker, 'mouseout', function() {
         marker.info.close();
     });
+};
+
+function initMap() {
+    // The location of Atlanta
+    var atlanta = {lat: 33.753746, lng: -84.386330};
+    // The map, centered at Atlanta
+    map = new google.maps.Map(
+        document.getElementById('map_canvas'), {zoom: 10, center: atlanta});
+    // The marker, positioned at Atlanta
+    //var marker = new google.maps.Marker({position: atlanta, map: map});
 }
 
+$(".map-icon").on("click", function () {
+    $(".map-modal").modal('show');
+});
+
+// resize the map to fit on the modal
+$(".map-modal").on('show.bs.modal', function(event) {
+    $("#location-map").css("width", "100%");
+    $("#map_canvas").css("width", "100%");
+});
+
+// Trigger map resize event after modal shown
+$(".map-modal").on('shown.bs.modal', function() {
+    google.maps.event.trigger(map, "resize");
+    myLatlng = new google.maps.LatLng(33.753746, -84.386330)
+    map.setCenter(myLatlng);
+});
+
+// IMAGES
+// following event listeners is used to work with buttons added to support image upload
+// by someone adding a rating
+$(".file-submit").on("click", function (e) {
+    //create a child directory called images, and place the file inside this directory
+    const uploadTask = storageRef.child(`images/${selectedFile.name}`).put(selectedFile);
+    uploadTask.on('state_changed', (snapshot) => {
+        // Observe state change events such as progress, pause, and resume
+
+        // the downloadURL is critical to capture here
+        // TODO: on image upload capture URL and save to firebase in the .image property so we can use it to access image later
+        var downloadURL = uploadTask.snapshot.downloadURL;
+        console.log(downloadURL);
+    }, (error) => {
+        // Handle unsuccessful uploads
+        console.log(error);
+    }, () => {
+        // Do something once upload is complete
+        console.log('success');
+    });
+});
+
+// following event listeners is used to work with buttons added to support image upload
+// by someone adding a rating
+$(".file-select").on("change", function (e) {
+    selectedFile = e.target.files[0];
+});
+
+$(".find-restaurant").on("click", function(){
+    event.preventDefault();
+
+    alert("hi");
+    const location = $("#city-input").val().trim() + ", " + $("#state-input").val().trim();
+    const rName = $("#restaurant-input").val().trim();
+    
+    console.log(location, rName);
+
+    //getRestaurant(location, rName);
+});
+
+// ADD NEW DISH PAGE
 // use this function to create radio button options for user to select correct restaurant from list of returned responses from Yelp
+
+if ($("body").attr("data-title") === "newdish-page") {
+    $(document).ready(function(){
+    
+        // TODO: trying to auto-populate state field on newdish.html - the below does not work
+        /* const states = ["AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IA", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NE", "NH", "NV", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+    
+        for (var i; i < states.length; i++) {
+            const state = states[i];
+            $("#state-input").append(
+                `
+                    <option value="${states[i]}">${states[i]}</option>
+                `
+            )
+        } */
+    });
+};
+
 function showRestOptions(rName, location) {
     console.log(rName, location);
     // code radio buttons below - show on add rating for new dish page
@@ -528,6 +597,7 @@ $(".apply-filter").on("click", function () {
 
     });
 });
+
 
 $(document).on("click", ".rest-option-select", function () {
     // call selectRestaurant function - pass id
@@ -547,59 +617,9 @@ function selectRestaurant(response) {
     });
 };
 
-$(".find-restaurant").on("click", function(){
-    event.preventDefault();
 
-    alert("hi");
-    const location = $("#city-input").val().trim() + ", " + $("#state-input").val().trim();
-    const rName = $("#restaurant-input").val().trim();
-    
-    console.log(location, rName);
-
-    //getRestaurant(location, rName);
-})
-
-// save favorites to local storage
-function saveFavorites() {
-    localStorage.setItem("dish-it-user", userName);
-    localStorage.setItem("dish-it-email", userEmail);
-    localStorage.setItem("dish-it-city", userCity);
-    localStorage.setItem("dish-it-state", userState);
-}
-
-$(".save-user").on("click", function () {
-    // TODO: capture the data from the form on the modal into the global user variables and then save to firebase
-    saveFavorites();
-    //writeUserData(x, y, z....);
-  });
-
-// initializes the map object
-function initMap() {
-    // The location of Atlanta
-    var atlanta = {lat: 33.753746, lng: -84.386330};
-    // The map, centered at Atlanta
-    map = new google.maps.Map(
-        document.getElementById('map_canvas'), {zoom: 10, center: atlanta});
-    // The marker, positioned at Atlanta
-    //var marker = new google.maps.Marker({position: atlanta, map: map});
-}
-
-// resize the map to fit on the modal
-$(".map-modal").on('show.bs.modal', function(event) {
-    $("#location-map").css("width", "100%");
-    $("#map_canvas").css("width", "100%");
+$(".single-slider-1-10").jRange({
+    from: 1,
+    to: 10,
+    scale: [1, 5, 10],
 });
-
-// Trigger map resize event after modal shown
-$(".map-modal").on('shown.bs.modal', function() {
-    google.maps.event.trigger(map, "resize");
-    myLatlng = new google.maps.LatLng(33.753746, -84.386330)
-    map.setCenter(myLatlng);
-});
-
-// following event listeners is used to work with buttons added to support image upload
-// by someone adding a rating
-$(".file-select").on("change", function (e) {
-    selectedFile = e.target.files[0];
-}
-);
