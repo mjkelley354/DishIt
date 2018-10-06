@@ -13,7 +13,7 @@ firebase.initializeApp(config);
 const db = firebase.database();
 
 const storageService = firebase.storage();
-let storageRef = storageService.ref();
+const storageRef = storageService.ref();
 let selectedFile;
 
 let userName = "";
