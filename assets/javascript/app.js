@@ -10,12 +10,10 @@ const config = {
 
 firebase.initializeApp(config);
 
-
 const db = firebase.database();
 
-
 const storageService = firebase.storage();
-let storageRef = storageService.ref();
+const storageRef = storageService.ref();
 let selectedFile;
 
 let userName = "";
@@ -29,13 +27,7 @@ let mapPins = [];
 
 // following event listeners is used to work with buttons added to support image upload
 // by someone adding a rating
-document.querySelector(".file-select").addEventListener("change", function (e) {
-    selectedFile = e.target.files[0];
-});
-
-// following event listeners is used to work with buttons added to support image upload
-// by someone adding a rating
-document.querySelector(".file-submit").addEventListener("click", function (e) {
+$(".file-submit").on("click", function (e) {
     //create a child directory called images, and place the file inside this directory
     const uploadTask = storageRef.child(`images/${selectedFile.name}`).put(selectedFile);
     uploadTask.on('state_changed', (snapshot) => {
@@ -53,8 +45,6 @@ document.querySelector(".file-submit").addEventListener("click", function (e) {
         console.log('success');
     });
 });
-
-
 
 // create test data in firebase
 function createTestData() {
@@ -150,8 +140,6 @@ function getTopX(recordsToReturn) {
                 console.log("image: ", dishesSnapshot.val().image);
                 console.log("cost: ", dishesSnapshot.val().price);*/
 
-
-
                 createTile(keyValue,
                     dishesSnapshot.val().name,
                     dishesSnapshot.val().restaurantId,
@@ -161,7 +149,7 @@ function getTopX(recordsToReturn) {
                     dishesSnapshot.val().price);
 
                 // call getRestaurant to add to map
-                getRestaurant(restaurantSnapshot.val().name);
+                //getRestaurant(restaurantSnapshot.val().name);
             });
         });
     });
@@ -175,11 +163,9 @@ function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, d
 
 
     $(".tile-div").prepend(
-        `
-<div class="{accordion" id="accordionExample">
-
+    `
     <div class="card">
-        <div class="card-header" id="headingOne">
+        <div class="card-header dish-tile-box" id="heading${i}" dish-id-value="${dishId}">
             <h5 class="mb-0">
                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}">
                     <div class="dish-tile" id="${dishId}" restaurant="${restaurantName}">
@@ -192,23 +178,11 @@ function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, d
                 </button>
             </h5>
         </div>
-
-        <div id="collapse${i}" class=" collapse show">
-            <div class="card-body">
-            Sour: <div class="slider-show-1-10" id="${dishId}-sour-value"></div>
-            Sweet: <div class="slider-show-1-10" id="${dishId}-sweet-value"></div>
-            Spicy: <div class="slider-show-1-10" id="${dishId}-spicy-value"></div>
-            Salty: <div class="slider-show-1-10" id="${dishId}-salty-value"></div>
-            Umami: <div class="slider-show-1-10" id="${dishId}-umami-value"></div>
-            </div>
-        </div>
     </div>
-</div>
-`
+    `
     )
     i++
 
-    console.log("after prepend " + i);
     $(".slider-show-1-10").slider({
         range: false,
         min: 1,
@@ -221,6 +195,22 @@ function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, d
         }
     });
 }
+
+$(document).on("click", ".dish-tile-box", function() {
+    console.log($(this));
+    console.log($(this).attr("dish-id-value"));
+
+    {/* <div id="collapse${i}" class=" collapse">
+            <div class="card-body">
+            Sour: <div class="slider-show-1-10" id="${dishId}-sour-value"></div>
+            Sweet: <div class="slider-show-1-10" id="${dishId}-sweet-value"></div>
+            Spicy: <div class="slider-show-1-10" id="${dishId}-spicy-value"></div>
+            Salty: <div class="slider-show-1-10" id="${dishId}-salty-value"></div>
+            Umami: <div class="slider-show-1-10" id="${dishId}-umami-value"></div>
+            </div>
+        </div> */}
+
+});
 
 function getPrice(price) {
     let ratingValue = "";
@@ -259,8 +249,35 @@ function setValues(stepIncrease) {
     };
 };
 
+$(".slider-rate-1-5").slider({
+    range: false,
+    min: 1,
+    max: 5,
+    step: 1,
+    change: function (event, ui) {
+        let userRating = $("#dish-rating").slider("value");
+        console.log(userRating);
+        calculateRatingAvg(userRating);
+    }
+});
 
-$(".slider-1-10").slider({
+$(".slider-rate-1-10").slider({
+    range: false,
+    min: 1,
+    max: 5,
+    step: 1,
+    change: function (event, ui) {
+        let userRating = $("#dish-rating").slider("value");
+        console.log(userRating);
+        calculateRatingAvg(userRating);
+    }
+});
+
+function calculateRatingAvg(num) {
+    //TODO: calculate rating avg and store values in local storage for future calculation
+};
+
+$( ".slider-1-10" ).slider({
     range: true,
     min: 1,
     max: 10,
@@ -273,9 +290,6 @@ $(".slider-1-10").slider({
         $("#" + this.id + "-values").html(currentValues[0] + ' to ' + currentValues[1]);
     }
 });
-
-
-
 
 $(".slider-1-4").slider({
     range: true,
@@ -292,7 +306,6 @@ $(".slider-1-4").slider({
 });
 
 
-
 // when page loads
 $(document).ready(function () {
 
@@ -305,6 +318,17 @@ $(document).ready(function () {
     // get top 20 records by average rating
     getTopX(20);
 
+    // TODO: trying to auto-populate state field on newdish.html - the below does not work
+    /* const states = ["AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IA", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NE", "NH", "NV", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+
+    for (var i; i < states.length; i++) {
+        const state = states[i];
+        $("#state-input").append(
+            `
+                <option value="${states[i]}">${states[i]}</option>
+            `
+        )
+    } */
     readLocalStorage();
 
 });
@@ -325,6 +349,39 @@ function readLocalStorage() {
 $(".filter-icon").on("click", function () {
     $(".filter-modal").modal('show');
 });
+
+if ($("body").attr("data-title") === "index-page") {
+
+    $(document).ready(function(){
+
+        /* following line calls the function which adds test data.
+            do not uncomment unless you want to add test data
+            back to firebase
+        */
+        // createTestData();
+    
+        // get top 20 records by average rating
+        getTopX(20);    
+    });
+};
+
+if ($("body").attr("data-title") === "newdish-page") {
+    $(document).ready(function(){
+    
+        // TODO: trying to auto-populate state field on newdish.html - the below does not work
+        /* const states = ["AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IA", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NE", "NH", "NV", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+    
+        for (var i; i < states.length; i++) {
+            const state = states[i];
+            $("#state-input").append(
+                `
+                    <option value="${states[i]}">${states[i]}</option>
+                `
+            )
+        } */
+    
+    });
+};
 
 $(".map-icon").on("click", function () {
     $(".map-modal").modal('show');
@@ -392,7 +449,9 @@ function noResults() {
         `
             <h2 class="text-center block pt-5">No dishes match your search</h2>
             <p><i>Try searching a generic name of a dish (e.g. pizza) or an ingredient (e.g. cheese)</i></p>
-            <button class="btn btn-outline-success d-flex justify-content-center add-dish-btn" type="button">Rate a new dish!</button>
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-outline-success d-flex justify-content-center add-dish-btn" type="button">Rate a new dish!</button>
+            </div>
         `
     );
 };
@@ -407,7 +466,7 @@ $(document).on("click", ".dish-tile", function () {
 });
 
 // get restaurant information from yelp
-function getRestaurant(name) {
+function getRestaurant(location, name) {
     console.log(name);
 
     const restaurantURL = `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?` + $.param({
@@ -502,6 +561,17 @@ function selectRestaurant(response) {
     });
 };
 
+$(".find-restaurant").on("click", function(){
+    event.preventDefault();
+
+    alert("hi");
+    const location = $("#city-input").val().trim() + ", " + $("#state-input").val().trim();
+    const rName = $("#restaurant-input").val().trim();
+    
+    console.log(location, rName);
+
+    //getRestaurant(location, rName);
+})
 
 // save favorites to local storage
 function saveFavorites() {
@@ -542,3 +612,10 @@ $(".map-modal").on('shown.bs.modal', function() {
     myLatlng = new google.maps.LatLng(33.753746, -84.386330)
     map.setCenter(myLatlng);
 });
+
+// following event listeners is used to work with buttons added to support image upload
+// by someone adding a rating
+$(".file-select").on("change", function (e) {
+    selectedFile = e.target.files[0];
+}
+);

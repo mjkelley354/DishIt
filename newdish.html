@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+        crossorigin="anonymous">
+    <!-- supports slider -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/styles/styles.css">
+
+    <title>Dish It - Add New Dish</title>
+</head>
+
+<body data-title="newdish-page">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Dish It</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="newdish.html">Add New Dish</a>
+                </li>
+                <!-- <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Dropdown
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </li> -->
+
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <form class="w-100">
+            <div class="row location">
+                <div class="col-6 form-group">
+                    <label class="form-label" for="city-input"><strong>City</strong></label>
+                    <input type="text" class="form-control" id="city-input" value="Atlanta" placeholder="Atlanta">
+                </div>
+                <div class="col-3 form-group">
+                    <label class="form-label" for="state-input"><strong>State</strong></label>
+                    <!-- change this to dropdown once js logic is fixed -->
+                    <input id="state-input" class="form-control" value="GA" placeholder="GA"></input>
+                </div>
+                <!--  <div class="col-3 form-group d-flex align-items-end">
+                    <button class="btn" id="find-city">Find City</button>
+                </div> -->
+            </div>
+            <div class="row" id="location-results"></div>
+            <div class="row restaurant">
+                <div class="col-9 form-group">
+                    <label class="form-label" for="restaurant-input"><strong>Restaurant Name</strong></label>
+                    <input type="text" class="form-control" id="restaurant-input">
+                </div>
+                <div class="col-3 form-group d-flex align-items-end">
+                    <button class="btn" id="find-restaurant">Find Restaurant</button>
+                </div>
+                <div class="col-12 restaurant-options">
+                    <p>Select the correct restaurant by address</p>
+                    <div class="restaurant-results"></div>
+                </div>
+            </div>
+            <div class="row dish-details">
+                <div class="col-6">
+                    <form>
+                        <label class="form-label" for="dish-name-input"><strong>Dish Name</strong></label>
+                        <input type="text" class="form-control" id="dish-name-input">
+                    </form>
+                </div>
+                <div class="col-6">
+                    <form>
+                            <img id="myimg">
+                            <!-- following div is used to upload image files to firebase cloud storage.  These should be included in whatever div
+                                opens to enable the user to add a new rating.  -->
+                            <div id="filesubmit">
+                                <input type="file" class="file-select" accept="image/*" />
+                                <button class="file-submit">SUBMIT</button>
+                            </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row dish-rating">
+                <div class="col-12 form-group">
+                    <form>
+                        <h5 class="form-label" for="rate-dish">How was the dish at this restaurant?</h5>
+                        <div class="w-100 d-flex justify-content-between">
+                            <p>"The Worst!" - 1</p>
+                            <p>"Fine" - 3</p>
+                            <p>"The Best!" - 5</p>
+                        </div>
+                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
+                        <div class="slider-rate-1-5" id="dish-rating"></div>
+                    </form>
+                </div>
+            </div>
+            <div class="row dish-flavor">
+                <div class="col-12 form-group">
+                    <form>
+                        <h5 class="form-label" for="rate-dish">Judge the flavor profile</h5>
+                        <p>Sour</p>
+                        <div class="w-100 d-flex justify-content-between">
+                            <p>"Not sour" - 1</p>
+                            <p>"A little tart" - 5</p>
+                            <p>"Mouth puckering" - 10</p>
+                        </div>
+                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
+                        <div class="slider-rate-1-5 mb-2" id="dish-rating"></div>
+                        <p>Sweet</p>
+                        <div class="w-100 d-flex justify-content-between">
+                            <p>"Not sweet" - 1</p>
+                            <p>"Balanced" - 5</p>
+                            <p>"Sugar overload" - 10</p>
+                        </div>
+                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
+                        <div class="slider-rate-1-5 mb-2" id="dish-rating"></div>
+                        <p>Spicy</p>
+                        <div class="w-100 d-flex justify-content-between">
+                            <p>"Not spicy" - 1</p>
+                            <p>"I can handle this" - 5</p>
+                            <p>"Call 911" - 10</p>
+                        </div>
+                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
+                        <div class="slider-rate-1-5 mb-2" id="dish-rating"></div>
+                        <p>Salty</p>
+                        <div class="w-100 d-flex justify-content-between">
+                            <p>"Not salty" - 1</p>
+                            <p>"Balanced" - 5</p>
+                            <p>"Water, please" - 10</p>
+                        </div>
+                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
+                        <div class="slider-rate-1-5 mb-2" id="dish-rating"></div>
+                        <p>Umami</p>
+                        <div class="w-100 d-flex justify-content-between">
+                            <p>"Not meaty" - 1</p>
+                            <p>"Savory" - 5</p>
+                            <p>"Pure MSG" - 10</p>
+                        </div>
+                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
+                        <div class="slider-rate-1-5 mb-2" id="dish-rating"></div>
+                    </form>
+                </div>
+                <div class="row comment">
+
+                </div>
+        </form>
+    </div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
+    <!-- supports slider -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="assets/javascript/app.js" async defer></script>
+
+
+</body>
+
+</html>
