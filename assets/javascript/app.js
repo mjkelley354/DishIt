@@ -99,8 +99,6 @@ function getTopX(recordsToReturn) {
                     dishesSnapshot.val().image,
                     dishesSnapshot.val().price
                 );    
-                // call getRestaurant to add to map
-                //getRestaurant(restaurantSnapshot.val().name);
             });
         });
     });
@@ -137,7 +135,7 @@ function createTiles() {
     for (let i = 0; i < dishArray.length; i++) {
         $("tbody").prepend(
             `
-                <tr class="dish-tile-box dish-tile" id="heading${i}" dish-id-value="${dishArray[i].dishId}" data-toggle="collapse" data-target="#collapse${i}">
+                <tr class="dish-tile" id="heading${i}" dish-id-value="${dishArray[i].dishId}" data-toggle="collapse" data-target="#collapse${i}">
                     <td><img class="dish-tile-img" src="assets/images"></td>
                     <td class="align-middle"><h6>${dishArray[i].dishName}<br>@${dishArray[i].restaurantName}</h6></td>
                     <td class="align-middle">${getRating(dishArray[i].avgRating)}<br>${getPrice(dishArray[i].dishPrice)}</td>
@@ -150,32 +148,11 @@ function createTiles() {
     }
 };
 
+$(document).on("click", ".dish-tile", function() {
 
-
-let i = 0;
-
-function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, dishImage, dishPrice) {
-    
-    // TODO: update dishImage to firebase link
-    $("tbody").prepend(
-        `
-            <tr class="dish-tile-box dish-tile" id="heading${i}" dish-id-value="${dishId}" data-toggle="collapse" data-target="#collapse${i}">
-                <td><img class="dish-tile-img" src="assets/images"></td>
-                <td class="align-middle"><h6>${dishName}<br>@${restaurantName}</h6></td>
-                <td class="align-middle">${getRating(avgRating)}<br>${getPrice(dishPrice)}</td>
-            </tr>
-            <tr>
-                <td colspan=5 class="collapse" id="collapse${i}">placeholder</td>
-            </tr>
-        `
-    );
-
-    i++;  
-};
-
-$(document).on("click", ".dish-tile-box", function() {
     console.log($(this));
     console.log($(this).attr("dish-id-value"));
+    $(".collapse").collapse('hide');
 
     /* <div id="collapse${i}" class=" collapse">
             <div class="card-body">
@@ -200,6 +177,25 @@ $(document).on("click", ".dish-tile-box", function() {
         });
 
 });
+
+let i = 0;
+function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, dishImage, dishPrice) {
+    
+    // TODO: update dishImage to firebase link
+    $("tbody").prepend(
+        `
+            <tr class="dish-tile" id="heading${i}" dish-id-value="${dishId}" data-toggle="collapse" data-target="#collapse${i}">
+                <td><img class="dish-tile-img" src="assets/images"></td>
+                <td class="align-middle"><h6>${dishName}<br>@${restaurantName}</h6></td>
+                <td class="align-middle">${getRating(avgRating)}<br>${getPrice(dishPrice)}</td>
+            </tr>
+            <tr>
+                <td colspan=5 class="collapse" id="collapse${i}">placeholder</td>
+            </tr>
+        `
+    );
+    i++;  
+};
 
 function getPrice(price) {
     let priceValue = "";
@@ -275,8 +271,6 @@ $("#search-btn").on("click", function () {
                             dishesSnapshot.val().avgRating,
                             dishesSnapshot.val().image,
                             dishesSnapshot.val().price);
-
-                        // getRestaurant(restaurantSnapshot.val().name);
                     });
                 });
             };
@@ -302,15 +296,6 @@ function noResults() {
         `
     );
 };
-
-// returns name of restaurant when dish tile class (in list) is clicked
-$(document).on("click", ".dish-tile", function () {
-    // populate dish info from firebase
-
-    // get restaurant data from Yelp - this bit of code will be moved to add/rate form eventually
-    getRestaurant($(this).attr("restaurant"));
-});
-
 
 $(".apply-filter").on("click", function () {
     // loop though each card
