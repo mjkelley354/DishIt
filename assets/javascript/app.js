@@ -573,6 +573,69 @@ $(document).on("click", ".rest-option-select", function () {
     // call selectRestaurant function - pass id
 })
 
+$("#find-restaurant").on("click", function(){
+    console.log("get restaurants");
+
+    const location = $("#city-input").val().trim() + ", " + $("#state-input").val().trim();
+    const rName = $("#restaurant-input").val().trim();
+    
+    console.log(location, rName);
+
+    getRestaurant(location, rName);
+})
+
+// get restaurant information from yelp
+function getRestaurant(location, name) {
+    console.log(name);
+
+    const restaurantURL = `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?` + $.param({
+        term: name,
+        location: location,
+        categories: "restaurants",
+        limit: 3,
+    });
+
+    $.ajax({
+        url: restaurantURL,
+        method: "GET",
+        headers: {
+            'Authorization': 'Bearer lC3zgwezYWCKbJZW03Yepl4A52o_fhrqd9a1x0_MapVxItu97aAHOUOGfsRzDJswOWzWlaHv0zvw8keaePumFEkXJWyOgcTcLg7ekQOQ9skybUd_wy02lE3hnQy0W3Yx',
+        }
+    }).then(function (response) {
+
+        console.log(response);
+        const restaurants = response.businesses;
+        console.log(restaurants.length);
+
+        for (let i in restaurants) {
+            const id = restaurants[i].id;
+            const price = restaurants[i].price;
+            const rName = restaurants[i].name;
+            const location = restaurants[i].location;
+            // const coordinates = restaurants[i].coordinates;
+            const phone = restaurants[i].display_phone;
+            const restaurantLatLong = {
+                lat: restaurants[i].coordinates.latitude, 
+                lng: restaurants[i].coordinates.longitude,
+            };
+
+            // QUESTION FOR MIKE: does this need to be added to the map at this point? The map should be rendered from the list of dishes on the first page
+            // addToMap(rName, restaurantLatLong);
+            //console.log(id);
+            //console.log(id, price, rName, location, lat, long, phone);
+            console.log("hi");
+            showRestOptions(rName, location);
+        };
+    });
+};
+
+// use this function to create radio button options for user to select correct restaurant from list of returned responses from Yelp
+function showRestOptions(rName, location) {
+    console.log(rName, location);
+    // code radio buttons below - show on add rating for new dish page
+    // use class rest-option for radio button options
+};
+
 function selectRestaurant(response) {
     const dishes = db.ref("dishes");
     const restaurants = db.ref("restaurants");
@@ -587,55 +650,24 @@ function selectRestaurant(response) {
     });
 };
 
-$(".find-restaurant").on("click", function(){
-    event.preventDefault();
+const dishRating = "";
+const sour = "";
+const sweet = "";
+const spicy = "";
+const salty = "";
+const umami = "";
 
-    alert("hi");
-    const location = $("#city-input").val().trim() + ", " + $("#state-input").val().trim();
-    const rName = $("#restaurant-input").val().trim();
-    
-    console.log(location, rName);
+// TODO: after xx seconds retrieve existing dish data if user has entered same dish restaurant info
+$("#dish-name-input").change(function(){
 
-    //getRestaurant(location, rName);
+    // wait 3 seconds to run next function
+    // if city, state, restaurant, and dish name equal to user's existing rating, then retrieve rating and set values on form
+    getDishRating();
+    // else do nothing
 })
 
-// get restaurant information from yelp
-function getRestaurant(location, name) {
-    console.log(name);
-
-    const restaurantURL = `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?` + $.param({
-        term: name,
-        location: "Atlanta, GA",
-        categories: "restaurants",
-        limit: 2,
-    });
-
-    $.ajax({
-        url: restaurantURL,
-        method: "GET",
-        headers: {
-            'Authorization': 'Bearer lC3zgwezYWCKbJZW03Yepl4A52o_fhrqd9a1x0_MapVxItu97aAHOUOGfsRzDJswOWzWlaHv0zvw8keaePumFEkXJWyOgcTcLg7ekQOQ9skybUd_wy02lE3hnQy0W3Yx',
-        }
-    }).then(function (response) {
-
-        console.log(response);
-        const restaurants = response.businesses;
-        for (var i in restaurants) {
-            const id = restaurants[i].id;
-            const price = restaurants[i].price;
-            const rName = restaurants[i].name;
-            const location = restaurants[i].location;
-            const coordinates = restaurants[i].coordinates;
-            const phone = restaurants[i].phone;
-
-            var restaurantLatLong = {lat: coordinates.latitude, lng: coordinates.longitude};
-            addToMap(rName, restaurantLatLong);
-
-
-            console.log(id, price, rName, location, coordinates, phone);
-            showRestOptions(rName, location);
-        };
-    });
+function getDishRating() {
+    // get user's dish rating from firebase and populate values on screen
 };
 
 // sliders with single value selector for rating dishes
@@ -646,29 +678,42 @@ $(".slider-rate-1-5").slider({
     step: 1,
     value: 3,
     change: function (event, ui) {
-        let userRating = $("#dish-rating").slider("value");
+        const userRating = $("#dish-rating").slider("value");
+        const ratedElement = $(this).attr("id");
+        calculateRatingAvg(userRating, ratedElement);
         console.log(userRating);
-        calculateRatingAvg(userRating);
-    }
+        console.log($(this).attr("id"));
+        localStorage.setItem(ratedElement,userRating);
+    },
 });
 
-// use this function to create radio button options for user to select correct restaurant from list of returned responses from Yelp
-function showRestOptions(rName, location) {
-    console.log(rName, location);
-    // code radio buttons below - show on add rating for new dish page
-    // use class rest-option for radio button options
-};
-
-
 $("#add-dish-btn").on("click", function(){
-    // TODO: 
+
+    // determine if dish is already in firebase
     calculateRatingAvg();
     // TODO: Go to dish average rating page on home screen
 });
 
 function calculateRatingAvg(num) {
     //TODO: calculate rating avg and store values in local storage for future calculation
+    // if new rating, increase total number of ratings by one and calculate average
+    // if updated rating, do not increase number of total ratings for dish, subtract old rating, and calculate with new rating
 };
+
+// test code for vertical slider
+/* $(".slider-vertical-1-5").slider({
+    orientation: "vertical",
+    range: false,
+    min: 1,
+    max: 5,
+    step: 1,
+    value: 3,
+    change: function (event, ui) {
+        let userRating = $("#dish-rating").slider("value");
+        console.log(userRating);
+        calculateRatingAvg(userRating);
+    }
+}); */
 
 // IMAGES ********************************************************************************
 // following event listeners is used to work with buttons added to support image upload
