@@ -131,10 +131,9 @@ function newDish(dishId, dishName, restaurantId, restaurantName, avgRating, avgS
     dishArray.push(theDish);
 };
 
-
+// use this to populate results on screen directly from firebase - using array will throw errors due to processing time
 let i = 0;
 function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, dishImage, dishPrice) {
-    
     $("tbody").prepend(
         `
             <tr class="dish-tile" id="heading${i}" dish-id-value="${dishId}" data-toggle="collapse" data-target="#collapse${i}">

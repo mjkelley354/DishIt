@@ -19,7 +19,7 @@
 
 <body data-title="newdish-page">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-sm navbar-light bg-light">
         <a class="navbar-brand" href="index.html">Dish It</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,22 +71,21 @@
             </div>
             <hr>
             <div class="row dish-details">
-                <div class="col-6">
+                <div class="col-md-6 col-sm-12">
                     <form>
                         <label class="form-label" for="dish-name-input"><strong>Dish Name</strong></label>
                         <input type="text" class="form-control" id="dish-name-input">
-                    </form>
-                </div>
-                <div class="col-6">
-                    <form>
                         <img id="myimg">
                         <!-- following div is used to upload image files to firebase cloud storage.  These should be included in whatever div
                                 opens to enable the user to add a new rating.  -->
                         <div id="filesubmit">
-                            <input type="file" class="file-select" accept="image/*" />
-                            <button class="file-submit">SUBMIT</button>
+                            <input type="file" class="file-select mb-2" accept="image/*" />
+                            <button class="file-submit mb-2">SUBMIT</button>
                         </div>
                     </form>
+                </div>
+                <div class="col-md-6 col-sm-12 image-box d-flex justify-content-center">
+                    <img src="https://via.placeholder.com/300x250">
                 </div>
             </div>
             <div class="row dish-rating">
