@@ -102,21 +102,28 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!--Price: <div id="slider-price-range-values" class="d-inline-block"></div>
+                    Price:
+                    <div id="slider-price-range-values" class="d-inline-block"></div>
                     <div id="slider-price-range" class="slider-1-4"></div>
-                    Rating: <div id="slider-rating-range-values" class="d-inline-block"></div>
+                    Rating:
+                    <div id="slider-rating-range-values" class="d-inline-block"></div>
                     <div id="slider-rating-range" class="slider-1-4"></div>
-                    Sour: <div id="slider-sour-range-values" class="d-inline-block"></div>
+                    Sour:
+                    <div id="slider-sour-range-values" class="d-inline-block"></div>
                     <div id="slider-sour-range" class="slider-1-10"></div>
-                    Sweet: <div id="slider-sweet-range-values" class="d-inline-block"></div>
+                    Sweet:
+                    <div id="slider-sweet-range-values" class="d-inline-block"></div>
                     <div id="slider-sweet-range" class="slider-1-10"></div>
-                    Spicy: <div id="slider-spicy-range-values" class="d-inline-block"></div>
+                    Spicy:
+                    <div id="slider-spicy-range-values" class="d-inline-block"></div>
                     <div id="slider-spicy-range" class="slider-1-10"></div>
-                    Salty: <div id="slider-salty-range-values" class="d-inline-block"></div>
+                    Salty:
+                    <div id="slider-salty-range-values" class="d-inline-block"></div>
                     <div id="slider-salty-range" class="slider-1-10"></div>
-                    Umami: <div id="slider-umami-range-values" class="d-inline-block"></div>
-                    <div id="slider-umami-range" class="slider-1-10"></div> -->
-                    <div class="container">
+                    Umami:
+                    <div id="slider-umami-range-values" class="d-inline-block"></div>
+                    <div id="slider-umami-range" class="slider-1-10"></div>
+                    <!-- <div class="container">
                         <div class="row slider-row">
                             <div class="col-md-2">
                                 Price:
@@ -179,70 +186,65 @@
                                 <input id="slider-umami-range" class="range-slider-1-10" type="hidden" value="1, 4">
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary apply-filter">Apply</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="modal user-modal" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Add User</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body text-center">
-                            <!-- Add Form here to capture user data. -->
-                            <!-- userName -->
-                            <!-- userEmail -->
-                            <!-- userCity -->
-                            <!-- userState -->
-                            User Info form to be added here!
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary save-user">Save</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
+    <div class="modal user-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <!-- Add Form here to capture user data. -->
+                    <!-- userName -->
+                    <!-- userEmail -->
+                    <!-- userCity -->
+                    <!-- userState -->
+                    User Info form to be added here!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary save-user">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
+        </div>
+    </div>
 
 
-
-
-
-
-
-
-            <!-- following div is used to upload image files to firebase cloud storage.  These should be included in whatever div
+    <!-- following div is used to upload image files to firebase cloud storage.  These should be included in whatever div
         opens to enable the user to add a new rating.  -->
-            <div id="filesubmit">
-                <input type="file" class="file-select" accept="image/*" />
-                <button class="file-submit">SUBMIT</button>
+    <div id="filesubmit">
+        <input type="file" class="file-select" accept="image/*" />
+        <button class="file-submit">SUBMIT</button>
+    </div>
 
-            </div>
 
+    <!--JavaScript at end of body for optimized loading-->
 
-            <!--JavaScript at end of body for optimized loading-->
-
-            <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-                crossorigin="anonymous"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-                crossorigin="anonymous"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-                crossorigin="anonymous"></script>
-            <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
-            <!-- supports slider -->
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDurJrMJJ3BabzpN4CuHVEbMarLLBzmHz4&callback=initMap"
-                async defer></script>
-            <script src="assets/javascript/jquery.range-min.js"></script>
-            <script src="assets/javascript/app.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
+    <!-- supports slider -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDurJrMJJ3BabzpN4CuHVEbMarLLBzmHz4&callback=initMap"
+        async defer></script>
+    <script src="assets/javascript/jquery.range-min.js"></script>
+    <script src="assets/javascript/app.js"></script>
 
 </body>
 

@@ -102,6 +102,7 @@ function getTopX(recordsToReturn) {
             });
         });
     });
+    console.log(dishArray);
 };
 
 function newDish(dishId, dishName, restaurantId, restaurantName, avgRating, avgSour, avgSweet, avgSpicy, avgSalty, avgUmami,
@@ -126,13 +127,34 @@ function newDish(dishId, dishName, restaurantId, restaurantName, avgRating, avgS
         }
 
     dishArray.push(theDish);
-    console.log(dishArray);
 };
 
-// TODO: use this function later for populating filtering results
-function createTiles() {
+
+let i = 0;
+function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, dishImage, dishPrice) {
+    
+    $("tbody").prepend(
+        `
+            <tr class="dish-tile" id="heading${i}" dish-id-value="${dishId}" data-toggle="collapse" data-target="#collapse${i}">
+                <td><img class="dish-tile-img" src="${dishImage}"></td>
+                <td class="align-middle"><h6>${dishName}<br>@${restaurantName}</h6></td>
+                <td class="align-middle">${getRating(avgRating)}<br>${getPrice(dishPrice)}</td>
+            </tr>
+            <tr>
+                <td colspan=5 class="collapse" id="collapse${i}">placeholder</td>
+            </tr>
+        `
+    );
+    i++;  
+};
+
+// TODO: use this function later for populating filtered results
+function createTiles(dishArray) {
     console.log("I'm creating tiles");
-    for (let i = 0; i < dishArray.length; i++) {
+    console.log(dishArray);
+    // FIX: this section below is not working to populate tiles after the search btn is clicked; disabled or now
+    for (let i in dishArray) {
+        console.log(dishArray[i].dishName);
         $("tbody").prepend(
             `
                 <tr class="dish-tile" id="heading${i}" dish-id-value="${dishArray[i].dishId}" data-toggle="collapse" data-target="#collapse${i}">
@@ -178,25 +200,6 @@ $(document).on("click", ".dish-tile", function() {
 
 });
 
-let i = 0;
-function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, dishImage, dishPrice) {
-    
-    // TODO: update dishImage to firebase link
-    $("tbody").prepend(
-        `
-            <tr class="dish-tile" id="heading${i}" dish-id-value="${dishId}" data-toggle="collapse" data-target="#collapse${i}">
-                <td><img class="dish-tile-img" src="assets/images"></td>
-                <td class="align-middle"><h6>${dishName}<br>@${restaurantName}</h6></td>
-                <td class="align-middle">${getRating(avgRating)}<br>${getPrice(dishPrice)}</td>
-            </tr>
-            <tr>
-                <td colspan=5 class="collapse" id="collapse${i}">placeholder</td>
-            </tr>
-        `
-    );
-    i++;  
-};
-
 function getPrice(price) {
     let priceValue = "";
     for (var i = 0; i < price; i++) {
@@ -226,6 +229,7 @@ $(".filter-icon").on("click", function () {
     $(".filter-modal").modal('show');
 });
 
+// SEARCH FUNCTION *********************************************************************************
 
 // on click of search button, determine if dish name contains search string
 $("#search-btn").on("click", function () {
@@ -249,6 +253,7 @@ $("#search-btn").on("click", function () {
     var dishes = db.ref('dishes');
     var restaurants = db.ref('restaurants');
     let matches = 0;
+    dishArray.length = 0;
 
     // for each dish in order of avgRating...
     dishes.orderByChild("avgRating").on('value', function (snapshot) {
@@ -265,18 +270,37 @@ $("#search-btn").on("click", function () {
                     restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function (restaurantSnapshot) {
                         
                         createTile(keyValue,
+                            dishesSnapshot.val().name, 
+                            dishesSnapshot.val().restaurantId, 
+                            restaurantSnapshot.val().name, 
+                            dishesSnapshot.val().avgRating, 
+                            dishesSnapshot.val().image, 
+                            dishesSnapshot.val().price); 
+
+                        newDish(keyValue,
                             dishesSnapshot.val().name,
                             dishesSnapshot.val().restaurantId,
                             restaurantSnapshot.val().name,
                             dishesSnapshot.val().avgRating,
+                            dishesSnapshot.val().avgSourScale,
+                            dishesSnapshot.val().avgSweetScale,
+                            dishesSnapshot.val().avgSpicyScale,
+                            dishesSnapshot.val().avgSaltyScale,
+                            dishesSnapshot.val().avgUmamiScale,
                             dishesSnapshot.val().image,
-                            dishesSnapshot.val().price);
+                            dishesSnapshot.val().price,
+                            0,
+                            0,                                "",
+                            "",
+                        );       
                     });
                 });
             };
         });
         console.log(matches);
-        // displays message if no search results retured
+        console.log(dishArray);
+        // createTiles(dishArray); // this function is not working to populate screen
+        // displays message if no search results returned
         if (matches === 0) {
             noResults();
         }
@@ -419,31 +443,24 @@ function setValues(stepIncrease) {
     };
 };
 
-$(".slider-rate-1-5").slider({
-    range: false,
-    min: 1,
-    max: 5,
+// js for new style of slider - doesn't snap marker to values when moving up/down slide
+/* $(".range-slider-1-4").jRange({
+    from: 1,
+    to: 4,
     step: 1,
-    change: function (event, ui) {
-        let userRating = $("#dish-rating").slider("value");
-        console.log(userRating);
-        calculateRatingAvg(userRating);
-    }
+    scale: [1,2,3,4],
+    isRange: true
 });
 
-$(".slider-rate-1-10").slider({
-    range: false,
-    min: 1,
-    max: 5,
+$(".range-slider-1-10").jRange({
+    from: 1,
+    to: 10,
     step: 1,
-    change: function (event, ui) {
-        let userRating = $("#dish-rating").slider("value");
-        console.log(userRating);
-        calculateRatingAvg(userRating);
-    }
-});
+    scale: [1,2,3,4,5,6,7,8,9,10],
+    isRange: true
+}); */
 
-$( ".slider-1-10" ).slider({
+$(".slider-1-10").slider({
     range: true,
     min: 1,
     max: 10,
@@ -482,13 +499,13 @@ function createTestData() {
     writeRestaurantData(1, "", "Sapporo de Napoli", "", "", "Atlanta", "30033", "Italian");
     writeRestaurantData(2, "", "Grindhouse Killer Burgers", "", "", "Atlanta", "30033", "American");
 
-    writeDishData(0, "beef taco supreme", 0, 2, 1, 1, 2, 2, 2, 5, "");
-    writeDishData(1, "cheese pizza", 1, 2, 1, 4, 2, 1, 2, 3.60, "");
-    writeDishData(2, "cheeseburger", 2, 2, 2, 3, 1, 1, 1, 4.24, "");
+    writeDishData(0, "beef taco supreme", 0, 2, 1, 1, 2, 2, 2, 5, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg?alt=media&token=c0f7b553-373f-4f0d-bea7-22cd524c1fe5");
+    writeDishData(1, "cheese pizza", 1, 2, 1, 4, 2, 1, 2, 3.60, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheese-pizza.jpg?alt=media&token=ced316ad-ab07-4146-b6ea-04f7e400980b");
+    writeDishData(2, "cheeseburger", 2, 2, 2, 3, 1, 1, 1, 4.24, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheeseburger.jpg?alt=media&token=bbbf89f2-1d7a-4246-aed5-0f3b51883302");
 
-    writeRatingData(0, 0, 0, "Awesome Tacos!", 1, 1, 2, 2, 1, 4, "");
-    writeRatingData(1, 1, 1, "Best Pizza in Decatur!!", 1, 2, 3, 1, 1, 5, "");
-    writeRatingData(2, 2, 2, "Burgers are better than FarmBurger and shakes too!", 1, 2, 2, 2, 1, 4, "");
+    writeRatingData(0, 0, 0, "Awesome Tacos!", 1, 1, 2, 2, 1, 4, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg?alt=media&token=c0f7b553-373f-4f0d-bea7-22cd524c1fe5");
+    writeRatingData(1, 1, 1, "Best Pizza in Decatur!!", 1, 2, 3, 1, 1, 5, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheese-pizza.jpg?alt=media&token=ced316ad-ab07-4146-b6ea-04f7e400980b");
+    writeRatingData(2, 2, 2, "Burgers are better than FarmBurger and shakes too!", 1, 2, 2, 2, 1, 4, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheeseburger.jpg?alt=media&token=bbbf89f2-1d7a-4246-aed5-0f3b51883302");
 }
 
 function writeUserData(userId, name, email, city, state) {
@@ -632,6 +649,31 @@ function getRestaurant(location, name) {
         };
     });
 };
+
+// sliders with single value selector for rating dishes
+$(".slider-rate-1-5").slider({
+    range: false,
+    min: 1,
+    max: 5,
+    step: 1,
+    change: function (event, ui) {
+        let userRating = $("#dish-rating").slider("value");
+        console.log(userRating);
+        calculateRatingAvg(userRating);
+    }
+});
+
+$(".slider-rate-1-10").slider({
+    range: false,
+    min: 1,
+    max: 5,
+    step: 1,
+    change: function (event, ui) {
+        let userRating = $("#dish-rating").slider("value");
+        console.log(userRating);
+        calculateRatingAvg(userRating);
+    }
+});
 
 // use this function to create radio button options for user to select correct restaurant from list of returned responses from Yelp
 function showRestOptions(rName, location) {
