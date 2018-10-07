@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
         crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
@@ -13,8 +14,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
     <link rel="stylesheet" href="assets/styles/jquery.range.css">
     <link rel="stylesheet" type="text/css" href="assets/styles/styles.css">
-    <title>Dish It</title>
 
+
+    <title>Dish It</title>
 </head>
 
 <body data-title="index-page">
@@ -60,7 +62,35 @@
 
         </div>
     </nav>
+    <div class="container mt-3">
+        <div class="row d-flex justify-content-center">
+            <div class="col-xs-12 tile-div">
+                <!-- results container -->
+            </div>
+        </div>
+    </div>
 
+    <div class="modal map-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Dish It Locations</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- <div id="map"></div> -->
+                    <div class="location-map" id="location-map">
+                        <div style="width: 600px; height: 400px;" id="map_canvas"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="modal filter-modal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -156,87 +186,63 @@
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="modal user-modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add User</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body text-center">
-                    <!-- Add Form here to capture user data. -->
-                    <!-- userName -->
-                    <!-- userEmail -->
-                    <!-- userCity -->
-                    <!-- userState -->
-                    User Info form to be added here!
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary save-user">Save</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal map-modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Dish It Locations</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- <div id="map"></div> -->
-                    <div class="location-map" id="location-map">
-                        <div style="width: 600px; height: 400px;" id="map_canvas"></div>
+            <div class="modal user-modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add User</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <!-- Add Form here to capture user data. -->
+                            <!-- userName -->
+                            <!-- userEmail -->
+                            <!-- userCity -->
+                            <!-- userState -->
+                            User Info form to be added here!
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary save-user">Save</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="row d-flex justify-content-center">
-            <div class="col-xs-12 tile-div">
-                <!-- results container -->
-            </div>
-        </div>
-    </div>
 
 
-    <!-- following div is used to upload image files to firebase cloud storage.  These should be included in whatever div
+
+
+
+
+
+
+            <!-- following div is used to upload image files to firebase cloud storage.  These should be included in whatever div
         opens to enable the user to add a new rating.  -->
-    <div id="filesubmit">
-        <input type="file" class="file-select" accept="image/*" />
-        <button class="file-submit">SUBMIT</button>
-    </div>
+            <div id="filesubmit">
+                <input type="file" class="file-select" accept="image/*" />
+                <button class="file-submit">SUBMIT</button>
 
-    <!--JavaScript at end of body for optimized loading-->
+            </div>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
-    <!-- supports slider -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDurJrMJJ3BabzpN4CuHVEbMarLLBzmHz4&callback=initMap"
-        async defer></script>
-    <script src="./assets/javascript/jquery.range-min.js"></script>
-    <script src="./assets/javascript/app.js"></script>
+
+            <!--JavaScript at end of body for optimized loading-->
+
+            <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+                crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+                crossorigin="anonymous"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+                crossorigin="anonymous"></script>
+            <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
+            <!-- supports slider -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDurJrMJJ3BabzpN4CuHVEbMarLLBzmHz4&callback=initMap"
+                async defer></script>
+            <script src="assets/javascript/jquery.range-min.js"></script>
+            <script src="assets/javascript/app.js"></script>
 
 </body>
 

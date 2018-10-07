@@ -1,13 +1,14 @@
 .dish-tile-img {
     border-radius: 50%;
-    height: 100px;
-    width: 100px;
+    height: 80px;
+    width: 80px;
 }
 
 span {
     box-shadow: none;
     display: inline-block;
 }
-. slider-row {
+
+.slider-row {
     margin-top: 15px;
 }
