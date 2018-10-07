@@ -12,10 +12,19 @@ table {
 }
 
 .dish-tile-img {
-    border-radius: 50%;
+    display: block;
+    overflow: hidden;
     height: 75px;
     width: 75px;
+    border-radius: 50%;
+    background-position: center center;
 }
+
+.dish-tile-img {
+    display: block;
+    min-width: 100%;
+    min-height: 100%;
+    -ms-interpolation-moode: bicubic;
 
 .rating-icons {
     color: goldenrod;
