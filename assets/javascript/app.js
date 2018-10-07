@@ -36,6 +36,7 @@ if ($("body").attr("data-title") === "index-page") { // functions run on load of
         getTopX(20); // get top 20 records by average rating
 
         readLocalStorage(); // function to get user info from local storage
+
     });
 };
 
@@ -72,15 +73,6 @@ function getTopX(recordsToReturn) {
         dishes.child("/" + keyValue).once("value", function (dishesSnapshot) {
             restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function (restaurantSnapshot) {
 
-                createTile(keyValue,
-                    dishesSnapshot.val().name,
-                    dishesSnapshot.val().restaurantId,
-                    restaurantSnapshot.val().name,
-                    dishesSnapshot.val().avgRating,
-                    dishesSnapshot.val().image,
-                    dishesSnapshot.val().price
-                    );
-
                 newDish(keyValue,
                     dishesSnapshot.val().name,
                     dishesSnapshot.val().restaurantId,
@@ -98,7 +90,15 @@ function getTopX(recordsToReturn) {
                     "",
                     "",
                     );
-
+                
+                createTile(keyValue,
+                    dishesSnapshot.val().name,
+                    dishesSnapshot.val().restaurantId,
+                    restaurantSnapshot.val().name,
+                    dishesSnapshot.val().avgRating,
+                    dishesSnapshot.val().image,
+                    dishesSnapshot.val().price
+                );    
                 // call getRestaurant to add to map
                 //getRestaurant(restaurantSnapshot.val().name);
             });
@@ -106,18 +106,56 @@ function getTopX(recordsToReturn) {
     });
 };
 
-function newDish(){
-    // TODO: Add based on Mike's contributions
+function newDish(dishId, dishName, restaurantId, restaurantName, avgRating, avgSour, avgSweet, avgSpicy, avgSalty, avgUmami,
+    imgUrl, price, lat, long, address, phone){
+        const theDish = {
+            dishId: dishId,
+            dishName: dishName,
+            restaurantId: restaurantId,
+            restaurantName: restaurantName,
+            avgRating: avgRating,
+            avgSour: avgSour,
+            avgSweet: avgSweet,
+            avgSpicy: avgSpicy,
+            avgSalty: avgSpicy,
+            avgUmami: avgUmami,
+            imgUrl: imgUrl,
+            price: price, 
+            lat: lat,
+            long: long,
+            address: address,
+            phone: phone,
+        }
+
+    dishArray.push(theDish);
+    console.log(dishArray);
+};
+
+// TODO: use this function later for populating filtering results
+function createTiles() {
+    console.log("I'm creating tiles");
+    for (let i = 0; i < dishArray.length; i++) {
+        $("tbody").prepend(
+            `
+                <tr class="dish-tile-box dish-tile" id="heading${i}" dish-id-value="${dishArray[i].dishId}" data-toggle="collapse" data-target="#collapse${i}">
+                    <td><img class="dish-tile-img" src="assets/images"></td>
+                    <td class="align-middle"><h6>${dishArray[i].dishName}<br>@${dishArray[i].restaurantName}</h6></td>
+                    <td class="align-middle">${getRating(dishArray[i].avgRating)}<br>${getPrice(dishArray[i].dishPrice)}</td>
+                </tr>
+                <tr>
+                    <td colspan=5 class="collapse" id="collapse${i}">placeholder</td>
+                </tr>
+            `
+        );
+    }
 };
 
 
-let i = 1;
+
+let i = 0;
 
 function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, dishImage, dishPrice) {
-
-    console.log(i);
-    console.log(dishId);
-
+    
     // TODO: update dishImage to firebase link
     $("tbody").prepend(
         `
@@ -167,7 +205,6 @@ function getPrice(price) {
     let priceValue = "";
     for (var i = 0; i < price; i++) {
         priceValue = priceValue.concat(`<i class="fas fa-dollar-sign"></i>`);
-        console.log(priceValue);
     };
 
     return priceValue;
@@ -178,7 +215,6 @@ function getRating(avgRating) {
     let ratingValue = "";
     for (var i = 0; i < stars; i++) {
         ratingValue = ratingValue.concat('<i class="fas fa-star"></i>');
-        console.log(ratingValue);
     }
 
     if (Math.round(avgRating * 2) / 2 - stars === 0.5) {
@@ -200,6 +236,15 @@ $("#search-btn").on("click", function () {
 
     // empty screen of existing results
     $(".tile-div").empty();
+
+    $(".tile-div").append(
+        `
+            <table class="w-100 rounded table text-center">
+                <tbody id="dish-list">
+                </tbody>
+            </table>
+        `
+    );
 
     // capture search string
     const searchInput = $("#search-input").val();
@@ -533,7 +578,6 @@ if ($("body").attr("data-title") === "newdish-page") {
     
     });
 };
-
 
 $(document).on("click", ".rest-option-select", function () {
     // call selectRestaurant function - pass id
