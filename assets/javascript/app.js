@@ -574,22 +574,17 @@ $(document).on("click", ".rest-option-select", function () {
 })
 
 $("#find-restaurant").on("click", function(){
-    console.log("get restaurants");
-
     const location = $("#city-input").val().trim() + ", " + $("#state-input").val().trim();
     const rName = $("#restaurant-input").val().trim();
     
-    console.log(location, rName);
-
     getRestaurant(location, rName);
+    console.log(location, rName);
 })
 
 // get restaurant information from yelp
-function getRestaurant(location, name) {
-    console.log(name);
-
+function getRestaurant(location, rName) {
     const restaurantURL = `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?` + $.param({
-        term: name,
+        term: rName,
         location: location,
         categories: "restaurants",
         limit: 3,
@@ -621,19 +616,26 @@ function getRestaurant(location, name) {
 
             // QUESTION FOR MIKE: does this need to be added to the map at this point? The map should be rendered from the list of dishes on the first page
             // addToMap(rName, restaurantLatLong);
-            //console.log(id);
-            //console.log(id, price, rName, location, lat, long, phone);
-            console.log("hi");
-            showRestOptions(rName, location);
+            showRestOptions(restaurants[i], i);
         };
     });
 };
 
 // use this function to create radio button options for user to select correct restaurant from list of returned responses from Yelp
-function showRestOptions(rName, location) {
-    console.log(rName, location);
-    // code radio buttons below - show on add rating for new dish page
-    // use class rest-option for radio button options
+function showRestOptions(restaurant, i) {
+    console.log(restaurant, i);
+
+    // TODO: only run if the search string is in the restaurant name
+    $("#restaurant-results").append(
+        `
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="rOptions" id="rOption-${i}" value="${restaurant.id}">
+                <label class="form-check-label" for="rOption-${i}">
+                    ${restaurant.name}: ${restaurant.location.address1}, ${restaurant.location.city}, ${restaurant.location.state}, ${restaurant.location.zip_code}
+                </label>
+            </div>
+        `
+    )
 };
 
 function selectRestaurant(response) {
@@ -683,8 +685,12 @@ $(".slider-rate-1-5").slider({
         calculateRatingAvg(userRating, ratedElement);
         console.log(userRating);
         console.log($(this).attr("id"));
-        localStorage.setItem(ratedElement,userRating);
+        // localStorage.setItem(ratedElement,userRating);
     },
+});
+
+$("#cancel-dish-btn").on("click", function(){
+    window.location.href="index.html";
 });
 
 $("#add-dish-btn").on("click", function(){

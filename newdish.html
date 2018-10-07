@@ -53,23 +53,35 @@
                     <input id="state-input" class="form-control" value="GA" placeholder="GA"></input>
                 </div>
                 <!--  <div class="col-3 form-group d-flex align-items-end">
-                    <button class="btn" id="find-city">Find City</button>
+                    <button class="btn" type="button" data-toggle="collapse" data-target="#location-results-view" id="find-city">Find City</button>
                 </div> -->
             </div>
-            <div class="row" id="location-results"></div>
+            <!-- This div will be active once we allow searches for more than one location -->
+            <div class="row collapse" id="location-results-view">
+                <p><i>Verify location</i></p>
+                <div class="form-check" id="location-results">
+                    <input class="form-check-input" type="radio" name="test" id="test" value="test-value">
+                    <label class="form-check-label" for="test">
+                        test label
+                    </label>
+                </div>
+            </div>
+
             <div class="row restaurant">
                 <div class="col-md-9 col-sm-12 form-group">
                     <label class="form-label" for="restaurant-input"><strong>Restaurant Name</strong></label>
                     <input type="text" class="form-control" id="restaurant-input">
                 </div>
                 <div class="col-md-3 col-sm-12 form-group d-flex align-items-end">
-                    <button class="btn" type="button" data-toggle="collapse" data-target="#restaurant-results" id="find-restaurant">Find
+                    <button class="btn" type="button" data-toggle="collapse" data-target="#restaurant-results-view" id="find-restaurant">Find
                         Restaurant</button>
                 </div>
-                <div class="col-12 collapse restaurant-options" id="restaurant-results">
-                    Restaurant results here
+                <div class="col-12 collapse mb-2" id="restaurant-results-view">
+                    <p><i>Verify the location of the restaurant</i></p>
+                    <div id="restaurant-results"></div>
                 </div>
             </div>
+
             <hr class="mt-0 mb-2">
             <div class="row dish-details">
                 <div class="col-md-6 col-sm-12">
@@ -192,7 +204,7 @@
                 </div>
             </div>
             <div class="d-flex justify-content-end">
-                <button class="btn btn-outline-dark mb-3 mr-2" id="cancel-dish-btn"><a href="index.html">Cancel</a></button>
+                <button class="btn btn-outline-dark mb-3 mr-2" id="cancel-dish-btn">Cancel</button>
                 <button class="btn btn-outline-dark mb-3" id="add-dish-btn">Submit It!</button>
             </div>
         </form>
@@ -210,9 +222,9 @@
     <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
     <!-- supports slider -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDurJrMJJ3BabzpN4CuHVEbMarLLBzmHz4&callback=initMap"
-        async defer></script>
-    <script src="assets/javascript/jquery.range-min.js"></script>
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDurJrMJJ3BabzpN4CuHVEbMarLLBzmHz4&callback=initMap"
+        async defer></script> -->
+    <!-- <script src="assets/javascript/jquery.range-min.js"></script> -->
     <script src="assets/javascript/app.js"></script>
 
 
