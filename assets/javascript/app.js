@@ -664,6 +664,7 @@ $(".slider-rate-1-5").slider({
     min: 1,
     max: 5,
     step: 1,
+    value: 3,
     change: function (event, ui) {
         let userRating = $("#dish-rating").slider("value");
         console.log(userRating);
@@ -671,11 +672,12 @@ $(".slider-rate-1-5").slider({
     }
 });
 
-$(".slider-rate-1-10").slider({
+$(".slider-rate-0-10").slider({
     range: false,
-    min: 1,
-    max: 5,
+    min: 0,
+    max: 10,
     step: 1,
+    value: 5,
     change: function (event, ui) {
         let userRating = $("#dish-rating").slider("value");
         console.log(userRating);
