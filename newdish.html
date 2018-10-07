@@ -19,8 +19,8 @@
 
 <body data-title="newdish-page">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Dish It</a>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+        <a class="navbar-brand" href="index.html">Dish It</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -29,36 +29,25 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="index.html"><i class="fas fa-utensils"></i> Home<span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="newdish.html">Add New Dish</a>
+                <li class="nav-item">
+                    <a class="nav-link active" href="newdish.html"><i class="fas fa-plus-circle"></i> Add It</a>
                 </li>
-                <!-- <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                        Dropdown
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </li> -->
-
             </ul>
         </div>
     </nav>
 
-    <div class="container">
-        <form class="w-100">
+    <div class="container add-dish-form mt-3 mb-3 rounded">
+        <h3 class="text-center pt-2">Rate a New Dish</h3>
+        <hr>
+        <form onsubmit="return false" class="w-100">
             <div class="row location">
-                <div class="col-6 form-group">
+                <div class="col-md-9 col-sm-12 form-group">
                     <label class="form-label" for="city-input"><strong>City</strong></label>
                     <input type="text" class="form-control" id="city-input" value="Atlanta" placeholder="Atlanta">
                 </div>
-                <div class="col-3 form-group">
+                <div class="col-md-3 col-sm-12 form-group">
                     <label class="form-label" for="state-input"><strong>State</strong></label>
                     <!-- change this to dropdown once js logic is fixed -->
                     <input id="state-input" class="form-control" value="GA" placeholder="GA"></input>
@@ -69,112 +58,151 @@
             </div>
             <div class="row" id="location-results"></div>
             <div class="row restaurant">
-                <div class="col-9 form-group">
+                <div class="col-md-9 col-sm-12 form-group">
                     <label class="form-label" for="restaurant-input"><strong>Restaurant Name</strong></label>
                     <input type="text" class="form-control" id="restaurant-input">
                 </div>
-                <div class="col-3 form-group d-flex align-items-end">
-                    <button class="btn" id="find-restaurant">Find Restaurant</button>
+                <div class="col-md-3 col-sm-12 form-group d-flex align-items-end">
+                    <button class="btn" type="button" data-toggle="collapse" data-target="#restaurant-results" id="find-restaurant">Find
+                        Restaurant</button>
                 </div>
-                <div class="col-12 restaurant-options">
-                    <p>Select the correct restaurant by address</p>
-                    <div class="restaurant-results"></div>
+                <div class="col-12 collapse restaurant-options" id="restaurant-results">
+                    Restaurant results here
                 </div>
             </div>
+            <hr class="mt-0 mb-2">
             <div class="row dish-details">
-                <div class="col-6">
-                    <form>
+                <div class="col-md-6 col-sm-12">
+                    <form onsubmit="return false">
                         <label class="form-label" for="dish-name-input"><strong>Dish Name</strong></label>
                         <input type="text" class="form-control" id="dish-name-input">
+                        <img id="myimg">
+                        <!-- following div is used to upload image files to firebase cloud storage.  These should be included in whatever div
+                                opens to enable the user to add a new rating.  -->
+                        <div id="filesubmit">
+                            <input type="file" class="file-select" accept="image/*" />
+                            <button class="file-submit mt-2 mb-2">Submit</button>
+                        </div>
                     </form>
                 </div>
-                <div class="col-6">
-                    <form>
-                            <img id="myimg">
-                            <!-- following div is used to upload image files to firebase cloud storage.  These should be included in whatever div
-                                opens to enable the user to add a new rating.  -->
-                            <div id="filesubmit">
-                                <input type="file" class="file-select" accept="image/*" />
-                                <button class="file-submit">SUBMIT</button>
-                            </div>
-                    </form>
+                <div class="col-md-6 col-sm-12 d-flex justify-content-center mt-3" id="new-image-box">
+                    <img id="new-image-view" src="https://via.placeholder.com/350x250">
                 </div>
             </div>
+            <hr>
             <div class="row dish-rating">
-                <div class="col-12 form-group">
-                    <form>
-                        <h5 class="form-label" for="rate-dish">How was the dish at this restaurant?</h5>
-                        <div class="w-100 d-flex justify-content-between">
-                            <p>"The Worst!" - 1</p>
-                            <p>"Fine" - 3</p>
-                            <p>"The Best!" - 5</p>
-                        </div>
-                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
-                        <div class="slider-rate-1-5" id="dish-rating"></div>
+                <div class="col-12 ml-0 d-inline-flex">
+                    <h5 class="align-middle"><i class="fas fa-star"></i> Rate It!</h5>
+                </div>
+                <div class="col-12 form-group mt-2">
+                    <form onsubmit="return false">
+                        <div class="slider-rate-1-5 mb-3" id="dish-rating"></div>
                     </form>
+                    <div class="w-100 row m-0">
+                        <p class="col-5 p-0 m-0">1 - The Worst!</p>
+                        <p class="col-2 m-0 text-center">3</p>
+                        <p class="col-5 text-right p-0 m-0">The Best! - 5</p>
+                    </div>
                 </div>
             </div>
             <div class="row dish-flavor">
-                <div class="col-12 form-group">
-                    <form>
-                        <h5 class="form-label" for="rate-dish">Judge the flavor profile</h5>
-                        <p>Sour</p>
-                        <div class="w-100 d-flex justify-content-between">
-                            <p>"Not sour" - 1</p>
-                            <p>"A little tart" - 5</p>
-                            <p>"Mouth puckering" - 10</p>
-                        </div>
-                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
-                        <div class="slider-rate-1-5 mb-2" id="dish-rating"></div>
-                        <p>Sweet</p>
-                        <div class="w-100 d-flex justify-content-between">
-                            <p>"Not sweet" - 1</p>
-                            <p>"Balanced" - 5</p>
-                            <p>"Sugar overload" - 10</p>
-                        </div>
-                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
-                        <div class="slider-rate-1-5 mb-2" id="dish-rating"></div>
-                        <p>Spicy</p>
-                        <div class="w-100 d-flex justify-content-between">
-                            <p>"Not spicy" - 1</p>
-                            <p>"I can handle this" - 5</p>
-                            <p>"Call 911" - 10</p>
-                        </div>
-                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
-                        <div class="slider-rate-1-5 mb-2" id="dish-rating"></div>
-                        <p>Salty</p>
-                        <div class="w-100 d-flex justify-content-between">
-                            <p>"Not salty" - 1</p>
-                            <p>"Balanced" - 5</p>
-                            <p>"Water, please" - 10</p>
-                        </div>
-                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
-                        <div class="slider-rate-1-5 mb-2" id="dish-rating"></div>
-                        <p>Umami</p>
-                        <div class="w-100 d-flex justify-content-between">
-                            <p>"Not meaty" - 1</p>
-                            <p>"Savory" - 5</p>
-                            <p>"Pure MSG" - 10</p>
-                        </div>
-                        <!-- <div id="slider-dish-rating" class="slider-1-4"></div> -->
-                        <div class="slider-rate-1-5 mb-2" id="dish-rating"></div>
+                <div class="col-12 ml-0 d-inline-flex">
+                    <h5 class="align-middle"><i class="fas fa-lemon"></i> Sour</h5>
+                </div>
+                <div class="col-12 form-group mt-2">
+                    <form onsubmit="return false">
+                        <div class="slider-rate-0-10 mb-3" id="sour-rating"></div>
                     </form>
+                    <div class="w-100 row m-0">
+                        <p class="col-5 p-0 m-0">1 - Not Sour</p>
+                        <p class="col-2 m-0 text-center">3</p>
+                        <p class="col-5 text-right p-0 m-0">Puckering! - 5</p>
+                    </div>
                 </div>
-                <div class="row comment">
-
+                <div class="col-12 ml-0 d-inline-flex">
+                    <h5 class="align-middle"><i class="fas fa-cookie-bite"></i> Sweet</h5>
                 </div>
+                <div class="col-12 form-group mt-2">
+                    <form onsubmit="return false">
+                        <div class="slider-rate-1-5 mb-3" id="sweet-rating"></div>
+                    </form>
+                    <div class="w-100 row m-0">
+                        <p class="col-5 p-0 m-0">1 - Not Sweet</p>
+                        <p class="col-2 m-0 text-center">3</p>
+                        <p class="col-5 text-right p-0 m-0">100% Sugar! - 5</p>
+                    </div>
+                </div>
+                <div class="col-12 ml-0 d-inline-flex">
+                    <h5 class="align-middle"><i class="fab fa-hotjar"></i> Spicy</h5>
+                </div>
+                <div class="col-12 form-group mt-2">
+                    <form onsubmit="return false">
+                        <div class="slider-rate-1-5 mb-3" id="spicy-rating"></div>
+                    </form>
+                    <div class="w-100 row m-0">
+                        <p class="col-5 p-0 m-0">1 - Not Spicy</p>
+                        <p class="col-2 m-0 text-center">3</p>
+                        <p class="col-5 text-right p-0 m-0">Call 911! - 5</p>
+                    </div>
+                </div>
+                <div class="col-12 ml-0 d-inline-flex">
+                    <h5 class="align-middle"><i class="fas fa-cubes"></i> Salty</h5>
+                </div>
+                <div class="col-12 form-group mt-2">
+                    <form onsubmit="return false">
+                        <div class="slider-rate-1-5 mb-3" id="salty-rating"></div>
+                    </form>
+                    <div class="w-100 row m-0">
+                        <p class="col-5 p-0 m-0">1 - Not Salty</p>
+                        <p class="col-2 m-0 text-center">3</p>
+                        <p class="col-5 text-right p-0 m-0">Water, Stat! - 5</p>
+                    </div>
+                </div>
+                <div class="col-12 ml-0 d-inline-flex">
+                    <h5 class="align-middle"><i class="fas fa-crow"></i> Umami</h5>
+                </div>
+                <div class="col-12 form-group mt-2">
+                    <form onsubmit="return false">
+                        <div class="slider-rate-1-5 mb-3" id="unami-rating"></div>
+                    </form>
+                    <div class="w-100 row m-0">
+                        <p class="col-5 p-0 m-0">1 - Not savory</p>
+                        <p class="col-2 m-0 text-center">3</p>
+                        <p class="col-5 text-right p-0 m-0">Pure MSG! - 5</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row comment">
+                <div class="col-12 form-group">
+                    <label class="form-label" for="restaurant-input">
+                        <h5><i class="fas fa-comments"></i> Comment about this dish</h5>
+                    </label>
+                    <input type="text" class="form-control" id="restaurant-input">
+                </div>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-outline-dark mb-3 mr-2" id="cancel-dish-btn"><a href="index.html">Cancel</a></button>
+                <button class="btn btn-outline-dark mb-3" id="add-dish-btn">Submit It!</button>
+            </div>
         </form>
     </div>
 
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
+    <!--JavaScript at end of body for optimized loading-->
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
     <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
     <!-- supports slider -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <script src="assets/javascript/app.js" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDurJrMJJ3BabzpN4CuHVEbMarLLBzmHz4&callback=initMap"
+        async defer></script>
+    <script src="assets/javascript/jquery.range-min.js"></script>
+    <script src="assets/javascript/app.js"></script>
 
 
 </body>
