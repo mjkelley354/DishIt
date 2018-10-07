@@ -59,10 +59,12 @@ function getTopX(recordsToReturn) {
 
     $(".tile-div").append(
         `
-            <table class="w-100 rounded table text-center">
+            <div class="card card-body">
+            <table class="table text-center">
                 <tbody id="dish-list">
                 </tbody>
             </table>
+            </div>
         `
     );
 
@@ -137,7 +139,12 @@ function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, d
         `
             <tr class="dish-tile" id="heading${i}" dish-id-value="${dishId}" data-toggle="collapse" data-target="#collapse${i}">
                 <td><img class="dish-tile-img" src="${dishImage}"></td>
-                <td class="align-middle"><h6>${dishName}<br>@${restaurantName}</h6></td>
+                <td class="align-middle">
+                    <div class="row">
+                        <h4 class="col-xs-12 col-md-6">${dishName}</h4>
+                        <h4 class="col-xs-12 col-md-6">@${restaurantName}</h4>
+                    </div>
+                </td>
                 <td class="align-middle">${getRating(avgRating)}<br>${getPrice(dishPrice)}</td>
             </tr>
             <tr>
