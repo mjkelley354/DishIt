@@ -569,7 +569,8 @@ function writeDishData(dishId, name, restaurantId, price, avgSourScale, avgSweet
         avgSaltyScale,
         avgUmamiScale,
         avgRating,
-        image
+        image,
+        numRatings,
     });
 }
 
@@ -682,6 +683,7 @@ function showRestOptions(rName, location) {
     // code radio buttons below - show on add rating for new dish page
     // use class rest-option for radio button options
 };
+
 
 $("#add-dish-btn").on("click", function(){
     // TODO: 
