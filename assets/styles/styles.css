@@ -25,6 +25,7 @@ table {
     min-width: 100%;
     min-height: 100%;
     -ms-interpolation-moode: bicubic;
+}
 
 .rating-icons {
     color: goldenrod;

@@ -137,7 +137,11 @@ function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, d
     $("tbody").prepend(
         `
             <tr class="dish-tile" id="heading${i}" dish-id-value="${dishId}" data-toggle="collapse" data-target="#collapse${i}">
-                <td class="p-1"><img class="dish-tile-img" src="${dishImage}"></td>
+                <td class="p-1">
+                    <div class="dish-tile-img-box">
+                        <img class="dish-tile-img" src="${dishImage}">
+                    </div>        
+                </td>
                 <td class="align-middle">
                     <div class="row">
                         <h5 class="col-xs-12 col-md-6 m-0">${dishName}</h5>
@@ -672,25 +676,18 @@ $(".slider-rate-1-5").slider({
     }
 });
 
-$(".slider-rate-0-10").slider({
-    range: false,
-    min: 0,
-    max: 10,
-    step: 1,
-    value: 5,
-    change: function (event, ui) {
-        let userRating = $("#dish-rating").slider("value");
-        console.log(userRating);
-        calculateRatingAvg(userRating);
-    }
-});
-
 // use this function to create radio button options for user to select correct restaurant from list of returned responses from Yelp
 function showRestOptions(rName, location) {
     console.log(rName, location);
     // code radio buttons below - show on add rating for new dish page
     // use class rest-option for radio button options
 };
+
+$("#add-dish-btn").on("click", function(){
+    // TODO: 
+    calculateRatingAvg();
+    // TODO: Go to dish average rating page on home screen
+});
 
 function calculateRatingAvg(num) {
     //TODO: calculate rating avg and store values in local storage for future calculation
