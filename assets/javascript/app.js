@@ -410,36 +410,9 @@ $(".map-modal").on('shown.bs.modal', function() {
     map.setCenter(myLatlng);
 });
 
-
-// IMAGES ********************************************************************************
-// following event listeners is used to work with buttons added to support image upload
-// by someone adding a rating
-$(".file-select").on("change", function (e) {
-    selectedFile = e.target.files[0];
-});
-
-// following event listeners is used to work with buttons added to support image upload
-// by someone adding a rating
-$(".file-submit").on("click", function (e) {
-    //create a child directory called images, and place the file inside this directory
-    const uploadTask = storageRef.child(`images/${selectedFile.name}`).put(selectedFile);
-    uploadTask.on('state_changed', (snapshot) => {
-        // Observe state change events such as progress, pause, and resume
-
-        // the downloadURL is critical to capture here
-        // TODO: on image upload capture URL and save to firebase in the .image property so we can use it to access image later
-        var downloadURL = uploadTask.snapshot.downloadURL;
-        console.log(downloadURL);
-    }, (error) => {
-        // Handle unsuccessful uploads
-        console.log(error);
-    }, () => {
-        // Do something once upload is complete
-        console.log('success');
-    });
-});
-
 // SLIDER SETTINGS ***********************************************************************
+// changed all sliders to be on a scale of 1-5
+
 function setValues(stepIncrease) {
     return function (event, ui) {
         var slider = $("#" + this.id);
@@ -472,7 +445,7 @@ $(".range-slider-1-10").jRange({
     isRange: true
 }); */
 
-$(".slider-1-10").slider({
+/* $(".slider-1-10").slider({
     range: true,
     min: 1,
     max: 10,
@@ -484,14 +457,14 @@ $(".slider-1-10").slider({
         var currentValues = slider.slider("values");
         $("#" + this.id + "-values").html(currentValues[0] + ' to ' + currentValues[1]);
     }
-});
+}); */
 
-$(".slider-1-4").slider({
+$(".slider-1-5").slider({
     range: true,
     min: 1,
-    max: 4,
+    max: 5,
     step: 1,
-    values: [1, 4],
+    values: [1, 5],
     slide: setValues(1),
     create: function (event, ui) {
         var slider = $("#" + this.id);
@@ -694,3 +667,31 @@ $("#add-dish-btn").on("click", function(){
 function calculateRatingAvg(num) {
     //TODO: calculate rating avg and store values in local storage for future calculation
 };
+
+// IMAGES ********************************************************************************
+// following event listeners is used to work with buttons added to support image upload
+// by someone adding a rating
+$(".file-select").on("change", function (e) {
+    selectedFile = e.target.files[0];
+});
+
+// following event listeners is used to work with buttons added to support image upload
+// by someone adding a rating
+$(".file-submit").on("click", function (e) {
+    //create a child directory called images, and place the file inside this directory
+    const uploadTask = storageRef.child(`images/${selectedFile.name}`).put(selectedFile);
+    uploadTask.on('state_changed', (snapshot) => {
+        // Observe state change events such as progress, pause, and resume
+
+        // the downloadURL is critical to capture here
+        // TODO: on image upload capture URL and save to firebase in the .image property so we can use it to access image later
+        var downloadURL = uploadTask.snapshot.downloadURL;
+        console.log(downloadURL);
+    }, (error) => {
+        // Handle unsuccessful uploads
+        console.log(error);
+    }, () => {
+        // Do something once upload is complete
+        console.log('success');
+    });
+});
