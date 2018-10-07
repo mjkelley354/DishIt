@@ -8,13 +8,17 @@ body {
 }
 
 table {
-    margin-top: 0px;
+    margin: 0px !important;
 }
 
 .dish-tile-img {
     border-radius: 50%;
-    height: 80px;
-    width: 80px;
+    height: 75px;
+    width: 75px;
+}
+
+.rating-icons {
+    color: goldenrod;
 }
 
 span {
@@ -24,4 +28,9 @@ span {
 
 .slider-row {
     margin-top: 15px;
+}
+
+/* NEW DISH PAGE */
+.add-dish-form {
+    background-color: ghostwhite;
 }

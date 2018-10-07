@@ -12,7 +12,6 @@
         crossorigin="anonymous">
     <!-- supports slider -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
-    <!-- <link rel="stylesheet" type="text/css" href="jquery.range.css"> -->
     <link rel="stylesheet" type="text/css" href="assets/styles/styles.css">
 
     <title>Dish It - Add New Dish</title>
@@ -21,7 +20,7 @@
 <body data-title="newdish-page">
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Dish It</a>
+        <a class="navbar-brand" href="index.html">Dish It</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -30,16 +29,18 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="index.html"><i class="fas fa-utensils"></i> Home<span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="newdish.html">Add New Dish</a>
+                <li class="nav-item">
+                    <a class="nav-link active" href="newdish.html"><i class="fas fa-plus-circle"></i> Add It</a>
                 </li>
             </ul>
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container add-dish-form mt-3">
+        <h3 class="text-center pt-2">Rate a New Dish</h3>
+        <hr>
         <form class="w-100">
             <div class="row location">
                 <div class="col-6 form-group">
@@ -65,10 +66,10 @@
                     <button class="btn" id="find-restaurant">Find Restaurant</button>
                 </div>
                 <div class="col-12 restaurant-options">
-                    <p>Select the correct restaurant by address</p>
                     <div class="restaurant-results"></div>
                 </div>
             </div>
+            <hr>
             <div class="row dish-details">
                 <div class="col-6">
                     <form>
@@ -78,13 +79,13 @@
                 </div>
                 <div class="col-6">
                     <form>
-                            <img id="myimg">
-                            <!-- following div is used to upload image files to firebase cloud storage.  These should be included in whatever div
+                        <img id="myimg">
+                        <!-- following div is used to upload image files to firebase cloud storage.  These should be included in whatever div
                                 opens to enable the user to add a new rating.  -->
-                            <div id="filesubmit">
-                                <input type="file" class="file-select" accept="image/*" />
-                                <button class="file-submit">SUBMIT</button>
-                            </div>
+                        <div id="filesubmit">
+                            <input type="file" class="file-select" accept="image/*" />
+                            <button class="file-submit">SUBMIT</button>
+                        </div>
                     </form>
                 </div>
             </div>

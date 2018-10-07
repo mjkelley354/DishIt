@@ -138,14 +138,15 @@ function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, d
     $("tbody").prepend(
         `
             <tr class="dish-tile" id="heading${i}" dish-id-value="${dishId}" data-toggle="collapse" data-target="#collapse${i}">
-                <td><img class="dish-tile-img" src="${dishImage}"></td>
+                <td class="p-1"><img class="dish-tile-img" src="${dishImage}"></td>
                 <td class="align-middle">
                     <div class="row">
-                        <h4 class="col-xs-12 col-md-6">${dishName}</h4>
-                        <h4 class="col-xs-12 col-md-6">@${restaurantName}</h4>
+                        <h5 class="col-xs-12 col-md-6 m-0">${dishName}</h5>
+                        <h5 class="col-xs-12 col-md-6 m-0">@${restaurantName}</h5>
                     </div>
                 </td>
-                <td class="align-middle">${getRating(avgRating)}<br>${getPrice(dishPrice)}</td>
+                <td class="align-middle rating-icons p-0">${getRating(avgRating)}<br><span style="color:black;">${getPrice(dishPrice)}</span>
+                </td>
             </tr>
             <tr>
                 <td colspan=5 class="collapse" id="collapse${i}">placeholder</td>
@@ -232,8 +233,9 @@ function getRating(avgRating) {
 
 // FILTER FUNCTION ********************************************************************************
 
-$(".filter-icon").on("click", function () {
+$(".filter-menu").on("click", function () {
     $(".filter-modal").modal('show');
+    console.log('filter');
 });
 
 // SEARCH FUNCTION *********************************************************************************
@@ -352,7 +354,7 @@ $(".save-user").on("click", function () {
 });
 
 // MAP FUNCTIONS ***************************************************************************
-$(".map-icon").on("click", function () {
+$(".map-menu").on("click", function () {
     $(".map-modal").modal('show');
 });
 
