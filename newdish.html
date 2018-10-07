@@ -41,7 +41,7 @@
     <div class="container add-dish-form mt-3 mb-3 rounded">
         <h3 class="text-center pt-2">Rate a New Dish</h3>
         <hr>
-        <form class="w-100">
+        <form onsubmit="return false" class="w-100">
             <div class="row location">
                 <div class="col-md-9 col-sm-12 form-group">
                     <label class="form-label" for="city-input"><strong>City</strong></label>
@@ -73,20 +73,20 @@
             <hr class="mt-0 mb-2">
             <div class="row dish-details">
                 <div class="col-md-6 col-sm-12">
-                    <form>
+                    <form onsubmit="return false">
                         <label class="form-label" for="dish-name-input"><strong>Dish Name</strong></label>
                         <input type="text" class="form-control" id="dish-name-input">
                         <img id="myimg">
                         <!-- following div is used to upload image files to firebase cloud storage.  These should be included in whatever div
                                 opens to enable the user to add a new rating.  -->
                         <div id="filesubmit">
-                            <input type="file" class="file-select mb-2" accept="image/*" />
-                            <button class="file-submit mb-2">Submit</button>
+                            <input type="file" class="file-select" accept="image/*" />
+                            <button class="file-submit mt-2 mb-2">Submit</button>
                         </div>
                     </form>
                 </div>
-                <div class="col-md-6 col-sm-12 image-box d-flex justify-content-center mt-3">
-                    <img src="https://via.placeholder.com/350x250">
+                <div class="col-md-6 col-sm-12 d-flex justify-content-center mt-3" id="new-image--box">
+                    <img id="new-image-view" src="https://via.placeholder.com/350x250">
                 </div>
             </div>
             <hr>
@@ -95,7 +95,7 @@
                     <h5 class="align-middle"><i class="fas fa-star"></i> Rate It!</h5>
                 </div>
                 <div class="col-12 form-group mt-2">
-                    <form>
+                    <form onsubmit="return false">
                         <div class="slider-rate-1-5 mb-3" id="dish-rating"></div>
                     </form>
                     <div class="w-100 row m-0">
@@ -110,7 +110,7 @@
                     <h5 class="align-middle"><i class="fas fa-lemon"></i> Sour</h5>
                 </div>
                 <div class="col-12 form-group mt-2">
-                    <form>
+                    <form onsubmit="return false">
                         <div class="slider-rate-0-10 mb-3" id="sour-rating"></div>
                     </form>
                     <div class="w-100 row m-0">
@@ -123,7 +123,7 @@
                     <h5 class="align-middle"><i class="fas fa-cookie-bite"></i> Sweet</h5>
                 </div>
                 <div class="col-12 form-group mt-2">
-                    <form>
+                    <form onsubmit="return false">
                         <div class="slider-rate-1-5 mb-3" id="sweet-rating"></div>
                     </form>
                     <div class="w-100 row m-0">
@@ -136,7 +136,7 @@
                     <h5 class="align-middle"><i class="fab fa-hotjar"></i> Spicy</h5>
                 </div>
                 <div class="col-12 form-group mt-2">
-                    <form>
+                    <form onsubmit="return false">
                         <div class="slider-rate-1-5 mb-3" id="spicy-rating"></div>
                     </form>
                     <div class="w-100 row m-0">
@@ -149,7 +149,7 @@
                     <h5 class="align-middle"><i class="fas fa-cubes"></i> Salty</h5>
                 </div>
                 <div class="col-12 form-group mt-2">
-                    <form>
+                    <form onsubmit="return false">
                         <div class="slider-rate-1-5 mb-3" id="salty-rating"></div>
                     </form>
                     <div class="w-100 row m-0">
@@ -162,7 +162,7 @@
                     <h5 class="align-middle"><i class="fas fa-crow"></i> Umami</h5>
                 </div>
                 <div class="col-12 form-group mt-2">
-                    <form>
+                    <form onsubmit="return false">
                         <div class="slider-rate-1-5 mb-3" id="unami-rating"></div>
                     </form>
                     <div class="w-100 row m-0">

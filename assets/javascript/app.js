@@ -37,6 +37,8 @@ if ($("body").attr("data-title") === "index-page") { // functions run on load of
 
         readLocalStorage(); // function to get user info from local storage
 
+        initMap();
+
     });
 };
 
@@ -392,7 +394,7 @@ function initMap() {
     var atlanta = {lat: 33.753746, lng: -84.386330};
     // The map, centered at Atlanta
     map = new google.maps.Map(
-        document.getElementById('map_canvas'), {zoom: 10, center: atlanta});
+        $('#map-canvas'), {zoom: 10, center: atlanta});
     // The marker, positioned at Atlanta
     //var marker = new google.maps.Marker({position: atlanta, map: map});
 }
@@ -678,14 +680,15 @@ $(".file-select").on("change", function (e) {
 // following event listeners is used to work with buttons added to support image upload
 // by someone adding a rating
 $(".file-submit").on("click", function (e) {
+    var downloadURL = "";
     //create a child directory called images, and place the file inside this directory
     const uploadTask = storageRef.child(`images/${selectedFile.name}`).put(selectedFile);
     uploadTask.on('state_changed', (snapshot) => {
         // Observe state change events such as progress, pause, and resume
 
         // the downloadURL is critical to capture here
-        // TODO: on image upload capture URL and save to firebase in the .image property so we can use it to access image later
-        var downloadURL = uploadTask.snapshot.downloadURL;
+        // on image upload capture URL and save to firebase in the .image property so we can use it to access image later
+        downloadURL = uploadTask.snapshot.downloadURL;
         console.log(downloadURL);
     }, (error) => {
         // Handle unsuccessful uploads
@@ -693,5 +696,10 @@ $(".file-submit").on("click", function (e) {
     }, () => {
         // Do something once upload is complete
         console.log('success');
+        console.log("photo");
+        // show new picture in view area
+        $("#new-image-view").attr("src", downloadURL);
     });
+
+    
 });

@@ -6,6 +6,9 @@ body {
     background-color: #588b8b !important;
 }
 
+.container {
+    max-width: 720px;
+}
 
 .card-body, tr {
     background-color: ghostwhite;
@@ -16,7 +19,7 @@ table {
     margin: 0px !important;
 }
 
-.dish-tile-img {
+.dish-tile-img-box {
     display: block;
     overflow: hidden;
     height: 60px;
@@ -28,8 +31,23 @@ table {
 .dish-tile-img {
     display: block;
     min-width: 100%;
-    min-height: 100%;
-    -ms-interpolation-moode: bicubic;
+    max-height: 100%;
+    -ms-interpolation-mode: bicubic;
+}
+
+#new-image-box {
+    display: block;
+    overflow: hidden;
+    height: 250px;
+    width: 350px;
+    background-position: center center;
+}
+
+#new-image-view {
+    display: block;
+    min-width: 100%;
+    max-height: 100%;
+    -ms-interpolation-mode: bicubic;
 }
 
 .rating-icons {
