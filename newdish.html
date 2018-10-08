@@ -70,29 +70,37 @@
                 </div>
             </div>
 
-
             <div class="row restaurant">
                 <div class="col-md-9 col-sm-12 form-group">
                     <label class="form-label" for="restaurant-input"><strong>Restaurant Name</strong></label>
                     <input type="text" class="form-control" id="restaurant-input">
+                </div>
+                <div class="col-12 collapse mb-2" id="restaurant-details-view">
+                    <p class="restaurant-details" id="address1-view">test</p>
+                    <p class="restaurant-details" id="address2-view">test</p>
+                    <p class="restaurant-details" id="phone-view">test</p>
                 </div>
                 <div class="col-md-3 col-sm-12 form-group d-flex align-items-end">
                     <button class="btn btn-outline-dark" id="find-restaurant">Find Restaurant</button>
                 </div>
                 <div class="col-12 collapse mb-2" id="restaurant-results-view">
                     <p><i>Verify the location of the restaurant</i></p>
-                    <div id="restaurant-results"></div>
-                    <button class="btn mt-2" id="select-restaurant-btn">Select</button>
+                    <div id="restaurant-results">
+                        <div class="row w-100 justify-content-center loading-gif">
+                            <img id="loading-burger-gif" src="assets/images/loading-burger.gif">
+                            <!-- <img id="loading-burger-gif" src="assets/images/loading-burger.gif">
+                            <img id="loading-burger-gif" src="assets/images/loading-burger.gif">    -->
+                        </div>
+                    </div>
+
+                    <button class="btn mt-2 mb-2" id="select-restaurant-btn">Select</button>
                 </div>
                 <!-- populate this section? -->
-                <div class="col-12 collapse mb-2 show" id="restaurant-details">
-                    <p id="address1-view"></p>
-                    <p id="address2-view"></p>
-                    <p id="phone-view"></p>
-                </div>
             </div>
+
             <div class="dish-div collapse show">
-                <hr class="mt-0 mb-2">
+                <hr class="mt-0">
+
                 <div class="row dish-details">
                     <div class="col-md-6 col-sm-12">
                         <label class="form-label" for="dish-name-input"><strong>Dish Name</strong></label>
