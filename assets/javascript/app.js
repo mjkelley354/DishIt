@@ -30,9 +30,8 @@ let mapPins = [];
 
 if ($("body").attr("data-title") === "index-page") { // functions run on load of index-page
 
-    $(document).ready(()=>{
-
-        //createTestData(); // do not uncomment unless you want to add test data back to firebase
+    $(document).ready(() => {
+        // createTestData(); // do not uncomment unless you want to add test data back to firebase
 
         getTopX(20); // get top 20 records by average rating
 
@@ -94,8 +93,8 @@ function getTopX(recordsToReturn) {
                     0,
                     "",
                     "",
-                    );
-                
+                );
+
                 createTile(keyValue,
                     dishesSnapshot.val().name,
                     dishesSnapshot.val().restaurantId,
@@ -103,7 +102,7 @@ function getTopX(recordsToReturn) {
                     dishesSnapshot.val().avgRating,
                     dishesSnapshot.val().image,
                     dishesSnapshot.val().price
-                );    
+                );
             });
         });
     });
@@ -111,25 +110,25 @@ function getTopX(recordsToReturn) {
 };
 
 function newDish(dishId, dishName, restaurantId, restaurantName, avgRating, avgSour, avgSweet, avgSpicy, avgSalty, avgUmami,
-    imgUrl, price, lat, long, address, phone){
-        const theDish = {
-            dishId: dishId,
-            dishName: dishName,
-            restaurantId: restaurantId,
-            restaurantName: restaurantName,
-            avgRating: avgRating,
-            avgSour: avgSour,
-            avgSweet: avgSweet,
-            avgSpicy: avgSpicy,
-            avgSalty: avgSpicy,
-            avgUmami: avgUmami,
-            imgUrl: imgUrl,
-            price: price, 
-            lat: lat,
-            long: long,
-            address: address,
-            phone: phone,
-        }
+    imgUrl, price, lat, long, address, phone) {
+    const theDish = {
+        dishId: dishId,
+        dishName: dishName,
+        restaurantId: restaurantId,
+        restaurantName: restaurantName,
+        avgRating: avgRating,
+        avgSour: avgSour,
+        avgSweet: avgSweet,
+        avgSpicy: avgSpicy,
+        avgSalty: avgSpicy,
+        avgUmami: avgUmami,
+        imgUrl: imgUrl,
+        price: price,
+        lat: lat,
+        long: long,
+        address: address,
+        phone: phone,
+    }
 
     dishArray.push(theDish);
 };
@@ -159,7 +158,7 @@ function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, d
             </tr>
         `
     );
-    i++;  
+    i++;
 };
 
 // TODO: use this function later for populating filtered results
@@ -184,15 +183,49 @@ function createTiles(dishArray) {
     }
 };
 
-$(document).on("click", ".dish-tile", function() {
+$(document).on("click", ".dish-tile", function () {
 
     console.log($(this));
     console.log($(this).attr("dish-id-value"));
-    const openSection = ($(this).attr("data-target"));
-    console.log(openSection);
+    let dishId = ($(this).attr("dish-id-value"));
+    let dataTargetId = ($(this).attr("data-target"));
+    $(`${dataTargetId}`).empty();
+
+    console.log(dishId);
+    console.log(dataTargetId);
     $(".collapse").collapse('hide');
 
-    $(`"${openSection}"`).text("change");
+     var dishes = db.ref('dishes');
+     let avgSaltyScale = "";
+     let avgSourScale = "";
+     let avgSpicyScale = "";
+     let avgSweetScale = "";
+     let avgUnamiScale = ""
+    
+    dishes.child("/" + dishId).once('value', function (dishesSnapshot) {
+         
+                avgSaltyScale = dishesSnapshot.val().avgSaltyScale;
+                console.log("salty " + avgSaltyScale);
+                avgSourScale = dishesSnapshot.val().avgSourScale;
+                console.log("sour " + avgSourScale);
+                avgSpicyScale = dishesSnapshot.val().avgSpicyScale;
+                console.log("spicy " + avgSpicyScale);
+                avgSweetScale = dishesSnapshot.val().avgSweetScale;
+                console.log("sweet " + avgSweetScale);
+                avgUmamiScale = dishesSnapshot.val().avgUmamiScale;
+                console.log("umami " + avgUmamiScale);
+        });
+
+
+   $(`${dataTargetId}`).append(
+        `<div class="card-body">
+            Salty: ${avgSaltyScale}
+             Sour: ${avgSourScale}
+             Spicy: ${avgSpicyScale}
+             Sweet: ${avgSweetScale}
+             Umani: ${avgUmamiScale}</div>
+            `
+    ) 
 });
 
 function getPrice(price) {
@@ -214,7 +247,7 @@ function getRating(avgRating) {
     if (Math.round(avgRating * 2) / 2 - stars === 0.5) {
         ratingValue = ratingValue.concat(`<i class="fas fa-star-half"></i>`);
     }
-    
+
     return ratingValue;
 }
 
@@ -264,14 +297,14 @@ $("#search-btn").on("click", function () {
 
                 dishes.child("/" + keyValue).once('value', function (dishesSnapshot) {
                     restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function (restaurantSnapshot) {
-                        
+
                         createTile(keyValue,
-                            dishesSnapshot.val().name, 
-                            dishesSnapshot.val().restaurantId, 
-                            restaurantSnapshot.val().name, 
-                            dishesSnapshot.val().avgRating, 
-                            dishesSnapshot.val().image, 
-                            dishesSnapshot.val().price); 
+                            dishesSnapshot.val().name,
+                            dishesSnapshot.val().restaurantId,
+                            restaurantSnapshot.val().name,
+                            dishesSnapshot.val().avgRating,
+                            dishesSnapshot.val().image,
+                            dishesSnapshot.val().price);
 
                         newDish(keyValue,
                             dishesSnapshot.val().name,
@@ -286,9 +319,9 @@ $("#search-btn").on("click", function () {
                             dishesSnapshot.val().image,
                             dishesSnapshot.val().price,
                             0,
-                            0,                                "",
+                            0, "",
                             "",
-                        );       
+                        );
                     });
                 });
             };
@@ -345,15 +378,18 @@ $(".map-menu").on("click", function () {
     $(".map-modal").modal('show');
 });
 
-function addToMap(restaurantName, position){
+function addToMap(restaurauntName, position) {
     // add a marker
-    let marker = new google.maps.Marker({position: position, map: map});
+    let marker = new google.maps.Marker({
+        position: position,
+        map: map
+    });
 
     // add an info window which shows details of dish / restauraunt
     /* TODO: add additional content to "content" property with whatever we want to show on the infoWindow, content can take form of HTML
-    */
-    marker.info =  new google.maps.InfoWindow({
-        content: restaurantName,
+     */
+    marker.info = new google.maps.InfoWindow({
+        content: restaurauntName,
         map: map,
         position: position
     });
@@ -365,7 +401,7 @@ function addToMap(restaurantName, position){
     google.maps.event.addListener(marker, 'mouseover', function() {
         marker.info.open(map, marker);
     });
-    google.maps.event.addListener(marker, 'mouseout', function() {
+    google.maps.event.addListener(marker, 'mouseout', function () {
         marker.info.close();
     });
 };
@@ -373,22 +409,28 @@ function addToMap(restaurantName, position){
 // initializes the map object
 function initMap() {
     // The location of Atlanta
-    var atlanta = {lat: 33.753746, lng: -84.386330};
+    var atlanta = {
+        lat: 33.753746,
+        lng: -84.386330
+    };
     // The map, centered at Atlanta
     map = new google.maps.Map(
-        $('#map-canvas'), {zoom: 10, center: atlanta});
+        $('#map-canvas'), {
+            zoom: 10,
+            center: atlanta
+        });
     // The marker, positioned at Atlanta
     //var marker = new google.maps.Marker({position: atlanta, map: map});
 }
 
 // resize the map to fit on the modal
-$(".map-modal").on('show.bs.modal', function(event) {
+$(".map-modal").on('show.bs.modal', function (event) {
     $("#location-map").css("width", "100%");
     $("#map_canvas").css("width", "100%");
 });
 
 // Trigger map resize event after modal shown
-$(".map-modal").on('shown.bs.modal', function() {
+$(".map-modal").on('shown.bs.modal', function () {
     google.maps.event.trigger(map, "resize");
     myLatlng = new google.maps.LatLng(33.753746, -84.386330)
     map.setCenter(myLatlng);
@@ -524,7 +566,7 @@ function writeDishData(dishId, name, restaurantId, price, avgSourScale, avgSweet
 // ADD NEW DISH PAGE ************************************************************************
 
 if ($("body").attr("data-title") === "newdish-page") {
-    $(document).ready(function(){
+    $(document).ready(function () {
 
         // TODO: trying to auto-populate state field on newdish.html - the below does not work
         /* const states = ["AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IA", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NE", "NH", "NV", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
@@ -537,7 +579,7 @@ if ($("body").attr("data-title") === "newdish-page") {
                 `
             )
         } */
-    
+
     });
 };
 
@@ -545,10 +587,10 @@ if ($("body").attr("data-title") === "newdish-page") {
 
 // click button to find restaurant city, state, and restaurant name. Use an API call to YELP.
 let rNameInput = "";
-$("#find-restaurant").on("click", function(){
+$("#find-restaurant").on("click", function () {
     const location = $("#city-input").val().trim() + ", " + $("#state-input").val().trim();
     rNameInput = $("#restaurant-input").val().trim();
-    
+
     // initiate ajax call to yelp
     // TURN THIS BACK ON FOR REAL DATA CALLS - USE TESTING DATA BELOW FOR DEVELOPMENT
     // getRestaurant(location, rNameInput);
@@ -588,7 +630,7 @@ function getRestaurant(location, rName) {
 
         console.log(response);
         const restaurants = response.businesses;
-        
+
         // parse response into variables (some of these may not be needed here -- delete later)      
         let matches = 0;
         for (let i in restaurants) {
@@ -599,7 +641,7 @@ function getRestaurant(location, rName) {
                 matches++;
                 console.log(`${rName} matches ${rNameInput}`);
                 showRestOptions(restaurants[i], i);
-            
+
                 /* const id = restaurants[i].id;
                 const price = restaurants[i].price;
                 const location = restaurants[i].location;
@@ -627,7 +669,7 @@ function getRestaurant(location, rName) {
             // show name of singular matching restaurant and store to local storage
             $("#restaurant-input").val(rName);
             localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
-            localStorage.setItem("rIndex",0);
+            localStorage.setItem("rIndex", 0);
             // TODO: disable location and restaurant fields from additional data entry
         }; */
     });
@@ -655,7 +697,7 @@ function showRestOptions(restaurant, i) {
 };
 
 // save matching restaurants to local storage with index of selected restaurant
-$("#select-restaurant-btn").on("click", function(){
+$("#select-restaurant-btn").on("click", function () {
     const selected = $("input[name=r-option]:checked")
     console.log(selected);
     console.log(selected.attr("phone"));
@@ -680,7 +722,7 @@ $("#select-restaurant-btn").on("click", function(){
 
 // ENTER DISH NAME AND CHECK AND PRE-POPULATE WITH USER'S RATING IF AVAILABLE
 // TODO: after xx seconds retrieve existing dish data if user has entered same dish restaurant info
-$("#dish-name-input").change(function(){
+$("#dish-name-input").change(function () {
 
     // wait 3 seconds to run next function
     // if city, state, restaurant, and dish name equal to user's existing rating, then retrieve rating and set values on form
@@ -735,19 +777,17 @@ $(".slider-rate-1-5").slider({
     max: 5,
     step: 1,
     value: 3,
-    change: function (event, ui) { 
-    },
+    change: function (event, ui) {},
 });
 
 // CANCEL OR SUBMIT RESULTS AND CALCULATE AVERAGE ******************************
 
 // return to homepage if cancel button is clicked
-$("#cancel-dish-btn").on("click", function(){
-    window.location.href="index.html";
+$("#cancel-dish-btn").on("click", function () {
+    window.location.href = "index.html";
 });
 
-// submitting dish new restaurants, new dishes, and user ratings to firebase and calculates and stores averages
-$("#add-dish-btn").on("click", function(){
+$("#add-dish-btn").on("click", function () {
     const rIndex = localStorage.getItem("rIndex");
     const restaurant = JSON.parse(localStorage.getItem("restaurants"));
     const yelpDataObject = restaurant[rIndex];
