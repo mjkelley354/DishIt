@@ -199,17 +199,6 @@ $(document).on("click", ".dish-tile", function() {
             </div>
         </div> */
 
-        $(".slider-show-1-10").slider({
-            range: false,
-            min: 1,
-            max: 10,
-            step: 1,
-            create: function (event, ui) {
-                //fix this to pull from firebase and fix dishid reference
-                let num = `$("${dishId}-sour-value").slider("value", 7)`;
-                console.log("dish:", dishId);
-            }
-        });
 
 });
 
@@ -577,9 +566,10 @@ $("#find-restaurant").on("click", function(){
     const location = $("#city-input").val().trim() + ", " + $("#state-input").val().trim();
     const rName = $("#restaurant-input").val().trim();
     
+    $("#restaurant-results").empty();
     getRestaurant(location, rName);
-    console.log(location, rName);
-})
+    $("#restaurant-results-view").collapse("show");
+});
 
 // get restaurant information from yelp
 function getRestaurant(location, rName) {
@@ -628,15 +618,20 @@ function showRestOptions(restaurant, i) {
     // TODO: only run if the search string is in the restaurant name
     $("#restaurant-results").append(
         `
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="rOptions" id="rOption-${i}" value="${restaurant.id}">
+            <div class="form-check r-option">
+                <input class="form-check-input" type="radio" name="r-option" id="r-option-${i}" value="${restaurant.id}">
                 <label class="form-check-label" for="rOption-${i}">
-                    ${restaurant.name}: ${restaurant.location.address1}, ${restaurant.location.city}, ${restaurant.location.state}, ${restaurant.location.zip_code}
+                    ${restaurant.name}: ${restaurant.location.address1}, ${restaurant.location.city} ${restaurant.location.state}, ${restaurant.location.zip_code}
                 </label>
             </div>
         `
     )
 };
+
+$("#select-restaurant-btn").on("click", function(){
+    console.log("hi");
+    console.log($("input[name=r-option]:checked").val());
+});
 
 function selectRestaurant(response) {
     const dishes = db.ref("dishes");
