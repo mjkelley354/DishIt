@@ -542,7 +542,7 @@ function writeDishData(dishId, name, restaurantId, price, avgSourScale, avgSweet
 
 if ($("body").attr("data-title") === "newdish-page") {
     $(document).ready(function(){
-    
+
         // TODO: trying to auto-populate state field on newdish.html - the below does not work
         /* const states = ["AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IA", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NE", "NH", "NV", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
     
@@ -558,20 +558,27 @@ if ($("body").attr("data-title") === "newdish-page") {
     });
 };
 
-$(document).on("click", ".rest-option-select", function () {
-    // call selectRestaurant function - pass id
-})
+// SELECT LOCATION AND RESTAURANT ***************************************************
 
+// click button to find restaurant city, state, and restaurant name. Use an API call to YELP.
+let rNameInput = "";
 $("#find-restaurant").on("click", function(){
     const location = $("#city-input").val().trim() + ", " + $("#state-input").val().trim();
-    const rName = $("#restaurant-input").val().trim();
+    rNameInput = $("#restaurant-input").val().trim();
     
-    $("#restaurant-results").empty();
-    getRestaurant(location, rName);
-    $("#restaurant-results-view").collapse("show");
+    // initiate ajax call to yelp
+    // TURN THIS BACK ON WHEN DAILY CALLS ARE NO LONGER BLOCKED
+    // getRestaurant(location, rNameInput);
+
+    // refresh and show restaurant results section
+    /* $("#restaurant-results").empty()
+        .removeClass("errorMessage");
+    $("#restaurant-results-view").collapse("show"); */
 });
 
 // get restaurant information from yelp
+let matchingRestaurants = [];
+
 function getRestaurant(location, rName) {
     const restaurantURL = `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?` + $.param({
         term: rName,
@@ -590,50 +597,152 @@ function getRestaurant(location, rName) {
 
         console.log(response);
         const restaurants = response.businesses;
-        console.log(restaurants.length);
-
+        
+        // parse response into variables (some of these may not be needed here -- delete later)      
+        let matches = 0;
         for (let i in restaurants) {
-            const id = restaurants[i].id;
-            const price = restaurants[i].price;
-            const rName = restaurants[i].name;
-            const location = restaurants[i].location;
-            // const coordinates = restaurants[i].coordinates;
-            const phone = restaurants[i].display_phone;
-            const restaurantLatLong = {
-                lat: restaurants[i].coordinates.latitude, 
-                lng: restaurants[i].coordinates.longitude,
-            };
 
-            // QUESTION FOR MIKE: does this need to be added to the map at this point? The map should be rendered from the list of dishes on the first page
-            // addToMap(rName, restaurantLatLong);
-            showRestOptions(restaurants[i], i);
+            // only capture restaurant name if search string is included in some part of restaurant's name
+            const rName = restaurants[i].name;
+            if (rName.toLowerCase().includes(rNameInput.toLowerCase())) {
+                matches++;
+                console.log(`${rName} matches ${rNameInput}`);
+                showRestOptions(restaurants[i], i);
+            
+                /* const id = restaurants[i].id;
+                const price = restaurants[i].price;
+                const location = restaurants[i].location;
+                const phone = restaurants[i].display_phone;
+                const restaurantLatLong = {
+                    lat: restaurants[i].coordinates.latitude, 
+                    lng: restaurants[i].coordinates.longitude,
+                }; */
+
+                // QUESTION FOR MIKE: I think the map should be rendered from the list of dishes on the first page
+                // addToMap(rName, restaurantLatLong);
+            };
+        };
+
+        if (matches === 0) {
+            $("#restaurant-results").empty()
+                .addClass("errorMessage")
+                .text("No matches found. Try a different search.");
+        } else if (matches > 1) {
+            $("#restaurant-results").empty()
+                .removeClass("errorMessage");
+            $("#restaurant-results-view").collapse("show");
+        } else {
+            // TODO: verify this section is working once yelp ajax is back online
+            // show name of singular matching restaurant and store to local storage
+            $("#restaurant-input").val(rName);
+            localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
+            localStorage.setItem("rIndex",0);
+            // TODO: disable location and restaurant fields from additional data entry
         };
     });
 };
 
-// use this function to create radio button options for user to select correct restaurant from list of returned responses from Yelp
+// function to create radio button options for user to select correct restaurant from list of returned responses from Yelp
 function showRestOptions(restaurant, i) {
     console.log(restaurant, i);
+    matchingRestaurants.push(restaurant);
 
-    // TODO: only run if the search string is in the restaurant name
     $("#restaurant-results").append(
         `
             <div class="form-check r-option">
-                <input class="form-check-input" type="radio" name="r-option" id="r-option-${i}" value="${restaurant.id}">
+                <input class="form-check-input" type="radio" name="r-option" id="r-option-${i}" value="${restaurant.id}" index="${i}" r-name="${restaurant.name}">
                 <label class="form-check-label" for="rOption-${i}">
                     ${restaurant.name}: ${restaurant.location.address1}, ${restaurant.location.city} ${restaurant.location.state}, ${restaurant.location.zip_code}
                 </label>
             </div>
         `
-    )
+    );
 };
 
+// save matching restaurants to local storage with index of selected restaurant
 $("#select-restaurant-btn").on("click", function(){
-    console.log("hi");
-    console.log($("input[name=r-option]:checked").val());
+    const selected = $("input[name=r-option]:checked")
+
+    // save matching restaurants and index of selected restaurant to local storage
+    localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
+    localStorage.setItem("rIndex",selected.attr("index"));
+
+    // show selected restaurant name in restaurant-input field
+    $("#restaurant-input").val(selected.attr("r-name"));
+    $("#restaurant-results-view").collapse("hide");
+
+    // TODO: disable input into location and restaurant name fields
+    // TODO: add reset button to enable these fields again
 });
 
-function selectRestaurant(response) {
+
+
+// ENTER DISH NAME AND CHECK AND PRE-POPULATE WITH USER'S RATING IF AVAILABLE
+// TODO: after xx seconds retrieve existing dish data if user has entered same dish restaurant info
+$("#dish-name-input").change(function(){
+
+    // wait 3 seconds to run next function
+    // if city, state, restaurant, and dish name equal to user's existing rating, then retrieve rating and set values on form
+    getDishRating();
+    // else do nothing
+})
+
+function getDishRating() {
+    // TODO: get user's dish rating from firebase and populate values on screen
+};
+
+// DISH RATING AND FLAVOR PROFILE **********************************************
+
+// sliders with single value selector for rating dishes
+$(".slider-rate-1-5").slider({
+    range: false,
+    min: 1,
+    max: 5,
+    step: 1,
+    value: 3,
+    change: function (event, ui) { 
+    },
+});
+
+// CANCEL OR SUBMIT RESULTS AND CALCULATE AVERAGE ******************************
+
+// return to homepage if cancel button is clicked
+$("#cancel-dish-btn").on("click", function(){
+    window.location.href="index.html";
+});
+
+$("#add-dish-btn").on("click", function(){
+    const rIndex = localStorage.getItem("rIndex");
+    const restaurant = JSON.parse(localStorage.getItem("restaurants"));
+    const city = $("#city-input").val();
+    const state = $("#state-input").val();
+    const rating = $("#dish-rating").slider("value");
+    const sour = $("#sour-rating").slider("value");
+    const sweet = $("#sweet-rating").slider("value");
+    const spicy = $("#spicy-rating").slider("value");
+    const salty = $("#salty-rating").slider("value");
+    const umami = $("#umami-rating").slider("value");
+    const comment = $("#dish-comment").val();
+
+    console.log(rating, sour, sweet, spicy, salty, umami, comment);
+    console.log(rIndex);
+    console.log(restaurant);
+    console.log(restaurant[rIndex].id);
+
+    // dummy user settings
+    const userCity = "Atlanta";
+    const userState = "GA";
+    const userEmail = "myemail@email.com";
+    const userName = "Tom Jones";
+
+    // determine if restaurant is already in firebase
+    addRestaurant();
+    // determine if dish is already in firebase
+    calculateRatingAvg();
+    // TODO: Go to dish average rating page on home screen
+});
+
+function addRestaurant(response) {
     const dishes = db.ref("dishes");
     const restaurants = db.ref("restaurants");
 
@@ -647,80 +756,19 @@ function selectRestaurant(response) {
     });
 };
 
-const dishRating = "";
-const sour = "";
-const sweet = "";
-const spicy = "";
-const salty = "";
-const umami = "";
-
-// TODO: after xx seconds retrieve existing dish data if user has entered same dish restaurant info
-$("#dish-name-input").change(function(){
-
-    // wait 3 seconds to run next function
-    // if city, state, restaurant, and dish name equal to user's existing rating, then retrieve rating and set values on form
-    getDishRating();
-    // else do nothing
-})
-
-function getDishRating() {
-    // get user's dish rating from firebase and populate values on screen
-};
-
-// sliders with single value selector for rating dishes
-$(".slider-rate-1-5").slider({
-    range: false,
-    min: 1,
-    max: 5,
-    step: 1,
-    value: 3,
-    change: function (event, ui) {
-        const userRating = $("#dish-rating").slider("value");
-        const ratedElement = $(this).attr("id");
-        calculateRatingAvg(userRating, ratedElement);
-        console.log(userRating);
-        console.log($(this).attr("id"));
-        // localStorage.setItem(ratedElement,userRating);
-    },
-});
-
-$("#cancel-dish-btn").on("click", function(){
-    window.location.href="index.html";
-});
-
-$("#add-dish-btn").on("click", function(){
-
-    // determine if dish is already in firebase
-    calculateRatingAvg();
-    // TODO: Go to dish average rating page on home screen
-});
-
 function calculateRatingAvg(num) {
     //TODO: calculate rating avg and store values in local storage for future calculation
     // if new rating, increase total number of ratings by one and calculate average
     // if updated rating, do not increase number of total ratings for dish, subtract old rating, and calculate with new rating
 };
 
-// test code for vertical slider
-/* $(".slider-vertical-1-5").slider({
-    orientation: "vertical",
-    range: false,
-    min: 1,
-    max: 5,
-    step: 1,
-    value: 3,
-    change: function (event, ui) {
-        let userRating = $("#dish-rating").slider("value");
-        console.log(userRating);
-        calculateRatingAvg(userRating);
-    }
-}); */
-
 // IMAGES ********************************************************************************
 // following event listeners is used to work with buttons added to support image upload
 // by someone adding a rating
 $(".file-select").on("change", function (e) {
     selectedFile = e.target.files[0];
+    console.log(selectedFile);
+    $("#image-file-name").text(`File Name: ${selectedFile.name}`);
 });
 
 // following event listeners is used to work with buttons added to support image upload
@@ -746,6 +794,4 @@ $(".file-submit").on("click", function (e) {
         // show new picture in view area
         $("#new-image-view").attr("src", downloadURL);
     });
-
-    
 });
