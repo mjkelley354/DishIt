@@ -36,6 +36,9 @@
                 </li>
             </ul>
         </div>
+        <div class="text-right m-0 p-0" id="yelp-logo-div">
+            Restaurant search powered by <img id="yelp-logo" src="assets/images/yelp_fullcolor.png">
+        </div>
     </nav>
 
     <div class="container add-dish-form mt-3 mb-3 rounded">
@@ -55,17 +58,18 @@
                 <!--  <div class="col-3 form-group d-flex align-items-end">
                     <button class="btn" type="button" data-toggle="collapse" data-target="#location-results-view" id="find-city">Find City</button>
                 </div> -->
-            </div>
-            <!-- This div will be active once we allow searches for more than one location -->
-            <div class="row collapse" id="location-results-view">
-                <p><i>Verify location</i></p>
-                <div class="form-check" id="location-results">
-                    <input class="form-check-input" type="radio" name="test" id="test" value="test-value">
-                    <label class="form-check-label" for="test">
-                        test label
-                    </label>
+                <!-- This div will be active once we allow searches for more than one location -->
+                <div class="col-12 collapse mb-2" id="location-results-view">
+                    <p><i>Verify location</i></p>
+                    <div class="form-check" id="location-results">
+                        <input class="form-check-input" type="radio" name="test" id="test" value="test-value">
+                        <label class="form-check-label" for="test">
+                            test label
+                        </label>
+                    </div>
                 </div>
             </div>
+
 
             <div class="row restaurant">
                 <div class="col-md-9 col-sm-12 form-group">
@@ -73,37 +77,40 @@
                     <input type="text" class="form-control" id="restaurant-input">
                 </div>
                 <div class="col-md-3 col-sm-12 form-group d-flex align-items-end">
-                    <button class="btn" id="find-restaurant">Find Restaurant</button>
+                    <button class="btn btn-outline-dark" id="find-restaurant">Find Restaurant</button>
                 </div>
-                <div class="col-12 collapse mb-2 show" id="restaurant-results-view">
+
+                <div class="col-12 collapse mb-2" id="restaurant-results-view">
                     <p><i>Verify the location of the restaurant</i></p>
                     <div id="restaurant-results"></div>
                     <button class="btn mt-2" id="select-restaurant-btn">Select</button>
                 </div>
             </div>
-
-            <hr class="mt-0 mb-2">
-            <div class="row dish-details">
-                <div class="col-md-6 col-sm-12">
-                    <form onsubmit="return false">
+            <div class="dish-div collapse show">
+                <hr class="mt-0 mb-2">
+                <div class="row dish-details">
+                    <div class="col-md-6 col-sm-12">
                         <label class="form-label" for="dish-name-input"><strong>Dish Name</strong></label>
                         <input type="text" class="form-control" id="dish-name-input">
                         <img id="myimg">
                         <!-- following div is used to upload image files to firebase cloud storage.  These should be included in whatever div
                                 opens to enable the user to add a new rating.  -->
                         <div id="filesubmit">
-                            <input type="file" class="file-select" accept="image/*" />
-                            <button class="file-submit mt-2 mb-2">Submit</button>
+                            <p><strong>Add Image</strong></p>
+                            <p id="image-file-name"></p>
+                            <label class="custom-file-select border border-dark rounded px-2 py-2">
+                                <input id="file-select" type="file" class="file-select" accept="image/*" />Choose File
+                            </label>
+                            <button class="file-submit mt-2 mb-2 py-2 btn btn-outline-dark">Submit</button>
                         </div>
-                    </form>
+                    </div>
+                    <div class="col-md-6 col-sm-12 d-flex justify-content-center mt-3" id="new-image-box">
+                        <img id="new-image-view" src="https://via.placeholder.com/350x250">
+                    </div>
                 </div>
-                <div class="col-md-6 col-sm-12 d-flex justify-content-center mt-3" id="new-image-box">
-                    <img id="new-image-view" src="https://via.placeholder.com/350x250">
-                </div>
-            </div>
-            <hr>
-            <!-- sample vertical style slider -->
-            <!--  <div class="row dish-rating">
+                <hr>
+                <!-- sample vertical style slider -->
+                <!--  <div class="row dish-rating">
                 <div class="col ml-0 d-flex flex-column justify-content-center">
                     <h5 class="align-middle"><i class="fas fa-star"></i> Rate It!</h5>
                     <p class="p-0 m-0">The Best! - 5</p>
@@ -113,99 +120,88 @@
                     <p class="p-0 m-0">1 - The Worst!</p>
                 </div>
             </div> -->
-            <div class="row dish-rating">
-                <div class="col-12 ml-0 d-inline-flex">
-                    <h5 class="align-middle"><i class="fas fa-star"></i> Rate It!</h5>
-                </div>
-                <div class="col-12 form-group mt-2">
-                    <form onsubmit="return false">
+                <div class="row dish-rating">
+                    <div class="col-12 ml-0 d-inline-flex">
+                        <h5 class="align-middle"><i class="fas fa-star"></i> Rate It!</h5>
+                    </div>
+                    <div class="col-12 form-group mt-2">
                         <div class="slider-rate-1-5 mb-3" id="dish-rating"></div>
-                    </form>
-                    <div class="w-100 row m-0">
-                        <p class="col-5 p-0 m-0">1 - The Worst!</p>
-                        <p class="col-2 m-0 text-center">3</p>
-                        <p class="col-5 text-right p-0 m-0">The Best! - 5</p>
+                        <div class="w-100 row m-0">
+                            <p class="col-5 p-0 m-0">1 - The Worst!</p>
+                            <p class="col-2 m-0 text-center">3</p>
+                            <p class="col-5 text-right p-0 m-0">The Best! - 5</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row dish-flavor">
-                <div class="col-12 ml-0 d-inline-flex">
-                    <h5 class="align-middle"><i class="fas fa-lemon"></i> Sour</h5>
-                </div>
-                <div class="col-12 form-group mt-2">
-                    <form onsubmit="return false">
+                <div class="row dish-flavor">
+                    <div class="col-12 ml-0 d-inline-flex">
+                        <h5 class="align-middle"><i class="fas fa-lemon"></i> Sour</h5>
+                    </div>
+                    <div class="col-12 form-group mt-2">
                         <div class="slider-rate-1-5 mb-3" id="sour-rating"></div>
-                    </form>
-                    <div class="w-100 row m-0">
-                        <p class="col-5 p-0 m-0">1 - Not Sour</p>
-                        <p class="col-2 m-0 text-center">3</p>
-                        <p class="col-5 text-right p-0 m-0">Puckering! - 5</p>
+                        <div class="w-100 row m-0">
+                            <p class="col-5 p-0 m-0">1 - Not Sour</p>
+                            <p class="col-2 m-0 text-center">3</p>
+                            <p class="col-5 text-right p-0 m-0">Puckering! - 5</p>
+                        </div>
                     </div>
-                </div>
-                <div class="col-12 ml-0 d-inline-flex">
-                    <h5 class="align-middle"><i class="fas fa-cookie-bite"></i> Sweet</h5>
-                </div>
-                <div class="col-12 form-group mt-2">
-                    <form onsubmit="return false">
+                    <div class="col-12 ml-0 d-inline-flex">
+                        <h5 class="align-middle"><i class="fas fa-cookie-bite"></i> Sweet</h5>
+                    </div>
+                    <div class="col-12 form-group mt-2">
                         <div class="slider-rate-1-5 mb-3" id="sweet-rating"></div>
-                    </form>
-                    <div class="w-100 row m-0">
-                        <p class="col-5 p-0 m-0">1 - Not Sweet</p>
-                        <p class="col-2 m-0 text-center">3</p>
-                        <p class="col-5 text-right p-0 m-0">100% Sugar! - 5</p>
+                        <div class="w-100 row m-0">
+                            <p class="col-5 p-0 m-0">1 - Not Sweet</p>
+                            <p class="col-2 m-0 text-center">3</p>
+                            <p class="col-5 text-right p-0 m-0">100% Sugar! - 5</p>
+                        </div>
                     </div>
-                </div>
-                <div class="col-12 ml-0 d-inline-flex">
-                    <h5 class="align-middle"><i class="fab fa-hotjar"></i> Spicy</h5>
-                </div>
-                <div class="col-12 form-group mt-2">
-                    <form onsubmit="return false">
+                    <div class="col-12 ml-0 d-inline-flex">
+                        <h5 class="align-middle"><i class="fab fa-hotjar"></i> Spicy</h5>
+                    </div>
+                    <div class="col-12 form-group mt-2">
                         <div class="slider-rate-1-5 mb-3" id="spicy-rating"></div>
-                    </form>
-                    <div class="w-100 row m-0">
-                        <p class="col-5 p-0 m-0">1 - Not Spicy</p>
-                        <p class="col-2 m-0 text-center">3</p>
-                        <p class="col-5 text-right p-0 m-0">Call 911! - 5</p>
+                        <div class="w-100 row m-0">
+                            <p class="col-5 p-0 m-0">1 - Not Spicy</p>
+                            <p class="col-2 m-0 text-center">3</p>
+                            <p class="col-5 text-right p-0 m-0">Call 911! - 5</p>
+                        </div>
                     </div>
-                </div>
-                <div class="col-12 ml-0 d-inline-flex">
-                    <h5 class="align-middle"><i class="fas fa-cubes"></i> Salty</h5>
-                </div>
-                <div class="col-12 form-group mt-2">
-                    <form onsubmit="return false">
+                    <div class="col-12 ml-0 d-inline-flex">
+                        <h5 class="align-middle"><i class="fas fa-cubes"></i> Salty</h5>
+                    </div>
+                    <div class="col-12 form-group mt-2">
                         <div class="slider-rate-1-5 mb-3" id="salty-rating"></div>
-                    </form>
-                    <div class="w-100 row m-0">
-                        <p class="col-5 p-0 m-0">1 - Not Salty</p>
-                        <p class="col-2 m-0 text-center">3</p>
-                        <p class="col-5 text-right p-0 m-0">Water, Stat! - 5</p>
+                        <div class="w-100 row m-0">
+                            <p class="col-5 p-0 m-0">1 - Not Salty</p>
+                            <p class="col-2 m-0 text-center">3</p>
+                            <p class="col-5 text-right p-0 m-0">Water, Stat! - 5</p>
+                        </div>
                     </div>
-                </div>
-                <div class="col-12 ml-0 d-inline-flex">
-                    <h5 class="align-middle"><i class="fas fa-crow"></i> Umami</h5>
-                </div>
-                <div class="col-12 form-group mt-2">
-                    <form onsubmit="return false">
+                    <div class="col-12 ml-0 d-inline-flex">
+                        <h5 class="align-middle"><i class="fas fa-crow"></i> Umami</h5>
+                    </div>
+                    <div class="col-12 form-group mt-2">
                         <div class="slider-rate-1-5 mb-3" id="unami-rating"></div>
-                    </form>
-                    <div class="w-100 row m-0">
-                        <p class="col-5 p-0 m-0">1 - Not savory</p>
-                        <p class="col-2 m-0 text-center">3</p>
-                        <p class="col-5 text-right p-0 m-0">Pure MSG! - 5</p>
+                        <div class="w-100 row m-0">
+                            <p class="col-5 p-0 m-0">1 - Not savory</p>
+                            <p class="col-2 m-0 text-center">3</p>
+                            <p class="col-5 text-right p-0 m-0">Pure MSG! - 5</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row comment">
-                <div class="col-12 form-group">
-                    <label class="form-label" for="restaurant-input">
-                        <h5><i class="fas fa-comments"></i> Comment about this dish</h5>
-                    </label>
-                    <input type="text" class="form-control" id="restaurant-input">
+                <div class="row comment">
+                    <div class="col-12 form-group">
+                        <label class="form-label" for="restaurant-input">
+                            <h5><i class="fas fa-comments"></i> Add a comment about this dish</h5>
+                        </label>
+                        <input type="text" class="form-control" id="restaurant-input">
+                    </div>
                 </div>
-            </div>
-            <div class="d-flex justify-content-end">
-                <button class="btn btn-outline-dark mb-3 mr-2" id="cancel-dish-btn">Cancel</button>
-                <button class="btn btn-outline-dark mb-3" id="add-dish-btn">Submit It!</button>
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-outline-dark mb-3 mr-2" id="cancel-dish-btn">Cancel</button>
+                    <button class="btn btn-outline-dark mb-3" id="add-dish-btn">Submit It!</button>
+                </div>
             </div>
         </form>
     </div>

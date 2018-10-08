@@ -562,20 +562,23 @@ if ($("body").attr("data-title") === "newdish-page") {
 
 // click button to find restaurant city, state, and restaurant name. Use an API call to YELP.
 let rNameInput = "";
-
 $("#find-restaurant").on("click", function(){
     const location = $("#city-input").val().trim() + ", " + $("#state-input").val().trim();
     rNameInput = $("#restaurant-input").val().trim();
     
     // initiate ajax call to yelp
-    getRestaurant(location, rNameInput);
+    // TURN THIS BACK ON WHEN DAILY CALLS ARE NO LONGER BLOCKED
+    // getRestaurant(location, rNameInput);
 
     // refresh and show restaurant results section
-    $("#restaurant-results").empty();
-    $("#restaurant-results-view").collapse("show");
+    /* $("#restaurant-results").empty()
+        .removeClass("errorMessage");
+    $("#restaurant-results-view").collapse("show"); */
 });
 
 // get restaurant information from yelp
+let matchingRestaurants = [];
+
 function getRestaurant(location, rName) {
     const restaurantURL = `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?` + $.param({
         term: rName,
@@ -594,45 +597,58 @@ function getRestaurant(location, rName) {
 
         console.log(response);
         const restaurants = response.businesses;
-
-        // parse response into variables (some of these may not be needed here -- delete later)        
+        
+        // parse response into variables (some of these may not be needed here -- delete later)      
+        let matches = 0;
         for (let i in restaurants) {
 
+            // only capture restaurant name if search string is included in some part of restaurant's name
             const rName = restaurants[i].name;
             if (rName.toLowerCase().includes(rNameInput.toLowerCase())) {
+                matches++;
                 console.log(`${rName} matches ${rNameInput}`);
                 showRestOptions(restaurants[i], i);
-            }
+            
+                const id = restaurants[i].id;
+                const price = restaurants[i].price;
+                const location = restaurants[i].location;
+                const phone = restaurants[i].display_phone;
+                const restaurantLatLong = {
+                    lat: restaurants[i].coordinates.latitude, 
+                    lng: restaurants[i].coordinates.longitude,
+                };
 
-            const id = restaurants[i].id;
-            const price = restaurants[i].price;
-            const location = restaurants[i].location;
-            const phone = restaurants[i].display_phone;
-            const restaurantLatLong = {
-                lat: restaurants[i].coordinates.latitude, 
-                lng: restaurants[i].coordinates.longitude,
+                // QUESTION FOR MIKE: I think the map should be rendered from the list of dishes on the first page
+                // addToMap(rName, restaurantLatLong);
             };
-
-            // QUESTION FOR MIKE: does this need to be added to the map at this point? The map should be rendered from the list of dishes on the first page
-            // addToMap(rName, restaurantLatLong);
         };
 
-        // store results in local storage
-        localStorage.setItem("restaurants", JSON.stringify(restaurants));
+        if (matches === 0) {
+            $("#restaurant-results").empty()
+                .addClass("errorMessage")
+                .text("No matches found. Try a different search.");
+        } else if (matches > 1) {
+            $("#restaurant-results").empty()
+                .removeClass("errorMessage");
+            $("#restaurant-results-view").collapse("show");
+        } else {
+            // TODO: verify this section is working once yelp ajax is back online
+            $("#restaurant-input").val(rName);
+            localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
+            localStorage.setItem("rIndex",0);
+        };
     });
 };
 
 // function to create radio button options for user to select correct restaurant from list of returned responses from Yelp
-let matchingRestaurants = [];
 function showRestOptions(restaurant, i) {
     console.log(restaurant, i);
     matchingRestaurants.push(restaurant);
-    console.log(matchingRestaurants);
 
     $("#restaurant-results").append(
         `
             <div class="form-check r-option">
-                <input class="form-check-input" type="radio" name="r-option" id="r-option-${i}" value="${restaurant.id}" index="${i}">
+                <input class="form-check-input" type="radio" name="r-option" id="r-option-${i}" value="${restaurant.id}" index="${i}" r-name="${restaurant.name}">
                 <label class="form-check-label" for="rOption-${i}">
                     ${restaurant.name}: ${restaurant.location.address1}, ${restaurant.location.city} ${restaurant.location.state}, ${restaurant.location.zip_code}
                 </label>
@@ -642,9 +658,15 @@ function showRestOptions(restaurant, i) {
 };
 
 $("#select-restaurant-btn").on("click", function(){
-    console.log("hi");
-    console.log($("input[name=r-option]:checked").attr("index"));
-    localStorage.setItem("rIndex",$("input[name=r-option]:checked").attr("index"));
+    const selected = $("input[name=r-option]:checked")
+
+    // save matching restaurants and index of selected restaurant to local storage
+    localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
+    localStorage.setItem("rIndex",selected.attr("index"));
+
+    // show selected restaurant name in restaurant-input field
+    $("#restaurant-input").val(selected.attr("r-name"));
+    $("#restaurant-results-view").collapse("hide");
 });
 
 function selectRestaurant(response) {
@@ -735,6 +757,8 @@ function calculateRatingAvg(num) {
 // by someone adding a rating
 $(".file-select").on("change", function (e) {
     selectedFile = e.target.files[0];
+    console.log(selectedFile);
+    $("#image-file-name").text(`File Name: ${selectedFile.name}`);
 });
 
 // following event listeners is used to work with buttons added to support image upload
