@@ -543,8 +543,6 @@ function writeDishData(dishId, name, restaurantId, price, avgSourScale, avgSweet
 if ($("body").attr("data-title") === "newdish-page") {
     $(document).ready(function(){
 
-        
-    
         // TODO: trying to auto-populate state field on newdish.html - the below does not work
         /* const states = ["AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IA", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NE", "NH", "NV", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
     
@@ -559,6 +557,8 @@ if ($("body").attr("data-title") === "newdish-page") {
     
     });
 };
+
+// SELECT LOCATION AND RESTAURANT ***************************************************
 
 // click button to find restaurant city, state, and restaurant name. Use an API call to YELP.
 let rNameInput = "";
@@ -609,14 +609,14 @@ function getRestaurant(location, rName) {
                 console.log(`${rName} matches ${rNameInput}`);
                 showRestOptions(restaurants[i], i);
             
-                const id = restaurants[i].id;
+                /* const id = restaurants[i].id;
                 const price = restaurants[i].price;
                 const location = restaurants[i].location;
                 const phone = restaurants[i].display_phone;
                 const restaurantLatLong = {
                     lat: restaurants[i].coordinates.latitude, 
                     lng: restaurants[i].coordinates.longitude,
-                };
+                }; */
 
                 // QUESTION FOR MIKE: I think the map should be rendered from the list of dishes on the first page
                 // addToMap(rName, restaurantLatLong);
@@ -633,9 +633,11 @@ function getRestaurant(location, rName) {
             $("#restaurant-results-view").collapse("show");
         } else {
             // TODO: verify this section is working once yelp ajax is back online
+            // show name of singular matching restaurant and store to local storage
             $("#restaurant-input").val(rName);
             localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
             localStorage.setItem("rIndex",0);
+            // TODO: disable location and restaurant fields from additional data entry
         };
     });
 };
@@ -657,6 +659,7 @@ function showRestOptions(restaurant, i) {
     );
 };
 
+// save matching restaurants to local storage with index of selected restaurant
 $("#select-restaurant-btn").on("click", function(){
     const selected = $("input[name=r-option]:checked")
 
@@ -667,9 +670,79 @@ $("#select-restaurant-btn").on("click", function(){
     // show selected restaurant name in restaurant-input field
     $("#restaurant-input").val(selected.attr("r-name"));
     $("#restaurant-results-view").collapse("hide");
+
+    // TODO: disable input into location and restaurant name fields
+    // TODO: add reset button to enable these fields again
 });
 
-function selectRestaurant(response) {
+
+
+// ENTER DISH NAME AND CHECK AND PRE-POPULATE WITH USER'S RATING IF AVAILABLE
+// TODO: after xx seconds retrieve existing dish data if user has entered same dish restaurant info
+$("#dish-name-input").change(function(){
+
+    // wait 3 seconds to run next function
+    // if city, state, restaurant, and dish name equal to user's existing rating, then retrieve rating and set values on form
+    getDishRating();
+    // else do nothing
+})
+
+function getDishRating() {
+    // TODO: get user's dish rating from firebase and populate values on screen
+};
+
+// DISH RATING AND FLAVOR PROFILE **********************************************
+
+// sliders with single value selector for rating dishes
+$(".slider-rate-1-5").slider({
+    range: false,
+    min: 1,
+    max: 5,
+    step: 1,
+    value: 3,
+    change: function (event, ui) { 
+    },
+});
+
+// CANCEL OR SUBMIT RESULTS AND CALCULATE AVERAGE ******************************
+
+// return to homepage if cancel button is clicked
+$("#cancel-dish-btn").on("click", function(){
+    window.location.href="index.html";
+});
+
+$("#add-dish-btn").on("click", function(){
+    const rIndex = localStorage.getItem("rIndex");
+    const restaurant = JSON.parse(localStorage.getItem("restaurants"));
+    const city = $("#city-input").val();
+    const state = $("#state-input").val();
+    const rating = $("#dish-rating").slider("value");
+    const sour = $("#sour-rating").slider("value");
+    const sweet = $("#sweet-rating").slider("value");
+    const spicy = $("#spicy-rating").slider("value");
+    const salty = $("#salty-rating").slider("value");
+    const umami = $("#umami-rating").slider("value");
+    const comment = $("#dish-comment").val();
+
+    console.log(rating, sour, sweet, spicy, salty, umami, comment);
+    console.log(rIndex);
+    console.log(restaurant);
+    console.log(restaurant[rIndex].id);
+
+    // dummy user settings
+    const userCity = "Atlanta";
+    const userState = "GA";
+    const userEmail = "myemail@email.com";
+    const userName = "Tom Jones";
+
+    // determine if restaurant is already in firebase
+    addRestaurant();
+    // determine if dish is already in firebase
+    calculateRatingAvg();
+    // TODO: Go to dish average rating page on home screen
+});
+
+function addRestaurant(response) {
     const dishes = db.ref("dishes");
     const restaurants = db.ref("restaurants");
 
@@ -683,74 +756,11 @@ function selectRestaurant(response) {
     });
 };
 
-const dishRating = "";
-const sour = "";
-const sweet = "";
-const spicy = "";
-const salty = "";
-const umami = "";
-
-// TODO: after xx seconds retrieve existing dish data if user has entered same dish restaurant info
-$("#dish-name-input").change(function(){
-
-    // wait 3 seconds to run next function
-    // if city, state, restaurant, and dish name equal to user's existing rating, then retrieve rating and set values on form
-    getDishRating();
-    // else do nothing
-})
-
-function getDishRating() {
-    // get user's dish rating from firebase and populate values on screen
-};
-
-// sliders with single value selector for rating dishes
-$(".slider-rate-1-5").slider({
-    range: false,
-    min: 1,
-    max: 5,
-    step: 1,
-    value: 3,
-    change: function (event, ui) {
-        const userRating = $("#dish-rating").slider("value");
-        const ratedElement = $(this).attr("id");
-        calculateRatingAvg(userRating, ratedElement);
-        console.log(userRating);
-        console.log($(this).attr("id"));
-        // localStorage.setItem(ratedElement,userRating);
-    },
-});
-
-$("#cancel-dish-btn").on("click", function(){
-    window.location.href="index.html";
-});
-
-$("#add-dish-btn").on("click", function(){
-
-    // determine if dish is already in firebase
-    calculateRatingAvg();
-    // TODO: Go to dish average rating page on home screen
-});
-
 function calculateRatingAvg(num) {
     //TODO: calculate rating avg and store values in local storage for future calculation
     // if new rating, increase total number of ratings by one and calculate average
     // if updated rating, do not increase number of total ratings for dish, subtract old rating, and calculate with new rating
 };
-
-// test code for vertical slider
-/* $(".slider-vertical-1-5").slider({
-    orientation: "vertical",
-    range: false,
-    min: 1,
-    max: 5,
-    step: 1,
-    value: 3,
-    change: function (event, ui) {
-        let userRating = $("#dish-rating").slider("value");
-        console.log(userRating);
-        calculateRatingAvg(userRating);
-    }
-}); */
 
 // IMAGES ********************************************************************************
 // following event listeners is used to work with buttons added to support image upload
@@ -784,6 +794,4 @@ $(".file-submit").on("click", function (e) {
         // show new picture in view area
         $("#new-image-view").attr("src", downloadURL);
     });
-
-    
 });

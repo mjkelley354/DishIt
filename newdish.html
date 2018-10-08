@@ -79,11 +79,16 @@
                 <div class="col-md-3 col-sm-12 form-group d-flex align-items-end">
                     <button class="btn btn-outline-dark" id="find-restaurant">Find Restaurant</button>
                 </div>
-
                 <div class="col-12 collapse mb-2" id="restaurant-results-view">
                     <p><i>Verify the location of the restaurant</i></p>
                     <div id="restaurant-results"></div>
                     <button class="btn mt-2" id="select-restaurant-btn">Select</button>
+                </div>
+                <!-- populate this section? -->
+                <div class="col-12 collapse mb-2 show" id="restaurant-details">
+                    <p id="address1-view"></p>
+                    <p id="address2-view"></p>
+                    <p id="phone-view"></p>
                 </div>
             </div>
             <div class="dish-div collapse show">
@@ -182,7 +187,7 @@
                         <h5 class="align-middle"><i class="fas fa-crow"></i> Umami</h5>
                     </div>
                     <div class="col-12 form-group mt-2">
-                        <div class="slider-rate-1-5 mb-3" id="unami-rating"></div>
+                        <div class="slider-rate-1-5 mb-3" id="umami-rating"></div>
                         <div class="w-100 row m-0">
                             <p class="col-5 p-0 m-0">1 - Not savory</p>
                             <p class="col-2 m-0 text-center">3</p>
@@ -192,10 +197,10 @@
                 </div>
                 <div class="row comment">
                     <div class="col-12 form-group">
-                        <label class="form-label" for="restaurant-input">
+                        <label class="form-label" for="dish-comment">
                             <h5><i class="fas fa-comments"></i> Add a comment about this dish</h5>
                         </label>
-                        <input type="text" class="form-control" id="restaurant-input">
+                        <input type="text" class="form-control" id="dish-comment">
                     </div>
                 </div>
                 <div class="d-flex justify-content-end">
