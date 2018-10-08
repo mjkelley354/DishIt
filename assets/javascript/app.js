@@ -200,7 +200,7 @@ $(document).on("click", ".dish-tile", function () {
      let avgSourScale = "";
      let avgSpicyScale = "";
      let avgSweetScale = "";
-     let avgUnamiScale = ""
+     let avgUmamiScale = ""
     
     dishes.child("/" + dishId).once('value', function (dishesSnapshot) {
          
@@ -223,7 +223,7 @@ $(document).on("click", ".dish-tile", function () {
              Sour: ${avgSourScale}
              Spicy: ${avgSpicyScale}
              Sweet: ${avgSweetScale}
-             Umani: ${avgUmamiScale}</div>
+             Umami: ${avgUmamiScale}</div>
             `
     ) 
 });
