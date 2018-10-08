@@ -77,6 +77,20 @@ span {
     height: 50px;
 }
 
+.restaurant-details {
+    line-height: 10px;
+}
+
+#restaurant-results-view {
+    background-color: white;
+    overflow: hidden;
+}
+
+#loading-burger-gif {
+    display: block;
+    
+}
+
 input[type="file"] {
     display: none;
 }

@@ -31,7 +31,8 @@ let mapPins = [];
 if ($("body").attr("data-title") === "index-page") { // functions run on load of index-page
 
     $(document).ready(()=>{
-        // createTestData(); // do not uncomment unless you want to add test data back to firebase
+
+        //createTestData(); // do not uncomment unless you want to add test data back to firebase
 
         getTopX(20); // get top 20 records by average rating
 
@@ -187,19 +188,11 @@ $(document).on("click", ".dish-tile", function() {
 
     console.log($(this));
     console.log($(this).attr("dish-id-value"));
+    const openSection = ($(this).attr("data-target"));
+    console.log(openSection);
     $(".collapse").collapse('hide');
 
-    /* <div id="collapse${i}" class=" collapse">
-            <div class="card-body">
-            Sour: <div class="slider-show-1-10" id="${dishId}-sour-value"></div>
-            Sweet: <div class="slider-show-1-10" id="${dishId}-sweet-value"></div>
-            Spicy: <div class="slider-show-1-10" id="${dishId}-spicy-value"></div>
-            Salty: <div class="slider-show-1-10" id="${dishId}-salty-value"></div>
-            Umami: <div class="slider-show-1-10" id="${dishId}-umami-value"></div>
-            </div>
-        </div> */
-
-
+    $(`"${openSection}"`).text("change");
 });
 
 function getPrice(price) {
@@ -352,7 +345,7 @@ $(".map-menu").on("click", function () {
     $(".map-modal").modal('show');
 });
 
-function addToMap(restaurauntName, position){
+function addToMap(restaurantName, position){
     // add a marker
     let marker = new google.maps.Marker({position: position, map: map});
 
@@ -360,7 +353,7 @@ function addToMap(restaurauntName, position){
     /* TODO: add additional content to "content" property with whatever we want to show on the infoWindow, content can take form of HTML
     */
     marker.info =  new google.maps.InfoWindow({
-        content: restaurauntName,
+        content: restaurantName,
         map: map,
         position: position
     });
@@ -368,7 +361,7 @@ function addToMap(restaurauntName, position){
     // close the infoWindow as it will remain open by default
     marker.info.close();
 
-    //add event listeners for mousover and mouseout to show/hide the infoWindoow
+    //add event listeners for mouseover and mouseout to show/hide the infoWindoow
     google.maps.event.addListener(marker, 'mouseover', function() {
         marker.info.open(map, marker);
     });
@@ -436,20 +429,6 @@ $(".range-slider-1-10").jRange({
     isRange: true
 }); */
 
-/* $(".slider-1-10").slider({
-    range: true,
-    min: 1,
-    max: 10,
-    step: 1,
-    values: [1, 10],
-    slide: setValues(1),
-    create: function (event, ui) {
-        var slider = $("#" + this.id);
-        var currentValues = slider.slider("values");
-        $("#" + this.id + "-values").html(currentValues[0] + ' to ' + currentValues[1]);
-    }
-}); */
-
 $(".slider-1-5").slider({
     range: true,
     min: 1,
@@ -471,13 +450,13 @@ function createTestData() {
     writeUserData(1, "Moe", "moe@gmail.com", "Atlanta", "Georgia");
     writeUserData(2, "Curly", "curly@gmail.com", "Atlanta", "Georgia");
 
-    writeRestaurantData(0, "", "Taqueria del Sol", "", "", "Atlanta", "30033", "Mexican");
-    writeRestaurantData(1, "", "Sapporo de Napoli", "", "", "Atlanta", "30033", "Italian");
-    writeRestaurantData(2, "", "Grindhouse Killer Burgers", "", "", "Atlanta", "30033", "American");
+    writeRestaurantData(0, "", "Taqueria del Sol", "", "Atlanta", "GA", "30033", 0, 0, "", "Mexican", 2);
+    writeRestaurantData(1, "", "Sapporo de Napoli", "", "Atlanta", "GA", "30033", 0, 0, "", "Italian",2);
+    writeRestaurantData(2, "", "Grindhouse Killer Burgers", "", "Atlanta", "30033", "GA", 0, 0, "", "American", 2);
 
-    writeDishData(0, "beef taco supreme", 0, 2, 1, 1, 2, 2, 2, 5, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg?alt=media&token=c0f7b553-373f-4f0d-bea7-22cd524c1fe5");
-    writeDishData(1, "cheese pizza", 1, 2, 1, 4, 2, 1, 2, 3.60, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheese-pizza.jpg?alt=media&token=ced316ad-ab07-4146-b6ea-04f7e400980b");
-    writeDishData(2, "cheeseburger", 2, 2, 2, 3, 1, 1, 1, 4.24, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheeseburger.jpg?alt=media&token=bbbf89f2-1d7a-4246-aed5-0f3b51883302");
+    writeDishData(0, "beef taco supreme", 0, 2, 1, 1, 2, 2, 2, 5, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg?alt=media&token=c0f7b553-373f-4f0d-bea7-22cd524c1fe5", 1);
+    writeDishData(1, "cheese pizza", 1, 2, 1, 4, 2, 1, 2, 3.60, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheese-pizza.jpg?alt=media&token=ced316ad-ab07-4146-b6ea-04f7e400980b", 1);
+    writeDishData(2, "cheeseburger", 2, 2, 2, 3, 1, 1, 1, 4.24, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheeseburger.jpg?alt=media&token=bbbf89f2-1d7a-4246-aed5-0f3b51883302", 1);
 
     writeRatingData(0, 0, 0, "Awesome Tacos!", 1, 1, 2, 2, 1, 4, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg?alt=media&token=c0f7b553-373f-4f0d-bea7-22cd524c1fe5");
     writeRatingData(1, 1, 1, "Best Pizza in Decatur!!", 1, 2, 3, 1, 1, 5, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheese-pizza.jpg?alt=media&token=ced316ad-ab07-4146-b6ea-04f7e400980b");
@@ -509,20 +488,24 @@ function writeRatingData(ratingId, dishId, userId, text, sourScale, sweetScale, 
     });
 }
 
-function writeRestaurantData(restaurantId, zumatoId, name, address, locality, city, zipCode, cuisine) {
+function writeRestaurantData(restaurantId, yelpId, name, address, city, state, zipCode, lat, long, phone, cuisine, price) {
     db.ref('restaurants/' + restaurantId).set({
-        zumatoId,
+        yelpId,
         name,
         address,
-        locality,
         city,
+        state,
         zipCode,
-        cuisine
+        lat,
+        long,
+        phone,
+        cuisine,
+        price,
     });
 }
 
 function writeDishData(dishId, name, restaurantId, price, avgSourScale, avgSweetScale, avgSpicyScale,
-    avgSaltyScale, avgUmamiScale, avgRating, image) {
+    avgSaltyScale, avgUmamiScale, avgRating, image, numRatings) {
     db.ref('dishes/' + dishId).set({
         name,
         restaurantId,
@@ -567,13 +550,19 @@ $("#find-restaurant").on("click", function(){
     rNameInput = $("#restaurant-input").val().trim();
     
     // initiate ajax call to yelp
-    // TURN THIS BACK ON WHEN DAILY CALLS ARE NO LONGER BLOCKED
+    // TURN THIS BACK ON FOR REAL DATA CALLS - USE TESTING DATA BELOW FOR DEVELOPMENT
     // getRestaurant(location, rNameInput);
 
-    // refresh and show restaurant results section
-    /* $("#restaurant-results").empty()
-        .removeClass("errorMessage");
-    $("#restaurant-results-view").collapse("show"); */
+    // USING THIS FOR TESTING - GETTING DATA FROM LOCAL STORAGE
+    const restaurants = JSON.parse(localStorage.getItem("restaurants"));
+    console.log(restaurants);
+    $("#restaurant-results").empty()
+    for (var i in restaurants) {
+        showRestOptions(restaurants[i], i);
+    }
+
+    // show restaurant results section
+    $("#restaurant-results-view").collapse("show");
 });
 
 // get restaurant information from yelp
@@ -594,6 +583,8 @@ function getRestaurant(location, rName) {
             'Authorization': 'Bearer lC3zgwezYWCKbJZW03Yepl4A52o_fhrqd9a1x0_MapVxItu97aAHOUOGfsRzDJswOWzWlaHv0zvw8keaePumFEkXJWyOgcTcLg7ekQOQ9skybUd_wy02lE3hnQy0W3Yx',
         }
     }).then(function (response) {
+        $("#restaurant-results").empty()
+        .removeClass("errorMessage");
 
         console.log(response);
         const restaurants = response.businesses;
@@ -627,7 +618,7 @@ function getRestaurant(location, rName) {
             $("#restaurant-results").empty()
                 .addClass("errorMessage")
                 .text("No matches found. Try a different search.");
-        } else if (matches > 1) {
+        } /* else if (matches > 1) {
             $("#restaurant-results").empty()
                 .removeClass("errorMessage");
             $("#restaurant-results-view").collapse("show");
@@ -638,7 +629,7 @@ function getRestaurant(location, rName) {
             localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
             localStorage.setItem("rIndex",0);
             // TODO: disable location and restaurant fields from additional data entry
-        };
+        }; */
     });
 };
 
@@ -649,10 +640,14 @@ function showRestOptions(restaurant, i) {
 
     $("#restaurant-results").append(
         `
-            <div class="form-check r-option">
-                <input class="form-check-input" type="radio" name="r-option" id="r-option-${i}" value="${restaurant.id}" index="${i}" r-name="${restaurant.name}">
-                <label class="form-check-label" for="rOption-${i}">
-                    ${restaurant.name}: ${restaurant.location.address1}, ${restaurant.location.city} ${restaurant.location.state}, ${restaurant.location.zip_code}
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="r-option" id="r-option-${i}" 
+                value="${restaurant.id}" index="${i}" r-name="${restaurant.name}" 
+                address1="${restaurant.location.address1}"
+                address2="${restaurant.location.city}, ${restaurant.location.state} ${restaurant.location.zip_code}"
+                phone="${restaurant.display_phone}">
+                <label class="form-check-label" for="r-option-${i}">
+                    ${restaurant.name}: ${restaurant.location.address1}, ${restaurant.location.city}, ${restaurant.location.state} ${restaurant.location.zip_code}
                 </label>
             </div>
         `
@@ -662,20 +657,26 @@ function showRestOptions(restaurant, i) {
 // save matching restaurants to local storage with index of selected restaurant
 $("#select-restaurant-btn").on("click", function(){
     const selected = $("input[name=r-option]:checked")
+    console.log(selected);
+    console.log(selected.attr("phone"));
 
     // save matching restaurants and index of selected restaurant to local storage
-    localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
+    // TURNED OFF FOR TESTING - TURN BACK ON WHEN DONE WITH DEVELOPMENT
+    // localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
     localStorage.setItem("rIndex",selected.attr("index"));
 
     // show selected restaurant name in restaurant-input field
     $("#restaurant-input").val(selected.attr("r-name"));
     $("#restaurant-results-view").collapse("hide");
+    $("#restaurant-details-view").collapse("show");
+
+    $("#address1-view").text(selected.attr("address1"));
+    $("#address2-view").text(selected.attr("address2"));
+    $("#phone-view").text(selected.attr("phone"));
 
     // TODO: disable input into location and restaurant name fields
     // TODO: add reset button to enable these fields again
 });
-
-
 
 // ENTER DISH NAME AND CHECK AND PRE-POPULATE WITH USER'S RATING IF AVAILABLE
 // TODO: after xx seconds retrieve existing dish data if user has entered same dish restaurant info
@@ -690,6 +691,40 @@ $("#dish-name-input").change(function(){
 function getDishRating() {
     // TODO: get user's dish rating from firebase and populate values on screen
 };
+
+// IMAGES ********************************************************************************
+// following event listeners is used to work with buttons added to support image upload
+// by someone adding a rating
+$(".file-select").on("change", function (e) {
+    selectedFile = e.target.files[0];
+    console.log(selectedFile);
+    $("#image-file-name").text(`File Name: ${selectedFile.name}`);
+});
+
+// following event listeners is used to work with buttons added to support image upload
+// by someone adding a rating
+let downloadURL = "";
+$(".file-submit").on("click", function (e) {
+    //create a child directory called images, and place the file inside this directory
+    const uploadTask = storageRef.child(`images/${selectedFile.name}`).put(selectedFile);
+    uploadTask.on('state_changed', (snapshot) => {
+        // Observe state change events such as progress, pause, and resume
+
+        // the downloadURL is critical to capture here
+        // on image upload capture URL and save to firebase in the .image property so we can use it to access image later
+        downloadURL = uploadTask.snapshot.downloadURL;
+        console.log(downloadURL);
+    }, (error) => {
+        // Handle unsuccessful uploads
+        console.log(error);
+    }, () => {
+        // Do something once upload is complete
+        console.log('success');
+        console.log("photo");
+        // show new picture in view area
+        $("#new-image-view").attr("src", downloadURL);
+    });
+});
 
 // DISH RATING AND FLAVOR PROFILE **********************************************
 
@@ -711,9 +746,12 @@ $("#cancel-dish-btn").on("click", function(){
     window.location.href="index.html";
 });
 
+// submitting dish new restaurants, new dishes, and user ratings to firebase and calculates and stores averages
 $("#add-dish-btn").on("click", function(){
     const rIndex = localStorage.getItem("rIndex");
     const restaurant = JSON.parse(localStorage.getItem("restaurants"));
+    const yelpDataObject = restaurant[rIndex];
+    const rId = yelpDataObject.id;
     const city = $("#city-input").val();
     const state = $("#state-input").val();
     const rating = $("#dish-rating").slider("value");
@@ -723,17 +761,55 @@ $("#add-dish-btn").on("click", function(){
     const salty = $("#salty-rating").slider("value");
     const umami = $("#umami-rating").slider("value");
     const comment = $("#dish-comment").val();
-
+    let dishId = "";
+    
+    console.log(downloadURL);
+    console.log(city, state);
     console.log(rating, sour, sweet, spicy, salty, umami, comment);
-    console.log(rIndex);
-    console.log(restaurant);
-    console.log(restaurant[rIndex].id);
+    console.log(yelpDataObject);
+    console.log(rId);
+    console.log(yelpDataObject.name);
+    console.log(yelpDataObject.location.address1);
+    console.log(yelpDataObject.location.city);
+    console.log(yelpDataObject.location.state);
+    console.log(yelpDataObject.location.zip_code);
+    console.log(yelpDataObject.coordinates.latitude);
+    console.log(yelpDataObject.coordinates.longitude);
+    console.log(yelpDataObject.display_phone);
+    
+    
+    const dishRecords = db.ref("ratings");
+    const restaurantRecords = db.ref("restaurants");
+    restaurantRecords.on("value", function(restaurantSnapshot) {
+        console.log(restaurantSnapshot.val());
+        console.log(restaurantSnapshot.val().length);
+        for (var i; i < restaurantSnapshot.val().length; i++) {
+            if (rID === restaurantSnapshot.val().yelpId) {
+                console.log("restaurant exists in Firebase");
+            } /* else {
+                restaurantRecords.push({
+                    yelpId: rID,
+                    name:
+                    address,
+                    city,
+                    state,
+                    zipCode,
+                    lat,
+                    long,
+                    phone,
+                    cuisine,
+                });
+            }; */
+        };
+    });
 
     // dummy user settings
+    // TODO: replace with retrieval of user info from local storage
+    const userId = 2;
     const userCity = "Atlanta";
-    const userState = "GA";
-    const userEmail = "myemail@email.com";
-    const userName = "Tom Jones";
+    const userState = "Georiga";
+    const userEmail = "curly@gmail.com";
+    const userName = "Curly";
 
     // determine if restaurant is already in firebase
     addRestaurant();
@@ -762,36 +838,3 @@ function calculateRatingAvg(num) {
     // if updated rating, do not increase number of total ratings for dish, subtract old rating, and calculate with new rating
 };
 
-// IMAGES ********************************************************************************
-// following event listeners is used to work with buttons added to support image upload
-// by someone adding a rating
-$(".file-select").on("change", function (e) {
-    selectedFile = e.target.files[0];
-    console.log(selectedFile);
-    $("#image-file-name").text(`File Name: ${selectedFile.name}`);
-});
-
-// following event listeners is used to work with buttons added to support image upload
-// by someone adding a rating
-$(".file-submit").on("click", function (e) {
-    var downloadURL = "";
-    //create a child directory called images, and place the file inside this directory
-    const uploadTask = storageRef.child(`images/${selectedFile.name}`).put(selectedFile);
-    uploadTask.on('state_changed', (snapshot) => {
-        // Observe state change events such as progress, pause, and resume
-
-        // the downloadURL is critical to capture here
-        // on image upload capture URL and save to firebase in the .image property so we can use it to access image later
-        downloadURL = uploadTask.snapshot.downloadURL;
-        console.log(downloadURL);
-    }, (error) => {
-        // Handle unsuccessful uploads
-        console.log(error);
-    }, () => {
-        // Do something once upload is complete
-        console.log('success');
-        console.log("photo");
-        // show new picture in view area
-        $("#new-image-view").attr("src", downloadURL);
-    });
-});
