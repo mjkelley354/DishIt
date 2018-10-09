@@ -16,6 +16,7 @@ const storageRef = storageService.ref();
 
 // global variables
 let selectedFile;
+let userId = "";
 let userName = "";
 let userEmail = "";
 let userCity = "";
@@ -44,13 +45,14 @@ if ($("body").attr("data-title") === "index-page") { // functions run on load of
 
 function readLocalStorage() {
     // get user info from localstorage if it exists
+    userId = localStorage.getItem("dish-it-user-id");
     userName = localStorage.getItem("dish-it-user");
     userEmail = localStorage.getItem("dish-it-email");
     userCity = localStorage.getItem("dish-it-city");
     userState = localStorage.getItem("dish-it-state");
 
     // if we don't have data in local storage then user doesn't exists, so show the add user modal
-    if (userName == null || userEmail == null || userCity == null || userState == null) {
+    if (userId == null || userName == null || userEmail == null || userCity == null || userState == null) {
         $(".user-modal").modal('show');
     }
 };
@@ -135,6 +137,7 @@ function newDish(dishId, dishName, restaurantId, restaurantName, avgRating, avgS
 
 // use this to populate results on screen directly from firebase - using array will throw errors due to processing time
 let i = 0;
+
 function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, dishImage, dishPrice) {
     $("tbody").prepend(
         `
@@ -196,34 +199,58 @@ $(document).on("click", ".dish-tile", function () {
     $(".collapse").collapse('hide');
 
     var dishes = db.ref('dishes');
+    var restaurants = db.ref('restaurants');
+
     let avgSaltyScale = "";
     let avgSourScale = "";
     let avgSpicyScale = "";
     let avgSweetScale = "";
-    let avgUmamiScale = ""
-    
-    dishes.child("/" + dishId).once('value', function (dishesSnapshot) {
-                avgSaltyScale = dishesSnapshot.val().avgSaltyScale;
-                console.log("salty " + avgSaltyScale);
-                avgSourScale = dishesSnapshot.val().avgSourScale;
-                console.log("sour " + avgSourScale);
-                avgSpicyScale = dishesSnapshot.val().avgSpicyScale;
-                console.log("spicy " + avgSpicyScale);
-                avgSweetScale = dishesSnapshot.val().avgSweetScale;
-                console.log("sweet " + avgSweetScale);
-                avgUmamiScale = dishesSnapshot.val().avgUmamiScale;
-                console.log("umami " + avgUmamiScale);
-        });
+    let avgUmamiScale = "";
+    let name = "";
+    let address = "";
+    let city = "";
+    let state = "";
+    let zipCode = "";
 
-    $(`${dataTargetId}`).append(
-        `<div class="card-body">
-            Salty: ${avgSaltyScale}
-            Sour: ${avgSourScale}
-            Spicy: ${avgSpicyScale}
-            Sweet: ${avgSweetScale}
-            Umani: ${avgUmamiScale}</div>
-            `
-    ) 
+    dishes.child("/" + dishId).once('value', function (dishesSnapshot) {
+        restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function (restaurantSnapshot) {
+
+            avgSaltyScale = dishesSnapshot.val().avgSaltyScale;
+            console.log("salty " + avgSaltyScale);
+            avgSourScale = dishesSnapshot.val().avgSourScale;
+            console.log("sour " + avgSourScale);
+            avgSpicyScale = dishesSnapshot.val().avgSpicyScale;
+            console.log("spicy " + avgSpicyScale);
+            avgSweetScale = dishesSnapshot.val().avgSweetScale;
+            console.log("sweet " + avgSweetScale);
+            avgUmamiScale = dishesSnapshot.val().avgUmamiScale;
+            console.log("umami " + avgUmamiScale);
+            name = restaurantSnapshot.val().name;
+            console.log("Restaurant Name " + name);
+            address = restaurantSnapshot.val().address;
+            console.log("Restaurant Address " + address);
+            city = restaurantSnapshot.val().city;
+            console.log("Restaurant City " + city);
+            state = restaurantSnapshot.val().state;
+            console.log("Restaurant State " + state);
+            zipCode = restaurantSnapshot.val().zipCode;
+            console.log("Restaurant Zip Code " + zipCode);
+            $(`${dataTargetId}`).append(
+                `<div class="card-body">
+                    Salty: ${avgSaltyScale}
+                     Sour: ${avgSourScale}
+                     Spicy: ${avgSpicyScale}
+                     Sweet: ${avgSweetScale}
+                     Umami: ${avgUmamiScale}
+                     Restaurant: ${name}
+                     Address: ${address}
+                     City: ${city}
+                     State: ${state}
+                     ZipCode: ${zipCode} </div>
+                `
+            );
+        });
+    });
 });
 
 function getPrice(price) {
@@ -359,6 +386,7 @@ $(".apply-filter").on("click", function () {
 // USER DETAILS **************************************************************************
 // save favorites to local storage
 function saveFavorites() {
+    localStorage.setItem("dish-it-user-id", userId);
     localStorage.setItem("dish-it-user", userName);
     localStorage.setItem("dish-it-email", userEmail);
     localStorage.setItem("dish-it-city", userCity);
@@ -366,9 +394,13 @@ function saveFavorites() {
 }
 
 $(".save-user").on("click", function () {
-    // TODO: capture the data from the form on the modal into the global user variables and then save to firebase
+    userName = $("#userName").val();
+    userEmail = $("#userEmail").val();
+    userCity = $("#userCity").val();
+    userState = $("#userState").val();
+    userId = writeUserData(userName, userEmail, userCity, userState);
     saveFavorites();
-    //writeUserData(x, y, z....);
+    $(".user-modal").modal('hide');
 });
 
 // MAP FUNCTIONS ***************************************************************************
@@ -396,7 +428,7 @@ function addToMap(restaurauntName, position) {
     marker.info.close();
 
     //add event listeners for mouseover and mouseout to show/hide the infoWindoow
-    google.maps.event.addListener(marker, 'mouseover', function() {
+    google.maps.event.addListener(marker, 'mouseover', function () {
         marker.info.open(map, marker);
     });
     google.maps.event.addListener(marker, 'mouseout', function () {
@@ -469,16 +501,16 @@ $(".slider-1-5").slider({
 // TEST DATA ************************************************************************
 // create test data in firebase
 function createTestData() {
-    let larryId = writeUserData(0, "Larry", "larry@gmail.com", "Atlanta", "Georgia");
+    let larryId = writeUserData("Larry", "larry@gmail.com", "Atlanta", "Georgia");
     console.log("larryId: ", larryId);
-    let moeId = writeUserData(1, "Moe", "moe@gmail.com", "Atlanta", "Georgia");
+    let moeId = writeUserData("Moe", "moe@gmail.com", "Atlanta", "Georgia");
     console.log("moeId: ", moeId);
-    let curlyId = writeUserData(2, "Curly", "curly@gmail.com", "Atlanta", "Georgia");
+    let curlyId = writeUserData("Curly", "curly@gmail.com", "Atlanta", "Georgia");
     console.log("curlyId: ", curlyId);
 
     let taqueriaDelSolId = writeRestaurantData("", "Taqueria del Sol", "", "Atlanta", "GA", "30033", 0, 0, "", "Mexican", 2);
     console.log("taqueriaDelSolId: ", taqueriaDelSolId);
-    let sapporoId = writeRestaurantData("", "Sapporo de Napoli", "", "Atlanta", "GA", "30033", 0, 0, "", "Italian",2);
+    let sapporoId = writeRestaurantData("", "Sapporo de Napoli", "", "Atlanta", "GA", "30033", 0, 0, "", "Italian", 2);
     console.log("sapporoId: ", sapporoId);
     let grindhouseId = writeRestaurantData("", "Grindhouse Killer Burgers", "", "Atlanta", "GA", "30033", 0, 0, "", "American", 2);
     console.log("grindhouseId: ", grindhouseId);
@@ -623,7 +655,7 @@ function getRestaurant(location, rName) {
         }
     }).then(function (response) {
         $("#restaurant-results").empty()
-        .removeClass("errorMessage");
+            .removeClass("errorMessage");
 
         console.log(response);
         const restaurants = response.businesses;
@@ -657,18 +689,19 @@ function getRestaurant(location, rName) {
             $("#restaurant-results").empty()
                 .addClass("errorMessage")
                 .text("No matches found. Try a different search.");
-        } /* else if (matches > 1) {
-            $("#restaurant-results").empty()
-                .removeClass("errorMessage");
-            $("#restaurant-results-view").collapse("show");
-        } else {
-            // TODO: verify this section is working once yelp ajax is back online
-            // show name of singular matching restaurant and store to local storage
-            $("#restaurant-input").val(rName);
-            localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
-            localStorage.setItem("rIndex", 0);
-            // TODO: disable location and restaurant fields from additional data entry
-        }; */
+        }
+        /* else if (matches > 1) {
+                   $("#restaurant-results").empty()
+                       .removeClass("errorMessage");
+                   $("#restaurant-results-view").collapse("show");
+               } else {
+                   // TODO: verify this section is working once yelp ajax is back online
+                   // show name of singular matching restaurant and store to local storage
+                   $("#restaurant-input").val(rName);
+                   localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
+                   localStorage.setItem("rIndex", 0);
+                   // TODO: disable location and restaurant fields from additional data entry
+               }; */
     });
 };
 
@@ -702,7 +735,7 @@ $("#select-restaurant-btn").on("click", function () {
     // save matching restaurants and index of selected restaurant to local storage
     // TURNED OFF FOR TESTING - TURN BACK ON WHEN DONE WITH DEVELOPMENT
     // localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
-    localStorage.setItem("rIndex",selected.attr("index"));
+    localStorage.setItem("rIndex", selected.attr("index"));
 
     // show selected restaurant name in restaurant-input field
     $("#restaurant-input").val(selected.attr("r-name"));
@@ -796,12 +829,50 @@ $("#add-dish-btn").on("click", function () {
     const umami = $("#umami-rating").slider("value");
     const comment = $("#dish-comment").val();
     let dishId = "";
-    
+    console.log(downloadURL);
+    console.log(city, state);
     console.log(rating, sour, sweet, spicy, salty, umami, comment);
-        
-    const dishRecords = db.ref("ratings");
-    const restaurantRecords = db.ref("restaurants");
+    console.log(yelpDataObject);
+    console.log(yelpDataObject.location.city);
+    console.log(yelpDataObject.location.state);
 
+        console.log(cuisine);
+        console.log(price);
+    
+        const dishRecords = db.ref("ratings");
+        const restaurantRecords = db.ref("restaurants");
+
+        restaurantRecords.on("value", function(restaurantSnapshot) {
+        const rRecord = restaurantSnapshot.val();
+        console.log(rRecord);
+        
+        for (var i in restaurantSnapshot.val()) {
+            console.log(rId);
+            console.log(restaurantSnapshot.val());
+            if (rId === rRecord.yelpId) {
+                rCount++;
+            };
+        };
+        console.log(rCount);
+        // not sure why, but this code is causing duplicate/infinite additions to firebase
+        /* if (rCount === 0 ) {
+            console.log("zero");
+            restaurantRecords.push({
+                yelpId: rId,
+                name: rName,
+                address: address,
+                city: city,
+                state: state,
+                zipCode: zip,
+                lat: lat,
+                long: long,
+                phone: phone,
+                cuisine: cuisine,
+                price: price,
+            }); 
+        }; */
+    });
+        
     // dummy user settings
     // TODO: replace with retrieval of user info from local storage
     const userId = 2;
@@ -890,4 +961,3 @@ function calculateRatingAvg(num) {
     // if new rating, increase total number of ratings by one and calculate average
     // if updated rating, do not increase number of total ratings for dish, subtract old rating, and calculate with new rating
 };
-
