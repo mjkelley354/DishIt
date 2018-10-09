@@ -830,48 +830,11 @@ $("#add-dish-btn").on("click", function () {
     const comment = $("#dish-comment").val();
     let dishId = "";
     console.log(downloadURL);
-    console.log(city, state);
     console.log(rating, sour, sweet, spicy, salty, umami, comment);
-    console.log(yelpDataObject);
-    console.log(yelpDataObject.location.city);
-    console.log(yelpDataObject.location.state);
-
-        console.log(cuisine);
-        console.log(price);
+    console.log(cuisine);
+    console.log(price);
     
-        const dishRecords = db.ref("ratings");
-        const restaurantRecords = db.ref("restaurants");
-
-        restaurantRecords.on("value", function(restaurantSnapshot) {
-        const rRecord = restaurantSnapshot.val();
-        console.log(rRecord);
-        
-        for (var i in restaurantSnapshot.val()) {
-            console.log(rId);
-            console.log(restaurantSnapshot.val());
-            if (rId === rRecord.yelpId) {
-                rCount++;
-            };
-        };
-        console.log(rCount);
-        // not sure why, but this code is causing duplicate/infinite additions to firebase
-        /* if (rCount === 0 ) {
-            console.log("zero");
-            restaurantRecords.push({
-                yelpId: rId,
-                name: rName,
-                address: address,
-                city: city,
-                state: state,
-                zipCode: zip,
-                lat: lat,
-                long: long,
-                phone: phone,
-                cuisine: cuisine,
-                price: price,
-            }); 
-        }; */
-    });
+    const dishRecords = db.ref("ratings");
         
     // dummy user settings
     // TODO: replace with retrieval of user info from local storage
