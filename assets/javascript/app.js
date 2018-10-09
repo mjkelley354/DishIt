@@ -31,7 +31,7 @@ let mapPins = [];
 if ($("body").attr("data-title") === "index-page") { // functions run on load of index-page
 
     $(document).ready(() => {
-        // createTestData(); // do not uncomment unless you want to add test data back to firebase
+        createTestData(); // do not uncomment unless you want to add test data back to firebase
 
         getTopX(20); // get top 20 records by average rating
 
@@ -486,35 +486,48 @@ $(".slider-1-5").slider({
 // TEST DATA ************************************************************************
 // create test data in firebase
 function createTestData() {
-    writeUserData(0, "Larry", "larry@gmail.com", "Atlanta", "Georgia");
-    writeUserData(1, "Moe", "moe@gmail.com", "Atlanta", "Georgia");
-    writeUserData(2, "Curly", "curly@gmail.com", "Atlanta", "Georgia");
+    let larryId = writeUserData(0, "Larry", "larry@gmail.com", "Atlanta", "Georgia");
+    console.log("larryId: ", larryId);
+    let moeId = writeUserData(1, "Moe", "moe@gmail.com", "Atlanta", "Georgia");
+    console.log("moeId: ", moeId);
+    let curlyId = writeUserData(2, "Curly", "curly@gmail.com", "Atlanta", "Georgia");
+    console.log("curlyId: ", curlyId);
 
-    writeRestaurantData(0, "", "Taqueria del Sol", "", "Atlanta", "GA", "30033", 0, 0, "", "Mexican", 2);
-    writeRestaurantData(1, "", "Sapporo de Napoli", "", "Atlanta", "GA", "30033", 0, 0, "", "Italian",2);
-    writeRestaurantData(2, "", "Grindhouse Killer Burgers", "", "Atlanta", "30033", "GA", 0, 0, "", "American", 2);
+    let taqueriaDelSolId = writeRestaurantData("", "Taqueria del Sol", "", "Atlanta", "GA", "30033", 0, 0, "", "Mexican", 2);
+    console.log("taqueriaDelSolId: ", taqueriaDelSolId);
+    let sapporoId = writeRestaurantData("", "Sapporo de Napoli", "", "Atlanta", "GA", "30033", 0, 0, "", "Italian",2);
+    console.log("sapporoId: ", sapporoId);
+    let grindhouseId = writeRestaurantData("", "Grindhouse Killer Burgers", "", "Atlanta", "30033", "GA", 0, 0, "", "American", 2);
+    console.log("grindhouseId: ", grindhouseId);
 
-    writeDishData(0, "beef taco supreme", 0, 2, 1, 1, 2, 2, 2, 5, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg?alt=media&token=c0f7b553-373f-4f0d-bea7-22cd524c1fe5", 1);
-    writeDishData(1, "cheese pizza", 1, 2, 1, 4, 2, 1, 2, 3.60, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheese-pizza.jpg?alt=media&token=ced316ad-ab07-4146-b6ea-04f7e400980b", 1);
-    writeDishData(2, "cheeseburger", 2, 2, 2, 3, 1, 1, 1, 4.24, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheeseburger.jpg?alt=media&token=bbbf89f2-1d7a-4246-aed5-0f3b51883302", 1);
+    let tacoId = writeDishData("beef taco supreme", taqueriaDelSolId, 2, 1, 1, 2, 2, 2, 5, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg?alt=media&token=c0f7b553-373f-4f0d-bea7-22cd524c1fe5", 1);
+    console.log("tacoId: ", tacoId);
+    let cheesePizzaId = writeDishData("cheese pizza", sapporoId, 2, 1, 4, 2, 1, 2, 3.60, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheese-pizza.jpg?alt=media&token=ced316ad-ab07-4146-b6ea-04f7e400980b", 1);
+    console.log("cheesePizzaId: ", cheesePizzaId);
+    let cheeseburgerId = writeDishData("cheeseburger", grindhouseId, 2, 2, 3, 1, 1, 1, 4.24, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheeseburger.jpg?alt=media&token=bbbf89f2-1d7a-4246-aed5-0f3b51883302", 1);
+    console.log("cheeseburgerId: ", cheeseburgerId);
 
-    writeRatingData(0, 0, 0, "Awesome Tacos!", 1, 1, 2, 2, 1, 4, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg?alt=media&token=c0f7b553-373f-4f0d-bea7-22cd524c1fe5");
-    writeRatingData(1, 1, 1, "Best Pizza in Decatur!!", 1, 2, 3, 1, 1, 5, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheese-pizza.jpg?alt=media&token=ced316ad-ab07-4146-b6ea-04f7e400980b");
-    writeRatingData(2, 2, 2, "Burgers are better than FarmBurger and shakes too!", 1, 2, 2, 2, 1, 4, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheeseburger.jpg?alt=media&token=bbbf89f2-1d7a-4246-aed5-0f3b51883302");
+    let tacoRating = writeRatingData(tacoId, larryId, "Awesome Tacos!", 1, 1, 2, 2, 1, 4, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg?alt=media&token=c0f7b553-373f-4f0d-bea7-22cd524c1fe5");
+    console.log("tacoRating: ", tacoRating);
+    let pizzaRating = writeRatingData(cheesePizzaId, moeId, "Best Pizza in Decatur!!", 1, 2, 3, 1, 1, 5, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheese-pizza.jpg?alt=media&token=ced316ad-ab07-4146-b6ea-04f7e400980b");
+    console.log("pizzaRating: ", pizzaRating);
+    let burgerRating = writeRatingData(cheeseburgerId, curlyId, "Burgers are better than FarmBurger and shakes too!", 1, 2, 2, 2, 1, 4, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheeseburger.jpg?alt=media&token=bbbf89f2-1d7a-4246-aed5-0f3b51883302");
+    console.log("burgerRating: ", burgerRating);
 }
 
-function writeUserData(userId, name, email, city, state) {
-    db.ref('users/' + userId).set({
+function writeUserData(name, email, city, state) {
+    let insertedData = db.ref('users/').push({
         name,
         email,
         city,
         state,
     });
+    return insertedData.getKey();
 }
 
-function writeRatingData(ratingId, dishId, userId, text, sourScale, sweetScale, spicyScale,
+function writeRatingData(dishId, userId, text, sourScale, sweetScale, spicyScale,
     saltyScale, umamiScale, rating, image) {
-    db.ref('ratings/' + ratingId).set({
+    let insertedData = db.ref('ratings/').push({
         dishId,
         userId,
         text,
@@ -526,10 +539,11 @@ function writeRatingData(ratingId, dishId, userId, text, sourScale, sweetScale, 
         rating,
         image
     });
+    return insertedData.getKey();
 }
 
-function writeRestaurantData(restaurantId, yelpId, name, address, city, state, zipCode, lat, long, phone, cuisine, price) {
-    db.ref('restaurants/' + restaurantId).set({
+function writeRestaurantData(yelpId, name, address, city, state, zipCode, lat, long, phone, cuisine, price) {
+    let insertedData = db.ref('restaurants/').push({
         yelpId,
         name,
         address,
@@ -542,11 +556,12 @@ function writeRestaurantData(restaurantId, yelpId, name, address, city, state, z
         cuisine,
         price,
     });
+    return insertedData.getKey();
 }
 
-function writeDishData(dishId, name, restaurantId, price, avgSourScale, avgSweetScale, avgSpicyScale,
+function writeDishData(name, restaurantId, price, avgSourScale, avgSweetScale, avgSpicyScale,
     avgSaltyScale, avgUmamiScale, avgRating, image, numRatings) {
-    db.ref('dishes/' + dishId).set({
+    let insertedData = db.ref('dishes/').push({
         name,
         restaurantId,
         price,
@@ -559,6 +574,7 @@ function writeDishData(dishId, name, restaurantId, price, avgSourScale, avgSweet
         image,
         numRatings,
     });
+    return insertedData.getKey();
 }
 
 // ADD NEW DISH PAGE ************************************************************************
