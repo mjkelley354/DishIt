@@ -16,6 +16,7 @@ const storageRef = storageService.ref();
 
 // global variables
 let selectedFile;
+let userId = "";
 let userName = "";
 let userEmail = "";
 let userCity = "";
@@ -31,7 +32,7 @@ let mapPins = [];
 if ($("body").attr("data-title") === "index-page") { // functions run on load of index-page
 
     $(document).ready(() => {
-        createTestData(); // do not uncomment unless you want to add test data back to firebase
+        // createTestData(); // do not uncomment unless you want to add test data back to firebase
 
         getTopX(20); // get top 20 records by average rating
 
@@ -44,13 +45,14 @@ if ($("body").attr("data-title") === "index-page") { // functions run on load of
 
 function readLocalStorage() {
     // get user info from localstorage if it exists
+    userId = localStorage.getItem("dish-it-user-id");
     userName = localStorage.getItem("dish-it-user");
     userEmail = localStorage.getItem("dish-it-email");
     userCity = localStorage.getItem("dish-it-city");
     userState = localStorage.getItem("dish-it-state");
 
     // if we don't have data in local storage then user doesn't exists, so show the add user modal
-    if (userName == null || userEmail == null || userCity == null || userState == null) {
+    if (userId == null || userName == null || userEmail == null || userCity == null || userState == null) {
         $(".user-modal").modal('show');
     }
 };
@@ -361,6 +363,7 @@ $(".apply-filter").on("click", function () {
 // USER DETAILS **************************************************************************
 // save favorites to local storage
 function saveFavorites() {
+    localStorage.setItem("dish-it-user-id", userId);
     localStorage.setItem("dish-it-user", userName);
     localStorage.setItem("dish-it-email", userEmail);
     localStorage.setItem("dish-it-city", userCity);
@@ -368,9 +371,13 @@ function saveFavorites() {
 }
 
 $(".save-user").on("click", function () {
-    // TODO: capture the data from the form on the modal into the global user variables and then save to firebase
+    userName = $("#userName").val();
+    userEmail = $("#userEmail").val();
+    userCity = $("#userCity").val();
+    userState = $("#userState").val();
+    userId = writeUserData(userName, userEmail, userCity, userState);
     saveFavorites();
-    //writeUserData(x, y, z....);
+    $(".user-modal").modal('hide');
 });
 
 // MAP FUNCTIONS ***************************************************************************
@@ -488,11 +495,11 @@ $(".slider-1-5").slider({
 // TEST DATA ************************************************************************
 // create test data in firebase
 function createTestData() {
-    let larryId = writeUserData(0, "Larry", "larry@gmail.com", "Atlanta", "Georgia");
+    let larryId = writeUserData("Larry", "larry@gmail.com", "Atlanta", "Georgia");
     console.log("larryId: ", larryId);
-    let moeId = writeUserData(1, "Moe", "moe@gmail.com", "Atlanta", "Georgia");
+    let moeId = writeUserData("Moe", "moe@gmail.com", "Atlanta", "Georgia");
     console.log("moeId: ", moeId);
-    let curlyId = writeUserData(2, "Curly", "curly@gmail.com", "Atlanta", "Georgia");
+    let curlyId = writeUserData("Curly", "curly@gmail.com", "Atlanta", "Georgia");
     console.log("curlyId: ", curlyId);
 
     let taqueriaDelSolId = writeRestaurantData("", "Taqueria del Sol", "", "Atlanta", "GA", "30033", 0, 0, "", "Mexican", 2);
