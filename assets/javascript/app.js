@@ -32,7 +32,8 @@ let mapPins = [];
 if ($("body").attr("data-title") === "index-page") { // functions run on load of index-page
 
     $(document).ready(() => {
-      // createTestData(); // do not uncomment unless you want to add test data back to firebase
+        //createTestData(); // do not uncomment unless you want to add test data back to firebase
+
         getTopX(20); // get top 20 records by average rating
 
         readLocalStorage(); // function to get user info from local storage
@@ -356,7 +357,7 @@ $("#search-btn").on("click", function () {
         // displays message if no search results returned
         if (matches === 0) {
             noResults();
-        }
+        };
     });
 });
 
@@ -483,23 +484,6 @@ function setValues(stepIncrease) {
     };
 };
 
-// js for new style of slider - doesn't snap marker to values when moving up/down slide
-/* $(".range-slider-1-4").jRange({
-    from: 1,
-    to: 4,
-    step: 1,
-    scale: [1,2,3,4],
-    isRange: true
-});
-
-$(".range-slider-1-10").jRange({
-    from: 1,
-    to: 10,
-    step: 1,
-    scale: [1,2,3,4,5,6,7,8,9,10],
-    isRange: true
-}); */
-
 $(".slider-1-5").slider({
     range: true,
     min: 1,
@@ -528,7 +512,7 @@ function createTestData() {
     console.log("taqueriaDelSolId: ", taqueriaDelSolId);
     let sapporoId = writeRestaurantData("", "Sapporo de Napoli", "", "Atlanta", "GA", "30033", 0, 0, "", "Italian", 2);
     console.log("sapporoId: ", sapporoId);
-    let grindhouseId = writeRestaurantData("", "Grindhouse Killer Burgers", "", "Atlanta", "30033", "GA", 0, 0, "", "American", 2);
+    let grindhouseId = writeRestaurantData("", "Grindhouse Killer Burgers", "", "Atlanta", "GA", "30033", 0, 0, "", "American", 2);
     console.log("grindhouseId: ", grindhouseId);
 
     let tacoId = writeDishData("beef taco supreme", taqueriaDelSolId, 2, 1, 1, 2, 2, 2, 5, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg?alt=media&token=c0f7b553-373f-4f0d-bea7-22cd524c1fe5", 1);
@@ -834,7 +818,39 @@ $("#cancel-dish-btn").on("click", function () {
 });
 
 $("#add-dish-btn").on("click", function () {
-    let rCount = 0;
+    
+    addRestaurant();
+    
+    const rating = $("#dish-rating").slider("value");
+    const sour = $("#sour-rating").slider("value");
+    const sweet = $("#sweet-rating").slider("value");
+    const spicy = $("#spicy-rating").slider("value");
+    const salty = $("#salty-rating").slider("value");
+    const umami = $("#umami-rating").slider("value");
+    const comment = $("#dish-comment").val();
+    let dishId = "";
+    console.log(downloadURL);
+    console.log(rating, sour, sweet, spicy, salty, umami, comment);
+    
+    const dishRecords = db.ref("ratings");
+        
+    // dummy user settings
+    // TODO: replace with retrieval of user info from local storage
+    const userId = 2;
+    const userCity = "Atlanta";
+    const userState = "Georiga";
+    const userEmail = "curly@gmail.com";
+    const userName = "Curly";
+
+    // determine if dish is already in firebase
+    calculateRatingAvg();
+    // TODO: Go to dish average rating page on home screen
+});
+
+function addRestaurant() {
+    const restaurantRecords = db.ref("restaurants");
+
+    let rExists = true;
     const rIndex = localStorage.getItem("rIndex");
     const restaurant = JSON.parse(localStorage.getItem("restaurants"));
     const yelpDataObject = restaurant[rIndex];
@@ -852,84 +868,49 @@ $("#add-dish-btn").on("click", function () {
         cuisine.push(yelpDataObject.categories[i].title);
     }
     const price = yelpDataObject.price;
-    
-    const rating = $("#dish-rating").slider("value");
-    const sour = $("#sour-rating").slider("value");
-    const sweet = $("#sweet-rating").slider("value");
-    const spicy = $("#spicy-rating").slider("value");
-    const salty = $("#salty-rating").slider("value");
-    const umami = $("#umami-rating").slider("value");
-    const comment = $("#dish-comment").val();
-    let dishId = "";
-    console.log(downloadURL);
-    console.log(city, state);
-    console.log(rating, sour, sweet, spicy, salty, umami, comment);
-    console.log(yelpDataObject);
-    console.log(yelpDataObject.location.city);
-    console.log(yelpDataObject.location.state);
 
-        console.log(cuisine);
-        console.log(price);
-    
-        const dishRecords = db.ref("ratings");
-        const restaurantRecords = db.ref("restaurants");
-
-        restaurantRecords.on("value", function(restaurantSnapshot) {
+    restaurantRecords.once("value", function(restaurantSnapshot) {
         const rRecord = restaurantSnapshot.val();
-        console.log(rRecord);
         
-        for (var i in restaurantSnapshot.val()) {
-            console.log(rId);
-            console.log(restaurantSnapshot.val());
-            if (rId === rRecord.yelpId) {
-                rCount++;
+        findRestaurant(rId, function() {
+            console.log(rExists);
+            loadRestaurant(rExists);
+        });
+        
+        function loadRestaurant(rExists) {
+            console.log("who's on first");
+            console.log(rExists);
+            if (rExists === false) {
+                console.log("zero");
+                restaurantRecords.push({
+                    yelpId: rId,
+                    name: rName,
+                    address: address,
+                    city: city,
+                    state: state,
+                    zipCode: zip,
+                    lat: lat,
+                    long: long,
+                    phone: phone,
+                    cuisine: cuisine,
+                    price: price,
+                }); 
             };
         };
-        console.log(rCount);
-        // not sure why, but this code is causing duplicate/infinite additions to firebase
-        /* if (rCount === 0 ) {
-            console.log("zero");
-            restaurantRecords.push({
-                yelpId: rId,
-                name: rName,
-                address: address,
-                city: city,
-                state: state,
-                zipCode: zip,
-                lat: lat,
-                long: long,
-                phone: phone,
-                cuisine: cuisine,
-                price: price,
-            }); 
-        }; */
-    });
         
-    // dummy user settings
-    // TODO: replace with retrieval of user info from local storage
-    const userId = 2;
-    const userCity = "Atlanta";
-    const userState = "Georiga";
-    const userEmail = "curly@gmail.com";
-    const userName = "Curly";
+        function findRestaurant(rId) {
+            console.log(rId);
+            console.log(rRecord);
 
-    // determine if restaurant is already in firebase
-    addRestaurant();
-    // determine if dish is already in firebase
-    calculateRatingAvg();
-    // TODO: Go to dish average rating page on home screen
-});
-
-function addRestaurant(response) {
-    const dishes = db.ref("dishes");
-    const restaurants = db.ref("restaurants");
-
-    // select restaurant by ID
-    // if id matches existing restaurant Id in firebase, do not add
-    // else, push new restaurant to firebase. get response from ajax call?
-    restaurants.on("value", function (snapshot) {
-        console.log(snapshot.val());
-        // wip
+            for (var i in rRecord) {
+                restaurantRecords.orderByChild('yelpId').equalTo(rId).once('value', function(snap) {
+                    console.log(snap.val());
+                    if (snap.val() === null) {
+                        rExists = false;
+                    }
+                });
+            };
+        };
     });
 };
 
