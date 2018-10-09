@@ -786,6 +786,42 @@ $("#cancel-dish-btn").on("click", function () {
 });
 
 $("#add-dish-btn").on("click", function () {
+    
+    addRestaurant();
+    
+    const rating = $("#dish-rating").slider("value");
+    const sour = $("#sour-rating").slider("value");
+    const sweet = $("#sweet-rating").slider("value");
+    const spicy = $("#spicy-rating").slider("value");
+    const salty = $("#salty-rating").slider("value");
+    const umami = $("#umami-rating").slider("value");
+    const comment = $("#dish-comment").val();
+    let dishId = "";
+    
+    console.log(rating, sour, sweet, spicy, salty, umami, comment);
+    
+    
+    const dishRecords = db.ref("ratings");
+    const restaurantRecords = db.ref("restaurants");
+
+    // dummy user settings
+    // TODO: replace with retrieval of user info from local storage
+    const userId = 2;
+    const userCity = "Atlanta";
+    const userState = "Georiga";
+    const userEmail = "curly@gmail.com";
+    const userName = "Curly";
+
+    // determine if restaurant is already in firebase
+    addRestaurant();
+    // determine if dish is already in firebase
+    calculateRatingAvg();
+    // TODO: Go to dish average rating page on home screen
+});
+
+function addRestaurant() {
+    const restaurantRecords = db.ref("restaurants");
+
     let rCount = 0;
     const rIndex = localStorage.getItem("rIndex");
     const restaurant = JSON.parse(localStorage.getItem("restaurants"));
@@ -804,83 +840,59 @@ $("#add-dish-btn").on("click", function () {
         cuisine.push(yelpDataObject.categories[i].title);
     }
     const price = yelpDataObject.price;
-    
-    const rating = $("#dish-rating").slider("value");
-    const sour = $("#sour-rating").slider("value");
-    const sweet = $("#sweet-rating").slider("value");
-    const spicy = $("#spicy-rating").slider("value");
-    const salty = $("#salty-rating").slider("value");
-    const umami = $("#umami-rating").slider("value");
-    const comment = $("#dish-comment").val();
-    let dishId = "";
-    
-    console.log(rating, sour, sweet, spicy, salty, umami, comment);
-    console.log(yelpDataObject);
+
+    /* console.log(yelpDataObject);
     console.log(yelpDataObject.location.city);
     console.log(yelpDataObject.location.state);
     console.log(cuisine);
-    console.log(price);
-    
-    const dishRecords = db.ref("ratings");
-    const restaurantRecords = db.ref("restaurants");
+    console.log(price); */
 
-    restaurantRecords.on("value", function(restaurantSnapshot) {
+    restaurantRecords.once("value", function(restaurantSnapshot) {
         const rRecord = restaurantSnapshot.val();
         console.log(rRecord);
         
-        for (var i in restaurantSnapshot.val()) {
-            console.log(rId);
-            console.log(restaurantSnapshot.val());
-            if (rId === rRecord.yelpId) {
-                rCount++;
+        findRestaurant(rId).then(function() {
+            console.log("who's on first");
+            console.log(rCount);
+            // not sure why, but this code is causing duplicate/infinite additions to firebase
+            if (rCount === 0 ) {
+                console.log("zero");
+                /* restaurantRecords.push({
+                    yelpId: rId,
+                    name: rName,
+                    address: address,
+                    city: city,
+                    state: state,
+                    zipCode: zip,
+                    lat: lat,
+                    long: long,
+                    phone: phone,
+                    cuisine: cuisine,
+                    price: price,
+                }); */ 
             };
-        };
-        console.log(rCount);
-        // not sure why, but this code is causing duplicate/infinite additions to firebase
-        /* if (rCount === 0 ) {
-            console.log("zero");
-            restaurantRecords.push({
-                yelpId: rId,
-                name: rName,
-                address: address,
-                city: city,
-                state: state,
-                zipCode: zip,
-                lat: lat,
-                long: long,
-                phone: phone,
-                cuisine: cuisine,
-                price: price,
-            }); 
-        }; */
-    });
+        });
         
-    // dummy user settings
-    // TODO: replace with retrieval of user info from local storage
-    const userId = 2;
-    const userCity = "Atlanta";
-    const userState = "Georiga";
-    const userEmail = "curly@gmail.com";
-    const userName = "Curly";
-
-    // determine if restaurant is already in firebase
-    addRestaurant();
-    // determine if dish is already in firebase
-    calculateRatingAvg();
-    // TODO: Go to dish average rating page on home screen
-});
-
-function addRestaurant(response) {
-    const dishes = db.ref("dishes");
-    const restaurants = db.ref("restaurants");
+        function findRestaurant(rId) {
+            return new Promise(function (fulfill, reject) {
+                for (var i in restaurantSnapshot.val()) {
+                    console.log(rId);
+                    // console.log(restaurantSnapshot.val());
+                    if (rId === rRecord.yelpId) {
+                        rCount++;
+                    };
+                };
+                fulfill(rCount); // if the action succeeded
+                reject(error); // if the action did not succeed
+            });
+        }
+        
+        
+    });
 
     // select restaurant by ID
     // if id matches existing restaurant Id in firebase, do not add
-    // else, push new restaurant to firebase. get response from ajax call?
-    restaurants.on("value", function (snapshot) {
-        console.log(snapshot.val());
-        // wip
-    });
+    // else, push new restaurant to firebase.
 };
 
 function calculateRatingAvg(num) {
