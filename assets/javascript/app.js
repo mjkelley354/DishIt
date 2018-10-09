@@ -37,7 +37,7 @@ if ($("body").attr("data-title") === "index-page") { // functions run on load of
 
         readLocalStorage(); // function to get user info from local storage
 
-        initMap();
+        //initMap();
 
     });
 };
@@ -104,6 +104,12 @@ function getTopX(recordsToReturn) {
                     dishesSnapshot.val().image,
                     dishesSnapshot.val().price
                 );
+
+                const restaurantLatLong = {
+                    lat: restaurantSnapshot.val().lat,
+                    lng: restaurantSnapshot.val().long,
+                };
+                addToMap(restaurantSnapshot.val().name, restaurantLatLong);
             });
         });
     });
@@ -347,6 +353,12 @@ $("#search-btn").on("click", function () {
                             "",
                         );
                     });
+
+                    const restaurantLatLong = {
+                        lat: restaurantSnapshot.val().lat,
+                        lng: restaurantSnapshot.val().long,
+                    };
+                    addToMap(restaurantSnapshot.val().name, restaurantLatLong);
                 });
             };
         });
@@ -438,16 +450,18 @@ function addToMap(restaurauntName, position) {
 // initializes the map object
 function initMap() {
     // The location of Atlanta
+    console.log("initMap() triggered.");
     var atlanta = {
         lat: 33.753746,
         lng: -84.386330
     };
-    // The map, centered at Atlanta
+
     map = new google.maps.Map(
-        $('#map-canvas'), {
-            zoom: 10,
-            center: atlanta
-        });
+        document.getElementById('map-canvas'), {
+        center: atlanta,
+        zoom: 10
+    });
+
     // The marker, positioned at Atlanta
     //var marker = new google.maps.Marker({position: atlanta, map: map});
 }
@@ -524,11 +538,11 @@ function createTestData() {
     let curlyId = writeUserData("Curly", "curly@gmail.com", "Atlanta", "Georgia");
     console.log("curlyId: ", curlyId);
 
-    let taqueriaDelSolId = writeRestaurantData("", "Taqueria del Sol", "", "Atlanta", "GA", "30033", 0, 0, "", "Mexican", 2);
+    let taqueriaDelSolId = writeRestaurantData("", "Taqueria del Sol", "", "Atlanta", "GA", "30033", 33.775990, -84.302140, "", "Mexican", 2);
     console.log("taqueriaDelSolId: ", taqueriaDelSolId);
-    let sapporoId = writeRestaurantData("", "Sapporo de Napoli", "", "Atlanta", "GA", "30033", 0, 0, "", "Italian", 2);
+    let sapporoId = writeRestaurantData("", "Sapori di Napoli", "", "Atlanta", "GA", "30033", 33.773480, -84.295350, "", "Italian", 2);
     console.log("sapporoId: ", sapporoId);
-    let grindhouseId = writeRestaurantData("", "Grindhouse Killer Burgers", "", "Atlanta", "30033", "GA", 0, 0, "", "American", 2);
+    let grindhouseId = writeRestaurantData("", "Grindhouse Killer Burgers", "", "Atlanta", "30033", "GA", 33.772710, -84.296090, "", "American", 2);
     console.log("grindhouseId: ", grindhouseId);
 
     let tacoId = writeDishData("beef taco supreme", taqueriaDelSolId, 2, 1, 1, 2, 2, 2, 5, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg?alt=media&token=c0f7b553-373f-4f0d-bea7-22cd524c1fe5", 1);
