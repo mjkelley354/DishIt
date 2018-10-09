@@ -195,15 +195,14 @@ $(document).on("click", ".dish-tile", function () {
     console.log(dataTargetId);
     $(".collapse").collapse('hide');
 
-     var dishes = db.ref('dishes');
-     let avgSaltyScale = "";
-     let avgSourScale = "";
-     let avgSpicyScale = "";
-     let avgSweetScale = "";
-     let avgUnamiScale = ""
+    var dishes = db.ref('dishes');
+    let avgSaltyScale = "";
+    let avgSourScale = "";
+    let avgSpicyScale = "";
+    let avgSweetScale = "";
+    let avgUmamiScale = ""
     
     dishes.child("/" + dishId).once('value', function (dishesSnapshot) {
-         
                 avgSaltyScale = dishesSnapshot.val().avgSaltyScale;
                 console.log("salty " + avgSaltyScale);
                 avgSourScale = dishesSnapshot.val().avgSourScale;
@@ -216,14 +215,13 @@ $(document).on("click", ".dish-tile", function () {
                 console.log("umami " + avgUmamiScale);
         });
 
-
-   $(`${dataTargetId}`).append(
+    $(`${dataTargetId}`).append(
         `<div class="card-body">
             Salty: ${avgSaltyScale}
-             Sour: ${avgSourScale}
-             Spicy: ${avgSpicyScale}
-             Sweet: ${avgSweetScale}
-             Umani: ${avgUmamiScale}</div>
+            Sour: ${avgSourScale}
+            Spicy: ${avgSpicyScale}
+            Sweet: ${avgSweetScale}
+            Umani: ${avgUmamiScale}</div>
             `
     ) 
 });
@@ -382,7 +380,7 @@ function addToMap(restaurauntName, position) {
     // add a marker
     let marker = new google.maps.Marker({
         position: position,
-        map: map
+        map: map,
     });
 
     // add an info window which shows details of dish / restauraunt
@@ -804,12 +802,25 @@ $("#cancel-dish-btn").on("click", function () {
 });
 
 $("#add-dish-btn").on("click", function () {
+    let rCount = 0;
     const rIndex = localStorage.getItem("rIndex");
     const restaurant = JSON.parse(localStorage.getItem("restaurants"));
     const yelpDataObject = restaurant[rIndex];
     const rId = yelpDataObject.id;
+    const rName = yelpDataObject.name;
+    const address = yelpDataObject.location.address1;
     const city = $("#city-input").val();
     const state = $("#state-input").val();
+    const zip = yelpDataObject.location.zip_code;
+    const lat = yelpDataObject.coordinates.latitude;
+    const long = yelpDataObject.coordinates.longitude;
+    const phone = yelpDataObject.display_phone;
+    const cuisine = [];
+    for (var i in yelpDataObject.categories) {
+        cuisine.push(yelpDataObject.categories[i].title);
+    }
+    const price = yelpDataObject.price;
+    
     const rating = $("#dish-rating").slider("value");
     const sour = $("#sour-rating").slider("value");
     const sweet = $("#sweet-rating").slider("value");
@@ -819,46 +830,47 @@ $("#add-dish-btn").on("click", function () {
     const comment = $("#dish-comment").val();
     let dishId = "";
     
-    console.log(downloadURL);
-    console.log(city, state);
     console.log(rating, sour, sweet, spicy, salty, umami, comment);
     console.log(yelpDataObject);
-    console.log(rId);
-    console.log(yelpDataObject.name);
-    console.log(yelpDataObject.location.address1);
     console.log(yelpDataObject.location.city);
     console.log(yelpDataObject.location.state);
-    console.log(yelpDataObject.location.zip_code);
-    console.log(yelpDataObject.coordinates.latitude);
-    console.log(yelpDataObject.coordinates.longitude);
-    console.log(yelpDataObject.display_phone);
-    
+    console.log(cuisine);
+    console.log(price);
     
     const dishRecords = db.ref("ratings");
     const restaurantRecords = db.ref("restaurants");
-    restaurantRecords.on("value", function(restaurantSnapshot) {
-        console.log(restaurantSnapshot.val());
-        console.log(restaurantSnapshot.val().length);
-        for (var i; i < restaurantSnapshot.val().length; i++) {
-            if (rID === restaurantSnapshot.val().yelpId) {
-                console.log("restaurant exists in Firebase");
-            } /* else {
-                restaurantRecords.push({
-                    yelpId: rID,
-                    name:
-                    address,
-                    city,
-                    state,
-                    zipCode,
-                    lat,
-                    long,
-                    phone,
-                    cuisine,
-                });
-            }; */
-        };
-    });
 
+    restaurantRecords.on("value", function(restaurantSnapshot) {
+        const rRecord = restaurantSnapshot.val();
+        console.log(rRecord);
+        
+        for (var i in restaurantSnapshot.val()) {
+            console.log(rId);
+            console.log(restaurantSnapshot.val());
+            if (rId === rRecord.yelpId) {
+                rCount++;
+            };
+        };
+        console.log(rCount);
+        // not sure why, but this code is causing duplicate/infinite additions to firebase
+        /* if (rCount === 0 ) {
+            console.log("zero");
+            restaurantRecords.push({
+                yelpId: rId,
+                name: rName,
+                address: address,
+                city: city,
+                state: state,
+                zipCode: zip,
+                lat: lat,
+                long: long,
+                phone: phone,
+                cuisine: cuisine,
+                price: price,
+            }); 
+        }; */
+    });
+        
     // dummy user settings
     // TODO: replace with retrieval of user info from local storage
     const userId = 2;
@@ -883,7 +895,6 @@ function addRestaurant(response) {
     // else, push new restaurant to firebase. get response from ajax call?
     restaurants.on("value", function (snapshot) {
         console.log(snapshot.val());
-        console.log('Hi');
         // wip
     });
 };
