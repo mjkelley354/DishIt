@@ -16,6 +16,7 @@ const storageRef = storageService.ref();
 
 // global variables
 let selectedFile;
+let userId = "";
 let userName = "";
 let userEmail = "";
 let userCity = "";
@@ -31,8 +32,7 @@ let mapPins = [];
 if ($("body").attr("data-title") === "index-page") { // functions run on load of index-page
 
     $(document).ready(() => {
-        /*         createTestData(); // do not uncomment unless you want to add test data back to firebase
-         */
+      // createTestData(); // do not uncomment unless you want to add test data back to firebase
         getTopX(20); // get top 20 records by average rating
 
         readLocalStorage(); // function to get user info from local storage
@@ -44,13 +44,14 @@ if ($("body").attr("data-title") === "index-page") { // functions run on load of
 
 function readLocalStorage() {
     // get user info from localstorage if it exists
+    userId = localStorage.getItem("dish-it-user-id");
     userName = localStorage.getItem("dish-it-user");
     userEmail = localStorage.getItem("dish-it-email");
     userCity = localStorage.getItem("dish-it-city");
     userState = localStorage.getItem("dish-it-state");
 
     // if we don't have data in local storage then user doesn't exists, so show the add user modal
-    if (userName == null || userEmail == null || userCity == null || userState == null) {
+    if (userId == null || userName == null || userEmail == null || userCity == null || userState == null) {
         $(".user-modal").modal('show');
     }
 };
@@ -246,13 +247,9 @@ $(document).on("click", ".dish-tile", function () {
                      State: ${state}
                      ZipCode: ${zipCode} </div>
                 `
-            )
-
+            );
         });
     });
-
-    
-
 });
 
 function getPrice(price) {
@@ -388,6 +385,7 @@ $(".apply-filter").on("click", function () {
 // USER DETAILS **************************************************************************
 // save favorites to local storage
 function saveFavorites() {
+    localStorage.setItem("dish-it-user-id", userId);
     localStorage.setItem("dish-it-user", userName);
     localStorage.setItem("dish-it-email", userEmail);
     localStorage.setItem("dish-it-city", userCity);
@@ -395,9 +393,13 @@ function saveFavorites() {
 }
 
 $(".save-user").on("click", function () {
-    // TODO: capture the data from the form on the modal into the global user variables and then save to firebase
+    userName = $("#userName").val();
+    userEmail = $("#userEmail").val();
+    userCity = $("#userCity").val();
+    userState = $("#userState").val();
+    userId = writeUserData(userName, userEmail, userCity, userState);
     saveFavorites();
-    //writeUserData(x, y, z....);
+    $(".user-modal").modal('hide');
 });
 
 // MAP FUNCTIONS ***************************************************************************
@@ -409,7 +411,7 @@ function addToMap(restaurauntName, position) {
     // add a marker
     let marker = new google.maps.Marker({
         position: position,
-        map: map
+        map: map,
     });
 
     // add an info window which shows details of dish / restauraunt
@@ -515,11 +517,11 @@ $(".slider-1-5").slider({
 // TEST DATA ************************************************************************
 // create test data in firebase
 function createTestData() {
-    let larryId = writeUserData(0, "Larry", "larry@gmail.com", "Atlanta", "Georgia");
+    let larryId = writeUserData("Larry", "larry@gmail.com", "Atlanta", "Georgia");
     console.log("larryId: ", larryId);
-    let moeId = writeUserData(1, "Moe", "moe@gmail.com", "Atlanta", "Georgia");
+    let moeId = writeUserData("Moe", "moe@gmail.com", "Atlanta", "Georgia");
     console.log("moeId: ", moeId);
-    let curlyId = writeUserData(2, "Curly", "curly@gmail.com", "Atlanta", "Georgia");
+    let curlyId = writeUserData("Curly", "curly@gmail.com", "Atlanta", "Georgia");
     console.log("curlyId: ", curlyId);
 
     let taqueriaDelSolId = writeRestaurantData("", "Taqueria del Sol", "", "Atlanta", "GA", "30033", 0, 0, "", "Mexican", 2);
@@ -832,12 +834,25 @@ $("#cancel-dish-btn").on("click", function () {
 });
 
 $("#add-dish-btn").on("click", function () {
+    let rCount = 0;
     const rIndex = localStorage.getItem("rIndex");
     const restaurant = JSON.parse(localStorage.getItem("restaurants"));
     const yelpDataObject = restaurant[rIndex];
     const rId = yelpDataObject.id;
+    const rName = yelpDataObject.name;
+    const address = yelpDataObject.location.address1;
     const city = $("#city-input").val();
     const state = $("#state-input").val();
+    const zip = yelpDataObject.location.zip_code;
+    const lat = yelpDataObject.coordinates.latitude;
+    const long = yelpDataObject.coordinates.longitude;
+    const phone = yelpDataObject.display_phone;
+    const cuisine = [];
+    for (var i in yelpDataObject.categories) {
+        cuisine.push(yelpDataObject.categories[i].title);
+    }
+    const price = yelpDataObject.price;
+    
     const rating = $("#dish-rating").slider("value");
     const sour = $("#sour-rating").slider("value");
     const sweet = $("#sweet-rating").slider("value");
@@ -846,48 +861,50 @@ $("#add-dish-btn").on("click", function () {
     const umami = $("#umami-rating").slider("value");
     const comment = $("#dish-comment").val();
     let dishId = "";
-
     console.log(downloadURL);
     console.log(city, state);
     console.log(rating, sour, sweet, spicy, salty, umami, comment);
     console.log(yelpDataObject);
-    console.log(rId);
-    console.log(yelpDataObject.name);
-    console.log(yelpDataObject.location.address1);
     console.log(yelpDataObject.location.city);
     console.log(yelpDataObject.location.state);
-    console.log(yelpDataObject.location.zip_code);
-    console.log(yelpDataObject.coordinates.latitude);
-    console.log(yelpDataObject.coordinates.longitude);
-    console.log(yelpDataObject.display_phone);
 
+        console.log(cuisine);
+        console.log(price);
+    
+        const dishRecords = db.ref("ratings");
+        const restaurantRecords = db.ref("restaurants");
 
-    const dishRecords = db.ref("ratings");
-    const restaurantRecords = db.ref("restaurants");
-    restaurantRecords.on("value", function (restaurantSnapshot) {
-        console.log(restaurantSnapshot.val());
-        console.log(restaurantSnapshot.val().length);
-        for (var i; i < restaurantSnapshot.val().length; i++) {
-            if (rID === restaurantSnapshot.val().yelpId) {
-                console.log("restaurant exists in Firebase");
-            }
-            /* else {
-                           restaurantRecords.push({
-                               yelpId: rID,
-                               name:
-                               address,
-                               city,
-                               state,
-                               zipCode,
-                               lat,
-                               long,
-                               phone,
-                               cuisine,
-                           });
-                       }; */
+        restaurantRecords.on("value", function(restaurantSnapshot) {
+        const rRecord = restaurantSnapshot.val();
+        console.log(rRecord);
+        
+        for (var i in restaurantSnapshot.val()) {
+            console.log(rId);
+            console.log(restaurantSnapshot.val());
+            if (rId === rRecord.yelpId) {
+                rCount++;
+            };
         };
+        console.log(rCount);
+        // not sure why, but this code is causing duplicate/infinite additions to firebase
+        /* if (rCount === 0 ) {
+            console.log("zero");
+            restaurantRecords.push({
+                yelpId: rId,
+                name: rName,
+                address: address,
+                city: city,
+                state: state,
+                zipCode: zip,
+                lat: lat,
+                long: long,
+                phone: phone,
+                cuisine: cuisine,
+                price: price,
+            }); 
+        }; */
     });
-
+        
     // dummy user settings
     // TODO: replace with retrieval of user info from local storage
     const userId = 2;
@@ -912,7 +929,6 @@ function addRestaurant(response) {
     // else, push new restaurant to firebase. get response from ajax call?
     restaurants.on("value", function (snapshot) {
         console.log(snapshot.val());
-        console.log('Hi');
         // wip
     });
 };
