@@ -22,6 +22,7 @@ let userEmail = "";
 let userCity = "";
 let userState = "";
 let dishArray = [];
+let filteredArray = [];
 
 // google map object
 let map;
@@ -91,8 +92,8 @@ function getTopX(recordsToReturn) {
                     dishesSnapshot.val().avgUmamiScale,
                     dishesSnapshot.val().image,
                     dishesSnapshot.val().price,
-                    0,
-                    0,
+                    restaurantSnapshot.val().lat,
+                    restaurantSnapshot.val().long,
                     "",
                     "",
                 );
@@ -159,7 +160,9 @@ function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, d
                         <h5 class="col-xs-12 col-md-6 m-0">@${restaurantName}</h5>
                     </div>
                 </td>
-                <td class="align-middle rating-icons p-0">${getRating(avgRating)}<br><span style="color:black;">${getPrice(dishPrice)}</span>
+                <td class="align-middle rating-icons p-0">${getRating(avgRating)}<br><span style="color:black;">${
+      
+      (dishPrice)}</span>
                 </td>
             </tr>
             <tr>
@@ -426,56 +429,62 @@ function getSalty(avgSaltyScale) {
                 </tbody>
             </table>
         `
-            );
-// capture search string
-            const searchInput = $("#search-input").val();
-            console.log(searchInput);
+                  );
 
-            var dishes = db.ref('dishes');
-            var restaurants = db.ref('restaurants');
-            let matches = 0;
-            dishArray.length = 0;
+    // capture search string
+    const searchInput = $("#search-input").val();
+    console.log(searchInput);
 
-            // for each dish in order of avgRating...
-            dishes.orderByChild("avgRating").on('value', function (snapshot) {
-                snapshot.forEach(function (childSnapshot) {
+    var dishes = db.ref('dishes');
+    var restaurants = db.ref('restaurants');
+    let matches = 0;
+    dishArray.length = 0;
 
-                    // if dish name contains search string, display results on screen
-                    if (childSnapshot.val().name.includes(searchInput)) {
-                        matches++;
+    // for each dish in order of avgRating...
+    dishes.orderByChild("avgRating").on('value', function (snapshot) {
+        snapshot.forEach(function (childSnapshot) {
 
-                        console.log(childSnapshot.val().name);
-                        const keyValue = childSnapshot.ref.key;
+            // if dish name contains search string, display results on screen
+            if (childSnapshot.val().name.includes(searchInput)) {
+                matches++;
 
-                        dishes.child("/" + keyValue).once('value', function (dishesSnapshot) {
-                            restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function (restaurantSnapshot) {
+                console.log(childSnapshot.val().name);
+                const keyValue = childSnapshot.ref.key;
 
-                                createTile(keyValue,
-                                    dishesSnapshot.val().name,
-                                    dishesSnapshot.val().restaurantId,
-                                    restaurantSnapshot.val().name,
-                                    dishesSnapshot.val().avgRating,
-                                    dishesSnapshot.val().image,
-                                    dishesSnapshot.val().price);
+                dishes.child("/" + keyValue).once('value', function (dishesSnapshot) {
+                    restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function (restaurantSnapshot) {
 
-                                newDish(keyValue,
-                                    dishesSnapshot.val().name,
-                                    dishesSnapshot.val().restaurantId,
-                                    restaurantSnapshot.val().name,
-                                    dishesSnapshot.val().avgRating,
-                                    dishesSnapshot.val().avgSourScale,
-                                    dishesSnapshot.val().avgSweetScale,
-                                    dishesSnapshot.val().avgSpicyScale,
-                                    dishesSnapshot.val().avgSaltyScale,
-                                    dishesSnapshot.val().avgUmamiScale,
-                                    dishesSnapshot.val().image,
-                                    dishesSnapshot.val().price,
-                                    0,
-                                    0, "",
-                                    "",
-                                );
-                            });
-                        });
+                        createTile(keyValue,
+                            dishesSnapshot.val().name,
+                            dishesSnapshot.val().restaurantId,
+                            restaurantSnapshot.val().name,
+                            dishesSnapshot.val().avgRating,
+                            dishesSnapshot.val().image,
+                            dishesSnapshot.val().price);
+
+                        newDish(keyValue,
+                            dishesSnapshot.val().name,
+                            dishesSnapshot.val().restaurantId,
+                            restaurantSnapshot.val().name,
+                            dishesSnapshot.val().avgRating,
+                            dishesSnapshot.val().avgSourScale,
+                            dishesSnapshot.val().avgSweetScale,
+                            dishesSnapshot.val().avgSpicyScale,
+                            dishesSnapshot.val().avgSaltyScale,
+                            dishesSnapshot.val().avgUmamiScale,
+                            dishesSnapshot.val().image,
+                            dishesSnapshot.val().price,
+                            restaurantSnapshot.val().lat,
+                            restaurantSnapshot.val().long,
+                            "",
+                            "",
+                        );
+                    });
+
+                    const restaurantLatLong = {
+                        lat: restaurantSnapshot.val().lat,
+                        lng: restaurantSnapshot.val().long,
+
                     };
                   });
                   console.log(matches);
@@ -500,20 +509,160 @@ function noResults() {
                 </div>
             </div>
         `
-    );
+          );
 };
 
 $(document).on("click", "#new-dish-btn", function() {
     window.location.href = "newdish.html";
 });
-        $(".apply-filter").on("click", function () {
-            // loop though each card
-            $('.card').each(function (index, obj) {
-                // if card properties not within filter criteria then hide card
+                            
+    $(".apply-filter").on("click", function () {
+    const priceMin = $("#slider-price-range").slider("values")[0];
+    const priceMax = $("#slider-price-range").slider("values")[1];
+    const ratingMin = $("#slider-rating-range").slider("values")[0];
+    const ratingMax = $("#slider-rating-range").slider("values")[1];
+    const sourMin = $("#slider-sour-range").slider("values")[0];
+    const sourMax = $("#slider-sour-range").slider("values")[1];
+    const sweetMin = $("#slider-sweet-range").slider("values")[0];
+    const sweetMax = $("#slider-sweet-range").slider("values")[1];
+    const spicyMin = $("#slider-spicy-range").slider("values")[0];
+    const spicyMax = $("#slider-spicy-range").slider("values")[1];
+    const saltyMin = $("#slider-salty-range").slider("values")[0];
+    const saltyMax = $("#slider-salty-range").slider("values")[1];
+    const umamiMin = $("#slider-umami-range").slider("values")[0];
+    const umamiMax = $("#slider-umami-range").slider("values")[1];
 
-            });
-        });
+    console.log(dishArray);
 
+    for (let i = 0; i < dishArray.length; i++) {
+        if (!isInRange(dishArray[i].price, priceMin, priceMax)) {
+            console.log("Price is out of range! min: " + priceMin + " max: " + priceMax + " actual: " + dishArray[i].price);
+            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
+            continue;
+        } else {
+            console.log("Price is in range.");
+        }
+        if (!isInRange(dishArray[i].avgRating, ratingMin, ratingMax)) {
+            console.log("Rating is out of range! min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgRating);
+            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
+            continue;
+        } else {
+            console.log("Rating is in range.");
+        }
+        if (!isInRange(dishArray[i].avgSourScale, sourMin, sourMax)) {
+            console.log("Sour scale is out of range! min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgSourScale);
+            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
+            continue;
+        } else {
+            console.log("Sour scale  is in range.");
+        }
+        if (!isInRange(dishArray[i].avgSweetScale, sweetMin, sweetMax)) {
+            console.log("Sweet scale is out of range! min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgSweetScale);
+            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
+            continue;
+        } else {
+            console.log("Sweet scale is in range.");
+        }
+        if (!isInRange(dishArray[i].avgSpicyScale, spicyMin, spicyMax)) {
+            console.log("Spicy scale is out of range! min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgSpicyScale);
+            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
+            continue;
+        } else {
+            console.log("Spicy scale is in range.");
+        }
+        if (!isInRange(dishArray[i].avgSaltyScale, saltyMin, saltyMax)) {
+            console.log("Salty scale is out of range! min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgSaltyScale);
+            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
+            continue;
+        } else {
+            console.log("Salty scale is in range.");
+        }
+        if (!isInRange(dishArray[i].avgUmamiScale, umamiMin, umamiMax)) {
+            console.log("Umami scale is out of range! min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgUmamiScale);
+            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
+            continue;
+        } else {
+            console.log("Umami scale is in range.");
+        }
+    }
+
+    // TODO:  fix the following as it does not currently work!
+    // let allRowsHidden = true;
+    // let table = document.getElementById('dish-list');
+    // let rowLength = table.rows.length;
+    // for (let i = 0; i < rowLength; i++){
+    //     if($(table.rows[i]).is(":hidden") == false) {
+    //         allRowsHidden = false;
+    //     }
+    // }
+    //
+    // if (allRowsHidden == true){
+    //     $("#restaurant-results").empty()
+    //         .addClass("errorMessage")
+    //         .text("No matches found. Try a different search.");
+    // }
+
+    // TODO:  Hide the map marker if we are hiding the dish via a filter
+
+    $(".filter-modal").modal('hide');
+});
+
+function isInRange(testValue, minValue, maxValue) {
+    let inRange = false;
+    if (testValue >= minValue && testValue <= maxValue) {
+        inRange = true;
+    }
+    return inRange;
+}
+
+$(".remove-filter").on("click", function () {
+
+    // set all sliders back to min = 1, max = 5
+    $("#slider-price-range").slider('values',0,1);
+    $("#slider-price-range").slider('values',1,5);
+    $("#slider-rating-range").slider('values',0,1);
+    $("#slider-rating-range").slider('values',1,5);
+    $("#slider-sour-range").slider('values',0,1);
+    $("#slider-sour-range").slider('values',1,5);
+    $("#slider-sweet-range").slider('values',0,1);
+    $("#slider-sweet-range").slider('values',1,5);
+    $("#slider-spicy-range").slider('values',0,1);
+    $("#slider-spicy-range").slider('values',1,5);
+    $("#slider-salty-range").slider('values',0,1);
+    $("#slider-salty-range").slider('values',1,5);
+    $("#slider-umami-range").slider('values',0,1);
+    $("#slider-umami-range").slider('values',1,5);
+
+    let table = document.getElementById('dish-list');
+    let rowLength = table.rows.length;
+    for (let i = 0; i < rowLength; i++){
+        $(table.rows[i]).show();
+    }
+
+    $(".filter-modal").modal('hide');
+});
+
+
+function getPriceAsNumber(price) {
+    let numericPrice = 0;
+    switch (price){
+        case "$":
+            numericPrice = 1;
+            break;
+        case "$$":
+            numericPrice = 2;
+            break;
+        case "$$$":
+            numericPrice = 3;
+            break;
+        case "$$$$":
+            numericPrice = 4;
+            break;
+        case "$$$$$":
+            numericPrice = 5;
+            break;
+    }
+}
         // USER DETAILS **************************************************************************
         // save favorites to local storage
         function saveFavorites() {
@@ -639,7 +788,7 @@ function createTestData() {
     let curlyId = writeUserData("Curly", "curly@gmail.com", "Atlanta", "Georgia");
     console.log("curlyId: ", curlyId);
   
-    let taqueriaDelSolId = writeRestaurantData("123", "Taqueria del Sol", "433 N. McDonough St.", "Atlanta", "GA", "30033", 0, 0, "(404) 400-0509", "Mexican", 2);
+  let taqueriaDelSolId = writeRestaurantData("123", "Taqueria del Sol", "433 N. McDonough St.", "Atlanta", "GA", "30033", 0, 0, "(404) 400-0509", "Mexican", 2);
     console.log("taqueriaDelSolId: ", taqueriaDelSolId);
     let sapporoId = writeRestaurantData("456", "Sapporo de Napoli", "", "Atlanta", "GA", "30033", 33.769805, -84.414581, "", "Italian", 2);
     console.log("sapporoId: ", sapporoId);
@@ -957,7 +1106,7 @@ function addRestaurant() {
     console.log(rPrice);
 
     restaurantRecords.orderByChild('yelpId').equalTo(yelpId).once('value', function(snap) {
-            if (snap.val() === null) {
+      if (snap.val() === null) {
                 rIdFirebase = writeRestaurantData(yelpId, rName, address, city, state, zip, lat, long, phone, cuisine, rPrice);
             } else {
                 snap.forEach(function(childSnapshot) {
