@@ -831,8 +831,6 @@ $("#add-dish-btn").on("click", function () {
     let dishId = "";
     console.log(downloadURL);
     console.log(rating, sour, sweet, spicy, salty, umami, comment);
-    console.log(cuisine);
-    console.log(price);
     
     const dishRecords = db.ref("ratings");
         
@@ -852,7 +850,7 @@ $("#add-dish-btn").on("click", function () {
 function addRestaurant() {
     const restaurantRecords = db.ref("restaurants");
 
-    let rCount = 0;
+    let rExists = true;
     const rIndex = localStorage.getItem("rIndex");
     const restaurant = JSON.parse(localStorage.getItem("restaurants"));
     const yelpDataObject = restaurant[rIndex];
@@ -871,20 +869,18 @@ function addRestaurant() {
     }
     const price = yelpDataObject.price;
 
-    /* console.log(yelpDataObject);
-    console.log(yelpDataObject.location.city);
-    console.log(yelpDataObject.location.state);
-    console.log(cuisine);
-    console.log(price); */
-
     restaurantRecords.once("value", function(restaurantSnapshot) {
         const rRecord = restaurantSnapshot.val();
         
-        findRestaurant(rId).then(function() {
+        findRestaurant(rId, function() {
+            console.log(rExists);
+            loadRestaurant(rExists);
+        });
+        
+        function loadRestaurant(rExists) {
             console.log("who's on first");
-            console.log(rCount);
-            // not sure why, but this code is causing duplicate/infinite additions to firebase
-            if (rCount === 0 ) {
+            console.log(rExists);
+            if (rExists === false) {
                 console.log("zero");
                 restaurantRecords.push({
                     yelpId: rId,
@@ -900,21 +896,20 @@ function addRestaurant() {
                     price: price,
                 }); 
             };
-        });
+        };
         
         function findRestaurant(rId) {
-            return new Promise(function (fulfill, reject) {
-                for (var i in rRecord) {
-                    console.log(rId);
-                    console.log(restaurantSnapshot.val());
-                    restaurantRecords.orderByChild('yelpId').equalTo(rId).once('value', function(snap) {
-                        console.log(snap.val());
-                        rCount++
-                    });
-                };
-                fulfill(rCount); // if the action succeeded
-                reject(error); // if the action did not succeed
-            });
+            console.log(rId);
+            console.log(rRecord);
+
+            for (var i in rRecord) {
+                restaurantRecords.orderByChild('yelpId').equalTo(rId).once('value', function(snap) {
+                    console.log(snap.val());
+                    if (snap.val() === null) {
+                        rExists = false;
+                    }
+                });
+            };
         };
     });
 };
