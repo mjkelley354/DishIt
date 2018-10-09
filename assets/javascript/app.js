@@ -522,11 +522,11 @@ function createTestData() {
     let cheeseburgerId = writeDishData("cheeseburger", grindhouseId, 2, 2, 3, 1, 1, 1, 4.24, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheeseburger.jpg?alt=media&token=bbbf89f2-1d7a-4246-aed5-0f3b51883302", 1);
     console.log("cheeseburgerId: ", cheeseburgerId);
 
-    let tacoRating = writeRatingData(tacoId, larryId, "Awesome Tacos!", 1, 1, 2, 2, 1, 4, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg?alt=media&token=c0f7b553-373f-4f0d-bea7-22cd524c1fe5");
+    let tacoRating = writeRatingData(tacoId, "beef taco supreme", larryId, "Awesome Tacos!", 1, 1, 2, 2, 1, 4, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg?alt=media&token=c0f7b553-373f-4f0d-bea7-22cd524c1fe5");
     console.log("tacoRating: ", tacoRating);
-    let pizzaRating = writeRatingData(cheesePizzaId, moeId, "Best Pizza in Decatur!!", 1, 2, 3, 1, 1, 5, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheese-pizza.jpg?alt=media&token=ced316ad-ab07-4146-b6ea-04f7e400980b");
+    let pizzaRating = writeRatingData(cheesePizzaId, "cheese pizza", moeId, "Best Pizza in Decatur!!", 1, 2, 3, 1, 1, 5, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheese-pizza.jpg?alt=media&token=ced316ad-ab07-4146-b6ea-04f7e400980b");
     console.log("pizzaRating: ", pizzaRating);
-    let burgerRating = writeRatingData(cheeseburgerId, curlyId, "Burgers are better than FarmBurger and shakes too!", 1, 2, 2, 2, 1, 4, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheeseburger.jpg?alt=media&token=bbbf89f2-1d7a-4246-aed5-0f3b51883302");
+    let burgerRating = writeRatingData(cheeseburgerId, "cheeseburger", curlyId, "Burgers are better than FarmBurger and shakes too!", 1, 2, 2, 2, 1, 4, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheeseburger.jpg?alt=media&token=bbbf89f2-1d7a-4246-aed5-0f3b51883302");
     console.log("burgerRating: ", burgerRating);
 }
 
@@ -540,10 +540,11 @@ function writeUserData(name, email, city, state) {
     return insertedData.getKey();
 }
 
-function writeRatingData(dishId, userId, text, sourScale, sweetScale, spicyScale,
+function writeRatingData(dishId, dishName, userId, text, sourScale, sweetScale, spicyScale,
     saltyScale, umamiScale, rating, image) {
     let insertedData = db.ref('ratings/').push({
         dishId,
+        dishName,
         userId,
         text,
         sourScale,
@@ -821,26 +822,7 @@ $("#add-dish-btn").on("click", function () {
     
     addRestaurant();
     
-    const rating = $("#dish-rating").slider("value");
-    const sour = $("#sour-rating").slider("value");
-    const sweet = $("#sweet-rating").slider("value");
-    const spicy = $("#spicy-rating").slider("value");
-    const salty = $("#salty-rating").slider("value");
-    const umami = $("#umami-rating").slider("value");
-    const comment = $("#dish-comment").val();
-    let dishId = "";
-    console.log(downloadURL);
-    console.log(rating, sour, sweet, spicy, salty, umami, comment);
     
-    const dishRecords = db.ref("ratings");
-        
-    // dummy user settings
-    // TODO: replace with retrieval of user info from local storage
-    const userId = 2;
-    const userCity = "Atlanta";
-    const userState = "Georiga";
-    const userEmail = "curly@gmail.com";
-    const userName = "Curly";
 
     // determine if dish is already in firebase
     calculateRatingAvg();
@@ -869,19 +851,10 @@ function addRestaurant() {
     }
     const price = yelpDataObject.price;
 
-    restaurantRecords.once("value", function(restaurantSnapshot) {
-        const rRecord = restaurantSnapshot.val();
-        
-        findRestaurant(rId, function() {
-            console.log(rExists);
-            loadRestaurant(rExists);
-        });
-        
-        function loadRestaurant(rExists) {
+    restaurantRecords.orderByChild('yelpId').equalTo(rId).once('value', function(snap) {
+        console.log(snap.val());
+        if (snap.val() === null) {
             console.log("who's on first");
-            console.log(rExists);
-            if (rExists === false) {
-                console.log("zero");
                 restaurantRecords.push({
                     yelpId: rId,
                     name: rName,
@@ -894,27 +867,42 @@ function addRestaurant() {
                     phone: phone,
                     cuisine: cuisine,
                     price: price,
-                }); 
-            };
-        };
-        
-        function findRestaurant(rId) {
-            console.log(rId);
-            console.log(rRecord);
-
-            for (var i in rRecord) {
-                restaurantRecords.orderByChild('yelpId').equalTo(rId).once('value', function(snap) {
-                    console.log(snap.val());
-                    if (snap.val() === null) {
-                        rExists = false;
-                    }
                 });
-            };
-        };
-    });
+            }
+    }); 
+};
+
+function addDish() {
+    const dishRecords = db.ref("ratings");
+    const ratingsRecords = db.ref("ratings");
+
+    const rating = $("#dish-rating").slider("value");
+    const sour = $("#sour-rating").slider("value");
+    const sweet = $("#sweet-rating").slider("value");
+    const spicy = $("#spicy-rating").slider("value");
+    const salty = $("#salty-rating").slider("value");
+    const umami = $("#umami-rating").slider("value");
+    const comment = $("#dish-comment").val();
+    let dishId = "";
+    console.log(downloadURL);
+    console.log(rating, sour, sweet, spicy, salty, umami, comment);
+            
+    // dummy user settings
+    // TODO: replace with retrieval of user info from local storage
+    const userId = localStorage.getItem("dish-it-user-id");
+    const userCity = localStorage.getItem("dish-it-city");
+    const userState = localStorage.getItem("dish-it-state");
+    const userEmail = localStorage.getItem("dish-it-email");
+    const userName = localStorage.getItem("dish-it-user");
+
+    ratingsRecords.orderByChild("")
 };
 
 function calculateRatingAvg(num) {
+
+    // average rating
+
+    //db.ref('dishes').orderByChild('')
     //TODO: calculate rating avg and store values in local storage for future calculation
     // if new rating, increase total number of ratings by one and calculate average
     // if updated rating, do not increase number of total ratings for dish, subtract old rating, and calculate with new rating

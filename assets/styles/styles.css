@@ -45,8 +45,8 @@ table {
 
 #new-image-view {
     display: block;
-    min-width: 100%;
     min-height: 100%;
+    max-width: 350px;
     -ms-interpolation-mode: bicubic;
 }
 
