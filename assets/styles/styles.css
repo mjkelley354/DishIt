@@ -35,6 +35,11 @@ table {
     -ms-interpolation-mode: bicubic;
 }
 
+#no-results-view {
+    background-color: #f7f4f3;
+    padding-bottom: 20px;
+}
+
 #new-image-box {
     display: block;
     overflow: hidden;

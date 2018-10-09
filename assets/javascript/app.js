@@ -238,15 +238,15 @@ $(document).on("click", ".dish-tile", function () {
             $(`${dataTargetId}`).append(
                 `<div class="card-body">
                     Salty: ${avgSaltyScale}
-                     Sour: ${avgSourScale}
-                     Spicy: ${avgSpicyScale}
-                     Sweet: ${avgSweetScale}
-                     Umami: ${avgUmamiScale}
-                     Restaurant: ${name}
-                     Address: ${address}
-                     City: ${city}
-                     State: ${state}
-                     ZipCode: ${zipCode} </div>
+                    Sour: ${avgSourScale}
+                    Spicy: ${avgSpicyScale}
+                    Sweet: ${avgSweetScale}
+                    Umami: ${avgUmamiScale}
+                    Restaurant: ${name}
+                    Address: ${address}
+                    City: ${city}
+                    State: ${state}
+                    ZipCode: ${zipCode} </div>
                 `
             );
         });
@@ -366,14 +366,20 @@ $("#search-btn").on("click", function () {
 function noResults() {
     $(".tile-div").append(
         `
-            <h2 class="text-center block pt-5">No dishes match your search</h2>
-            <p><i>Try searching a generic name of a dish (e.g. pizza) or an ingredient (e.g. cheese)</i></p>
-            <div class="d-flex justify-content-center">
-                <button class="btn btn-outline-success d-flex justify-content-center add-dish-btn" type="button">Rate a new dish!</button>
+            <div class="card card-body" id="no-results-view">
+                <h2 class="text-center block pt-5">No dishes match your search</h2>
+                <p class="text-center"><i>Try searching a generic name of a dish (e.g. pizza) or an ingredient (e.g. cheese)</i></p>
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-outline-dark d-flex justify-content-center" id="new-dish-btn" type="button">Rate a new dish!</button>
+                </div>
             </div>
         `
     );
 };
+
+$(document).on("click", "#new-dish-btn", function() {
+    window.location.href = "newdish.html";
+});
 
 $(".apply-filter").on("click", function () {
     // loop though each card
@@ -508,25 +514,25 @@ function createTestData() {
     let curlyId = writeUserData("Curly", "curly@gmail.com", "Atlanta", "Georgia");
     console.log("curlyId: ", curlyId);
 
-    let taqueriaDelSolId = writeRestaurantData("", "Taqueria del Sol", "", "Atlanta", "GA", "30033", 0, 0, "", "Mexican", 2);
+    let taqueriaDelSolId = writeRestaurantData("123", "Taqueria del Sol", "433 N. McDonough St.", "Atlanta", "GA", "30033", 0, 0, "(404) 400-0509", "Mexican", 2);
     console.log("taqueriaDelSolId: ", taqueriaDelSolId);
-    let sapporoId = writeRestaurantData("", "Sapporo de Napoli", "", "Atlanta", "GA", "30033", 0, 0, "", "Italian", 2);
+    let sapporoId = writeRestaurantData("456", "Sapporo de Napoli", "", "Atlanta", "GA", "30033", 33.769805, -84.414581, "", "Italian", 2);
     console.log("sapporoId: ", sapporoId);
-    let grindhouseId = writeRestaurantData("", "Grindhouse Killer Burgers", "", "Atlanta", "GA", "30033", 0, 0, "", "American", 2);
+    let grindhouseId = writeRestaurantData("789", "Grindhouse Killer Burgers", "", "Atlanta", "GA", "30033", 0, 0, "", "American", 2);
     console.log("grindhouseId: ", grindhouseId);
 
-    let tacoId = writeDishData("beef taco supreme", taqueriaDelSolId, 2, 1, 1, 2, 2, 2, 5, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg?alt=media&token=c0f7b553-373f-4f0d-bea7-22cd524c1fe5", 1);
+    let tacoId = writeDishData("beef taco supreme", taqueriaDelSolId, "", 2, 1.5, 1, 2.4, 2, 2.76, 5, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg?alt=media&token=c0f7b553-373f-4f0d-bea7-22cd524c1fe5", 1);
     console.log("tacoId: ", tacoId);
-    let cheesePizzaId = writeDishData("cheese pizza", sapporoId, 2, 1, 4, 2, 1, 2, 3.60, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheese-pizza.jpg?alt=media&token=ced316ad-ab07-4146-b6ea-04f7e400980b", 1);
+    let cheesePizzaId = writeDishData("cheese pizza", sapporoId, "", 2, 1, 4, 2, 1, 2, 3.60, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheese-pizza.jpg?alt=media&token=ced316ad-ab07-4146-b6ea-04f7e400980b", 1);
     console.log("cheesePizzaId: ", cheesePizzaId);
-    let cheeseburgerId = writeDishData("cheeseburger", grindhouseId, 2, 2, 3, 1, 1, 1, 4.24, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheeseburger.jpg?alt=media&token=bbbf89f2-1d7a-4246-aed5-0f3b51883302", 1);
+    let cheeseburgerId = writeDishData("cheeseburger", grindhouseId, "", 2, 2, 3, 1, 1, 1, 4.24, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheeseburger.jpg?alt=media&token=bbbf89f2-1d7a-4246-aed5-0f3b51883302", 1);
     console.log("cheeseburgerId: ", cheeseburgerId);
 
-    let tacoRating = writeRatingData(tacoId, "beef taco supreme", larryId, "Awesome Tacos!", 1, 1, 2, 2, 1, 4, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg?alt=media&token=c0f7b553-373f-4f0d-bea7-22cd524c1fe5");
+    let tacoRating = writeRatingData(tacoId, "beef taco supreme", "123", larryId, "Awesome Tacos!", 1.5, 1, 2.4, 2, 1.76, 4.23, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fbeef-tacos.jpg?alt=media&token=c0f7b553-373f-4f0d-bea7-22cd524c1fe5");
     console.log("tacoRating: ", tacoRating);
-    let pizzaRating = writeRatingData(cheesePizzaId, "cheese pizza", moeId, "Best Pizza in Decatur!!", 1, 2, 3, 1, 1, 5, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheese-pizza.jpg?alt=media&token=ced316ad-ab07-4146-b6ea-04f7e400980b");
+    let pizzaRating = writeRatingData(cheesePizzaId, "cheese pizza", "456", moeId, "Best Pizza in Decatur!!", 1, 2, 3, 1, 1, 5, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheese-pizza.jpg?alt=media&token=ced316ad-ab07-4146-b6ea-04f7e400980b");
     console.log("pizzaRating: ", pizzaRating);
-    let burgerRating = writeRatingData(cheeseburgerId, "cheeseburger", curlyId, "Burgers are better than FarmBurger and shakes too!", 1, 2, 2, 2, 1, 4, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheeseburger.jpg?alt=media&token=bbbf89f2-1d7a-4246-aed5-0f3b51883302");
+    let burgerRating = writeRatingData(cheeseburgerId, "cheeseburger", "789", curlyId, "Burgers are better than FarmBurger and shakes too!", 1, 2, 2, 2, 1, 4, "https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Fcheeseburger.jpg?alt=media&token=bbbf89f2-1d7a-4246-aed5-0f3b51883302");
     console.log("burgerRating: ", burgerRating);
 }
 
@@ -540,11 +546,12 @@ function writeUserData(name, email, city, state) {
     return insertedData.getKey();
 }
 
-function writeRatingData(dishId, dishName, userId, text, sourScale, sweetScale, spicyScale,
+function writeRatingData(dishId, dishName, yelpId, userId, text, sourScale, sweetScale, spicyScale,
     saltyScale, umamiScale, rating, image) {
     let insertedData = db.ref('ratings/').push({
         dishId,
         dishName,
+        yelpId,
         userId,
         text,
         sourScale,
@@ -580,6 +587,7 @@ function writeDishData(name, restaurantId, price, avgSourScale, avgSweetScale, a
     let insertedData = db.ref('dishes/').push({
         name,
         restaurantId,
+        yelpId,
         price,
         avgSourScale,
         avgSweetScale,
@@ -671,18 +679,6 @@ function getRestaurant(location, rName) {
                 matches++;
                 console.log(`${rName} matches ${rNameInput}`);
                 showRestOptions(restaurants[i], i);
-
-                /* const id = restaurants[i].id;
-                const price = restaurants[i].price;
-                const location = restaurants[i].location;
-                const phone = restaurants[i].display_phone;
-                const restaurantLatLong = {
-                    lat: restaurants[i].coordinates.latitude, 
-                    lng: restaurants[i].coordinates.longitude,
-                }; */
-
-                // QUESTION FOR MIKE: I think the map should be rendered from the list of dishes on the first page
-                // addToMap(rName, restaurantLatLong);
             };
         };
 
@@ -691,18 +687,6 @@ function getRestaurant(location, rName) {
                 .addClass("errorMessage")
                 .text("No matches found. Try a different search.");
         }
-        /* else if (matches > 1) {
-                   $("#restaurant-results").empty()
-                       .removeClass("errorMessage");
-                   $("#restaurant-results-view").collapse("show");
-               } else {
-                   // TODO: verify this section is working once yelp ajax is back online
-                   // show name of singular matching restaurant and store to local storage
-                   $("#restaurant-input").val(rName);
-                   localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
-                   localStorage.setItem("rIndex", 0);
-                   // TODO: disable location and restaurant fields from additional data entry
-               }; */
     });
 };
 
@@ -785,7 +769,9 @@ $(".file-submit").on("click", function (e) {
 
         // the downloadURL is critical to capture here
         // on image upload capture URL and save to firebase in the .image property so we can use it to access image later
+        // TURNED OFF FOR TESTING PURPOSES
         downloadURL = uploadTask.snapshot.downloadURL;
+
         console.log(downloadURL);
     }, (error) => {
         // Handle unsuccessful uploads
@@ -821,22 +807,28 @@ $("#cancel-dish-btn").on("click", function () {
 $("#add-dish-btn").on("click", function () {
     
     addRestaurant();
-    
-    
+    addDish();
 
     // determine if dish is already in firebase
     calculateRatingAvg();
     // TODO: Go to dish average rating page on home screen
 });
 
+let rIndex = "";
+let rStorage = "";
+let yelpDataObject = "";
+let yelpId = "";
+let rPrice = "";
+let rIdFirebase = "";
+
+// add new restaurant if it does not already exist in firebase storage
 function addRestaurant() {
     const restaurantRecords = db.ref("restaurants");
 
-    let rExists = true;
-    const rIndex = localStorage.getItem("rIndex");
-    const restaurant = JSON.parse(localStorage.getItem("restaurants"));
-    const yelpDataObject = restaurant[rIndex];
-    const rId = yelpDataObject.id;
+    rIndex = localStorage.getItem("rIndex");
+    rStorage = JSON.parse(localStorage.getItem("restaurants"));
+    yelpDataObject = rStorage[rIndex];
+    yelpId = yelpDataObject.id;
     const rName = yelpDataObject.name;
     const address = yelpDataObject.location.address1;
     const city = $("#city-input").val();
@@ -849,32 +841,54 @@ function addRestaurant() {
     for (var i in yelpDataObject.categories) {
         cuisine.push(yelpDataObject.categories[i].title);
     }
-    const price = yelpDataObject.price;
+    rPrice = yelpDataObject.price;
+    console.log(rPrice);
 
-    restaurantRecords.orderByChild('yelpId').equalTo(rId).once('value', function(snap) {
-        console.log(snap.val());
-        if (snap.val() === null) {
-            console.log("who's on first");
-                restaurantRecords.push({
-                    yelpId: rId,
-                    name: rName,
-                    address: address,
-                    city: city,
-                    state: state,
-                    zipCode: zip,
-                    lat: lat,
-                    long: long,
-                    phone: phone,
-                    cuisine: cuisine,
-                    price: price,
+    restaurantRecords.orderByChild('yelpId').equalTo(yelpId).once('value', function(snap) {
+            if (snap.val() === null) {
+                rIdFirebase = writeRestaurantData(yelpId, rName, address, city, state, zip, lat, long, phone, cuisine, rPrice);
+            } else {
+                snap.forEach(function(childSnapshot) {
+                    rIdFirebase = childSnapshot.ref.key;
+                    console.log(rIdFirebase);
                 });
-            }
+            };
     }); 
 };
 
+let dishIdFirebase = "";
 function addDish() {
-    const dishRecords = db.ref("ratings");
+    const dishRecords = db.ref("dishes");
     const ratingsRecords = db.ref("ratings");
+
+    const dName = $("#dish-name-input").val();
+    console.log(dName);
+
+    let matches = 0;
+    dishRecords.orderByChild("name").equalTo(dName).once("value", function(dishSnapshot){
+        console.log(dishSnapshot.val());
+        console.log(downloadURL);
+        if (dishSnapshot.val() === null) {
+            dishIdFirebase = writeDishData(dName, rIdFirebase, rPrice, 0, 0, 0, 0, 0, 0, downloadURL, 0);
+        } else {
+            dishSnapshot.forEach(function(childSnapshot){
+                console.log(childSnapshot.val());
+                if (childSnapshot.val().restaurantId === rIdFirebase) {
+                    console.log("not adding");
+                    dishIdFirebase = childSnapshot.ref.key;
+                    matches++;
+                } else {
+                    console.log("adding new");
+                }
+            });
+            console.log("outside", matches);
+            if (matches === 0) {
+                console.log("asdfasdf")
+                dishIdFirebase = writeDishData(dName, rIdFirebase, rPrice, 0, 0, 0, 0, 0, 0, downloadURL, 0);
+            };
+        };
+    });
+        console.log(dishIdFirebase);
 
     const rating = $("#dish-rating").slider("value");
     const sour = $("#sour-rating").slider("value");
@@ -886,7 +900,7 @@ function addDish() {
     let dishId = "";
     console.log(downloadURL);
     console.log(rating, sour, sweet, spicy, salty, umami, comment);
-            
+
     // dummy user settings
     // TODO: replace with retrieval of user info from local storage
     const userId = localStorage.getItem("dish-it-user-id");
@@ -895,7 +909,22 @@ function addDish() {
     const userEmail = localStorage.getItem("dish-it-email");
     const userName = localStorage.getItem("dish-it-user");
 
-    ratingsRecords.orderByChild("")
+    /* ratingsRecords.orderByChild("dishName")
+        .equalTo(dName)
+        .once("value", function(snapshot){
+
+            console.log(snapshot.val());
+            if (snapshot.val() === null) {
+                ratingsRecords.push({
+                    dishId
+                });
+            }
+        
+            snapshot.forEach(function (childSnapshot) {
+                let value = childSnapshot.val();
+                console.log(value.userId);
+            });
+    }); */
 };
 
 function calculateRatingAvg(num) {
