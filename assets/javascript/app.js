@@ -32,8 +32,7 @@ let mapPins = [];
 if ($("body").attr("data-title") === "index-page") { // functions run on load of index-page
 
     $(document).ready(() => {
-        // createTestData(); // do not uncomment unless you want to add test data back to firebase
-
+      // createTestData(); // do not uncomment unless you want to add test data back to firebase
         getTopX(20); // get top 20 records by average rating
 
         readLocalStorage(); // function to get user info from local storage
@@ -137,6 +136,7 @@ function newDish(dishId, dishName, restaurantId, restaurantName, avgRating, avgS
 
 // use this to populate results on screen directly from firebase - using array will throw errors due to processing time
 let i = 0;
+
 function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, dishImage, dishPrice) {
     $("tbody").prepend(
         `
@@ -198,34 +198,58 @@ $(document).on("click", ".dish-tile", function () {
     $(".collapse").collapse('hide');
 
     var dishes = db.ref('dishes');
+    var restaurants = db.ref('restaurants');
+
     let avgSaltyScale = "";
     let avgSourScale = "";
     let avgSpicyScale = "";
     let avgSweetScale = "";
-    let avgUmamiScale = ""
-    
-    dishes.child("/" + dishId).once('value', function (dishesSnapshot) {
-                avgSaltyScale = dishesSnapshot.val().avgSaltyScale;
-                console.log("salty " + avgSaltyScale);
-                avgSourScale = dishesSnapshot.val().avgSourScale;
-                console.log("sour " + avgSourScale);
-                avgSpicyScale = dishesSnapshot.val().avgSpicyScale;
-                console.log("spicy " + avgSpicyScale);
-                avgSweetScale = dishesSnapshot.val().avgSweetScale;
-                console.log("sweet " + avgSweetScale);
-                avgUmamiScale = dishesSnapshot.val().avgUmamiScale;
-                console.log("umami " + avgUmamiScale);
-        });
+    let avgUmamiScale = "";
+    let name = "";
+    let address = "";
+    let city = "";
+    let state = "";
+    let zipCode = "";
 
-    $(`${dataTargetId}`).append(
-        `<div class="card-body">
-            Salty: ${avgSaltyScale}
-            Sour: ${avgSourScale}
-            Spicy: ${avgSpicyScale}
-            Sweet: ${avgSweetScale}
-            Umani: ${avgUmamiScale}</div>
-            `
-    ) 
+    dishes.child("/" + dishId).once('value', function (dishesSnapshot) {
+        restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function (restaurantSnapshot) {
+
+            avgSaltyScale = dishesSnapshot.val().avgSaltyScale;
+            console.log("salty " + avgSaltyScale);
+            avgSourScale = dishesSnapshot.val().avgSourScale;
+            console.log("sour " + avgSourScale);
+            avgSpicyScale = dishesSnapshot.val().avgSpicyScale;
+            console.log("spicy " + avgSpicyScale);
+            avgSweetScale = dishesSnapshot.val().avgSweetScale;
+            console.log("sweet " + avgSweetScale);
+            avgUmamiScale = dishesSnapshot.val().avgUmamiScale;
+            console.log("umami " + avgUmamiScale);
+            name = restaurantSnapshot.val().name;
+            console.log("Restaurant Name " + name);
+            address = restaurantSnapshot.val().address;
+            console.log("Restaurant Address " + address);
+            city = restaurantSnapshot.val().city;
+            console.log("Restaurant City " + city);
+            state = restaurantSnapshot.val().state;
+            console.log("Restaurant State " + state);
+            zipCode = restaurantSnapshot.val().zipCode;
+            console.log("Restaurant Zip Code " + zipCode);
+            $(`${dataTargetId}`).append(
+                `<div class="card-body">
+                    Salty: ${avgSaltyScale}
+                     Sour: ${avgSourScale}
+                     Spicy: ${avgSpicyScale}
+                     Sweet: ${avgSweetScale}
+                     Umami: ${avgUmamiScale}
+                     Restaurant: ${name}
+                     Address: ${address}
+                     City: ${city}
+                     State: ${state}
+                     ZipCode: ${zipCode} </div>
+                `
+            );
+        });
+    });
 });
 
 function getPrice(price) {
@@ -403,7 +427,7 @@ function addToMap(restaurauntName, position) {
     marker.info.close();
 
     //add event listeners for mouseover and mouseout to show/hide the infoWindoow
-    google.maps.event.addListener(marker, 'mouseover', function() {
+    google.maps.event.addListener(marker, 'mouseover', function () {
         marker.info.open(map, marker);
     });
     google.maps.event.addListener(marker, 'mouseout', function () {
@@ -502,7 +526,7 @@ function createTestData() {
 
     let taqueriaDelSolId = writeRestaurantData("", "Taqueria del Sol", "", "Atlanta", "GA", "30033", 0, 0, "", "Mexican", 2);
     console.log("taqueriaDelSolId: ", taqueriaDelSolId);
-    let sapporoId = writeRestaurantData("", "Sapporo de Napoli", "", "Atlanta", "GA", "30033", 0, 0, "", "Italian",2);
+    let sapporoId = writeRestaurantData("", "Sapporo de Napoli", "", "Atlanta", "GA", "30033", 0, 0, "", "Italian", 2);
     console.log("sapporoId: ", sapporoId);
     let grindhouseId = writeRestaurantData("", "Grindhouse Killer Burgers", "", "Atlanta", "30033", "GA", 0, 0, "", "American", 2);
     console.log("grindhouseId: ", grindhouseId);
@@ -647,7 +671,7 @@ function getRestaurant(location, rName) {
         }
     }).then(function (response) {
         $("#restaurant-results").empty()
-        .removeClass("errorMessage");
+            .removeClass("errorMessage");
 
         console.log(response);
         const restaurants = response.businesses;
@@ -681,18 +705,19 @@ function getRestaurant(location, rName) {
             $("#restaurant-results").empty()
                 .addClass("errorMessage")
                 .text("No matches found. Try a different search.");
-        } /* else if (matches > 1) {
-            $("#restaurant-results").empty()
-                .removeClass("errorMessage");
-            $("#restaurant-results-view").collapse("show");
-        } else {
-            // TODO: verify this section is working once yelp ajax is back online
-            // show name of singular matching restaurant and store to local storage
-            $("#restaurant-input").val(rName);
-            localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
-            localStorage.setItem("rIndex", 0);
-            // TODO: disable location and restaurant fields from additional data entry
-        }; */
+        }
+        /* else if (matches > 1) {
+                   $("#restaurant-results").empty()
+                       .removeClass("errorMessage");
+                   $("#restaurant-results-view").collapse("show");
+               } else {
+                   // TODO: verify this section is working once yelp ajax is back online
+                   // show name of singular matching restaurant and store to local storage
+                   $("#restaurant-input").val(rName);
+                   localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
+                   localStorage.setItem("rIndex", 0);
+                   // TODO: disable location and restaurant fields from additional data entry
+               }; */
     });
 };
 
@@ -726,7 +751,7 @@ $("#select-restaurant-btn").on("click", function () {
     // save matching restaurants and index of selected restaurant to local storage
     // TURNED OFF FOR TESTING - TURN BACK ON WHEN DONE WITH DEVELOPMENT
     // localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
-    localStorage.setItem("rIndex",selected.attr("index"));
+    localStorage.setItem("rIndex", selected.attr("index"));
 
     // show selected restaurant name in restaurant-input field
     $("#restaurant-input").val(selected.attr("r-name"));
@@ -836,18 +861,20 @@ $("#add-dish-btn").on("click", function () {
     const umami = $("#umami-rating").slider("value");
     const comment = $("#dish-comment").val();
     let dishId = "";
-    
+    console.log(downloadURL);
+    console.log(city, state);
     console.log(rating, sour, sweet, spicy, salty, umami, comment);
     console.log(yelpDataObject);
     console.log(yelpDataObject.location.city);
     console.log(yelpDataObject.location.state);
-    console.log(cuisine);
-    console.log(price);
-    
-    const dishRecords = db.ref("ratings");
-    const restaurantRecords = db.ref("restaurants");
 
-    restaurantRecords.on("value", function(restaurantSnapshot) {
+        console.log(cuisine);
+        console.log(price);
+    
+        const dishRecords = db.ref("ratings");
+        const restaurantRecords = db.ref("restaurants");
+
+        restaurantRecords.on("value", function(restaurantSnapshot) {
         const rRecord = restaurantSnapshot.val();
         console.log(rRecord);
         
@@ -911,4 +938,3 @@ function calculateRatingAvg(num) {
     // if new rating, increase total number of ratings by one and calculate average
     // if updated rating, do not increase number of total ratings for dish, subtract old rating, and calculate with new rating
 };
-
