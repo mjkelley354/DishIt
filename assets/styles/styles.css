@@ -27,6 +27,11 @@ table {
     border-radius: 50%;
     background-position: center center;
 }
+.d-block{
+    height: 120px;
+    width: 120px;
+    
+}
 
 .dish-tile-img {
     display: block;
