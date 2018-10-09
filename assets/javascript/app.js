@@ -808,6 +808,7 @@ $("#add-dish-btn").on("click", function () {
     
     addRestaurant();
     addDish();
+    addRating();
 
     // determine if dish is already in firebase
     calculateRatingAvg();
@@ -859,7 +860,6 @@ function addRestaurant() {
 let dishIdFirebase = "";
 function addDish() {
     const dishRecords = db.ref("dishes");
-    const ratingsRecords = db.ref("ratings");
 
     const dName = $("#dish-name-input").val();
     console.log(dName);
@@ -874,21 +874,21 @@ function addDish() {
             dishSnapshot.forEach(function(childSnapshot){
                 console.log(childSnapshot.val());
                 if (childSnapshot.val().restaurantId === rIdFirebase) {
-                    console.log("not adding");
                     dishIdFirebase = childSnapshot.ref.key;
                     matches++;
-                } else {
-                    console.log("adding new");
-                }
+                }; 
             });
-            console.log("outside", matches);
+            // console.log("outside", matches);
             if (matches === 0) {
-                console.log("asdfasdf")
                 dishIdFirebase = writeDishData(dName, rIdFirebase, rPrice, 0, 0, 0, 0, 0, 0, downloadURL, 0);
             };
+            console.log(dishIdFirebase);
         };
     });
-        console.log(dishIdFirebase);
+};
+
+function addRating() {
+    const ratingsRecords = db.ref("ratings");
 
     const rating = $("#dish-rating").slider("value");
     const sour = $("#sour-rating").slider("value");
