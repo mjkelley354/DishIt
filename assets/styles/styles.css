@@ -40,6 +40,11 @@ table {
     -ms-interpolation-mode: bicubic;
 }
 
+#no-results-view {
+    background-color: #f7f4f3;
+    padding-bottom: 20px;
+}
+
 #new-image-box {
     display: block;
     overflow: hidden;
@@ -50,8 +55,8 @@ table {
 
 #new-image-view {
     display: block;
-    min-width: 100%;
     min-height: 100%;
+    max-width: 350px;
     -ms-interpolation-mode: bicubic;
 }
 
