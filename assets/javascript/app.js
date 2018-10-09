@@ -32,8 +32,8 @@ let mapPins = [];
 
 if ($("body").attr("data-title") === "index-page") { // functions run on load of index-page
 
-    $(document).ready(() => {
-      // createTestData(); // do not uncomment unless you want to add test data back to firebase
+$(document).ready(() => {
+    // createTestData(); // do not uncomment unless you want to add test data back to firebase
 
         getTopX(20); // get top 20 records by average rating
 
@@ -304,28 +304,24 @@ function getSalty(avgSaltyScale) {
         saltyValue = saltyValue.concat(`&#189`);
     }
 
-        return saltyValue;
+    return saltyValue;
     
 }
 
-    function getSour(avgSourScale) {
-        const sour = Math.floor(avgSourScale);
-        let sourValue = "";
-        for (var i = 0; i < sour; i++) {
-            sourValue = sourValue.concat('<i class="fas fa-lemon"></i>');
-        }
-
-        if (Math.round(avgSourScale * 2) / 2 - sour === 1) {
-
-            sourValue = sourValue.concat(`<i class="fas fa-lemon"></i>`);
-        }
-
-        if (Math.round(avgSourScale * 2) / 2 - sour === .5) {
-            sourValue = sourValue.concat(`&#189`);
-        }
-            return sourValue;
-        
+function getSour(avgSourScale) {
+    const sour = Math.floor(avgSourScale);
+    let sourValue = "";
+    for (var i = 0; i < sour; i++) {
+        sourValue = sourValue.concat('<i class="fas fa-lemon"></i>');
     }
+    if (Math.round(avgSourScale * 2) / 2 - sour === 1) {
+        sourValue = sourValue.concat(`<i class="fas fa-lemon"></i>`);
+    }
+    if (Math.round(avgSourScale * 2) / 2 - sour === .5) {
+        sourValue = sourValue.concat(`&#189`);
+    }
+    return sourValue;
+}
 
         function getSpicy(avgSpicyScale) {
             const spicy = Math.floor(avgSpicyScale);
@@ -429,7 +425,7 @@ function getSalty(avgSaltyScale) {
                 </tbody>
             </table>
         `
-                  );
+        );
 
     // capture search string
     const searchInput = $("#search-input").val();
@@ -443,14 +439,11 @@ function getSalty(avgSaltyScale) {
     // for each dish in order of avgRating...
     dishes.orderByChild("avgRating").on('value', function (snapshot) {
         snapshot.forEach(function (childSnapshot) {
-
             // if dish name contains search string, display results on screen
             if (childSnapshot.val().name.includes(searchInput)) {
                 matches++;
-
                 console.log(childSnapshot.val().name);
                 const keyValue = childSnapshot.ref.key;
-
                 dishes.child("/" + keyValue).once('value', function (dishesSnapshot) {
                     restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function (restaurantSnapshot) {
 
@@ -460,7 +453,8 @@ function getSalty(avgSaltyScale) {
                             restaurantSnapshot.val().name,
                             dishesSnapshot.val().avgRating,
                             dishesSnapshot.val().image,
-                            dishesSnapshot.val().price);
+                            dishesSnapshot.val().price
+                        );
 
                         newDish(keyValue,
                             dishesSnapshot.val().name,
@@ -480,22 +474,23 @@ function getSalty(avgSaltyScale) {
                             "",
                         );
                     });
+                });
 
-                    const restaurantLatLong = {
-                        lat: restaurantSnapshot.val().lat,
-                        lng: restaurantSnapshot.val().long,
-
-                    };
-                  });
-                  console.log(matches);
-        console.log(dishArray);
-        // createTiles(dishArray); // this function is not working to populate screen
-        // displays message if no search results returned
-        if (matches === 0) {
-            noResults();
-        };
+                const restaurantLatLong = {
+                    lat: restaurantSnapshot.val().lat,
+                    lng: restaurantSnapshot.val().long,
+                };
+            };
+        });
+            console.log(matches);
+            // console.log(dishArray);
+            // createTiles(dishArray); // this function is not working to populate screen
+            // displays message if no search results returned
+            if (matches === 0) {
+                noResults();
+            };
     });
-});
+    
 // returns message if no search results returned.
 // this section requires some UI work
 function noResults() {
@@ -509,7 +504,7 @@ function noResults() {
                 </div>
             </div>
         `
-          );
+    );
 };
 
 $(document).on("click", "#new-dish-btn", function() {
@@ -792,7 +787,7 @@ function createTestData() {
     console.log("taqueriaDelSolId: ", taqueriaDelSolId);
     let sapporoId = writeRestaurantData("456", "Sapporo de Napoli", "", "Atlanta", "GA", "30033", 33.769805, -84.414581, "", "Italian", 2);
     console.log("sapporoId: ", sapporoId);
-    let grindhouseId = writeRestaurantData("789", "Grindhouse Killer Burgers", "", "Atlanta", "GA", "30033", 0, 0, "", "American", 2
+    let grindhouseId = writeRestaurantData("789", "Grindhouse Killer Burgers", "", "Atlanta", "GA", "30033", 0, 0, "", "American", 2);
 
     console.log("grindhouseId: ", grindhouseId);
 
@@ -952,7 +947,7 @@ function writeDishData(name, restaurantId, price, avgSourScale, avgSweetScale, a
                 .text("No matches found. Try a different search.");
         }
     });
-};
+});
 
 // function to create radio button options for user to select correct restaurant from list of returned responses from Yelp
 function showRestOptions(restaurant, i) {
@@ -1069,6 +1064,7 @@ $("#add-dish-btn").on("click", function () {
     
     addRestaurant();
     addDish();
+    addRating();
 
     // determine if dish is already in firebase
     calculateRatingAvg();
@@ -1120,7 +1116,6 @@ function addRestaurant() {
 let dishIdFirebase = "";
 function addDish() {
     const dishRecords = db.ref("dishes");
-    const ratingsRecords = db.ref("ratings");
 
     const dName = $("#dish-name-input").val();
     console.log(dName);
@@ -1135,21 +1130,21 @@ function addDish() {
             dishSnapshot.forEach(function(childSnapshot){
                 console.log(childSnapshot.val());
                 if (childSnapshot.val().restaurantId === rIdFirebase) {
-                    console.log("not adding");
                     dishIdFirebase = childSnapshot.ref.key;
                     matches++;
-                } else {
-                    console.log("adding new");
-                }
+                }; 
             });
-            console.log("outside", matches);
+            // console.log("outside", matches);
             if (matches === 0) {
-                console.log("asdfasdf")
                 dishIdFirebase = writeDishData(dName, rIdFirebase, rPrice, 0, 0, 0, 0, 0, 0, downloadURL, 0);
             };
+            console.log(dishIdFirebase);
         };
     });
-        console.log(dishIdFirebase);
+};
+
+function addRating() {
+    const ratingsRecords = db.ref("ratings");
 
     const rating = $("#dish-rating").slider("value");
     const sour = $("#sour-rating").slider("value");
