@@ -271,12 +271,12 @@ function getScale(avgScaleValue, fontAwesomeIcon) {
     const salt = Math.floor(avgScaleValue);
     let scaleValue = "";
     for (var i = 0; i < salt; i++) {
-        scaleValue = scaleValue.concat('<i class="' + fontAwesomeIcon + '"></i>');
+        scaleValue = scaleValue.concat(`<i class=${fontAwesomeIcon}></i>`);
     }
 
     if (Math.round(avgScaleValue * 2) / 2 - salt === 1) {
 
-        scaleValue = scaleValue.concat('<i class="' + fontAwesomeIcon + '"></i>');
+        scaleValue = scaleValue.concat(`<i class=${fontAwesomeIcon}></i>`);
     }
 
     if (Math.round(avgScaleValue * 2) / 2 - salt === .5) {
@@ -284,38 +284,37 @@ function getScale(avgScaleValue, fontAwesomeIcon) {
     }
 
     return scaleValue;
-
 } 
 
-        function getPrice(price) {
-            let priceValue = "";
-            for (var i = 0; i < price; i++) {
-                priceValue = priceValue.concat(`<i class="fas fa-dollar-sign"></i>`);
-            };
+function getPrice(price) {
+    let priceValue = "";
+    for (var i = 0; i < price; i++) {
+        priceValue = priceValue.concat(`<i class="fas fa-dollar-sign"></i>`);
+    };
 
-            return priceValue;
-        }
+    return priceValue;
+}
 
-        function getRating(avgRating) {
-            const stars = Math.floor(avgRating);
-            let ratingValue = "";
-            for (var i = 0; i < stars; i++) {
-                ratingValue = ratingValue.concat('<i class="fas fa-star"></i>');
-            }
+function getRating(avgRating) {
+    const stars = Math.floor(avgRating);
+    let ratingValue = "";
+    for (var i = 0; i < stars; i++) {
+        ratingValue = ratingValue.concat('<i class="fas fa-star"></i>');
+    }
 
-            if (Math.round(avgRating * 2) / 2 - stars === 0.5) {
-                ratingValue = ratingValue.concat(`<i class="fas fa-star-half"></i>`);
-            }
+    if (Math.round(avgRating * 2) / 2 - stars === 0.5) {
+        ratingValue = ratingValue.concat(`<i class="fas fa-star-half"></i>`);
+    }
 
-            return ratingValue;
-        }
+    return ratingValue;
+}
 
-        // FILTER FUNCTION ********************************************************************************
+// FILTER FUNCTION ********************************************************************************
 
-        $(".filter-menu").on("click", function () {
-            $(".filter-modal").modal('show');
-            console.log('filter');
-        });
+$(".filter-menu").on("click", function () {
+    $(".filter-modal").modal('show');
+    console.log('filter');
+});
 
 // SEARCH FUNCTION *********************************************************************************
 

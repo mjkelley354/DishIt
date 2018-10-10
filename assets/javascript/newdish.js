@@ -251,11 +251,9 @@ function addRestaurant() {
 // add dish to firebase if it does not exist for that restaurant
 let dishIdFirebase = "";
 let dishExists = false;
+const dName = $("#dish-name-input").val().trim();
 function addDish() {
     const dishRecords = db.ref("dishes");
-
-    const dName = $("#dish-name-input").val();
-    console.log(dName);
 
     let matches = 0;
     dishRecords.orderByChild("name").equalTo(dName).once("value", function(dishSnapshot){
@@ -284,7 +282,6 @@ function addDish() {
 let ratingIdFirebase = "";
 function addRating() {
     const ratingsRecords = db.ref("ratings");
-    const dName = $("#dish-name-input").val();
 
     const rating = $("#dish-rating").slider("value");
     const sour = $("#sour-rating").slider("value");
@@ -293,6 +290,9 @@ function addRating() {
     const salty = $("#salty-rating").slider("value");
     const umami = $("#umami-rating").slider("value");
     const comment = $("#dish-comment").val();
+    const timestamp = moment().format("MMM D YYYY hh:mm A z");
+
+    console.log(timestamp);;
     /* console.log(downloadURL);
     console.log(rating, sour, sweet, spicy, salty, umami, comment);
     console.log(dishIdFirebase);
@@ -304,7 +304,7 @@ function addRating() {
     let matches = 0;
     ratingsRecords.orderByChild("userId").equalTo(userId).once("value", function(ratingSnapshot){
         if (ratingSnapshot.val() === null) {
-            ratingId = writeRatingData(dishIdFirebase,dName,yelpId,rIdFirebase,userId,sour,sweet,spicy,salty,umami,rating,downloadURL,comment);
+            ratingId = writeRatingData(dishIdFirebase,dName,yelpId,rIdFirebase,userId,sour,sweet,spicy,salty,umami,rating,downloadURL,comment,timestamp);
         } else {
             ratingSnapshot.forEach(function(childSnapshot){
                 const dishRating = childSnapshot.val();
@@ -315,9 +315,10 @@ function addRating() {
                 };
             });
             if (matches === 0 ) {
-                ratingId = writeRatingData(dishIdFirebase,dName,yelpId,rIdFirebase,userId,sour,sweet,spicy,salty,umami,rating,downloadURL,comment);
+                ratingId = writeRatingData(dishIdFirebase,dName,yelpId,rIdFirebase,userId,sour,sweet,spicy,salty,umami,rating,downloadURL,comment,timestamp);
             };
         };
+        
     });
 };
 
@@ -334,7 +335,7 @@ function calculateRatingAvg(num) {
 // WRITE INFORMATION TO FIREBASE ******************************************************
 
 function writeRatingData(dishId, dishName, yelpId, rIdFirebase, userId, sourScale, sweetScale, spicyScale,
-    saltyScale, umamiScale, rating, image, text) {
+    saltyScale, umamiScale, rating, image, text, timestamp) {
     let insertedData = db.ref('ratings/').push({
         dishId,
         dishName,
@@ -347,8 +348,9 @@ function writeRatingData(dishId, dishName, yelpId, rIdFirebase, userId, sourScal
         saltyScale,
         umamiScale,
         rating,
+        image,
         text,
-        image
+        timestamp,
     });
     return insertedData.getKey();
 }
