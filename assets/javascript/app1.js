@@ -113,7 +113,7 @@ function getTopX(recordsToReturn) {
             });
         });
     });
-    console.log(dishArray);
+    //console.log(dishArray);
 };
 
 function newDish(dishId, dishName, restaurantId, restaurantName, avgRating, avgSour, avgSweet, avgSpicy, avgSalty, avgUmami,
@@ -171,11 +171,11 @@ function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, d
 
 // TODO: use this function later for populating filtered results
 function createTiles(dishArray) {
-    console.log("I'm creating tiles");
-    console.log(dishArray);
+    //console.log("I'm creating tiles");
+    //console.log(dishArray);
     // FIX: this section below is not working to populate tiles after the search btn is clicked; disabled or now
     for (let i in dishArray) {
-        console.log(dishArray[i].dishName);
+        //console.log(dishArray[i].dishName);
         $("tbody").prepend(
             `
                 <tr class="dish-tile" id="heading${i}" dish-id-value="${dishArray[i].dishId}" data-toggle="collapse" data-target="#collapse${i}">
@@ -193,14 +193,14 @@ function createTiles(dishArray) {
 
 $(document).on("click", ".dish-tile", function () {
 
-    console.log($(this));
-    console.log($(this).attr("dish-id-value"));
+    //console.log($(this));
+    //console.log($(this).attr("dish-id-value"));
     let dishId = ($(this).attr("dish-id-value"));
     let dataTargetId = ($(this).attr("data-target"));
     $(`${dataTargetId}`).empty();
 
-    console.log(dishId);
-    console.log(dataTargetId);
+    //console.log(dishId);
+    //console.log(dataTargetId);
     $(".collapse").collapse('hide');
 
     var dishes = db.ref('dishes');
@@ -223,32 +223,32 @@ $(document).on("click", ".dish-tile", function () {
         restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function (restaurantSnapshot) {
 
             avgSaltyScale = dishesSnapshot.val().avgSaltyScale;
-            console.log("salty " + avgSaltyScale);
+            //console.log("salty " + avgSaltyScale);
 
             avgSourScale = dishesSnapshot.val().avgSourScale;
-            console.log("sour " + avgSourScale);
+            //console.log("sour " + avgSourScale);
             avgSpicyScale = dishesSnapshot.val().avgSpicyScale;
-            console.log("spicy " + avgSpicyScale);
+            //console.log("spicy " + avgSpicyScale);
             avgSweetScale = dishesSnapshot.val().avgSweetScale;
-            console.log("sweet " + avgSweetScale);
+            //console.log("sweet " + avgSweetScale);
             avgUmamiScale = dishesSnapshot.val().avgUmamiScale;
-            console.log("umami " + avgUmamiScale);
+            //console.log("umami " + avgUmamiScale);
             dishImage = dishesSnapshot.val().image;
-            console.log("image " + dishImage);
+            //console.log("image " + dishImage);
             dishName = dishesSnapshot.val().name;
-            console.log("dish name " + dishName);
+            //console.log("dish name " + dishName);
             restName = restaurantSnapshot.val().name;
-            console.log("Restaurant Name " + restName);
+            //console.log("Restaurant Name " + restName);
             address = restaurantSnapshot.val().address;
-            console.log("Restaurant Address " + address);
+            //console.log("Restaurant Address " + address);
             city = restaurantSnapshot.val().city;
-            console.log("Restaurant City " + city);
+            //console.log("Restaurant City " + city);
             state = restaurantSnapshot.val().state;
-            console.log("Restaurant State " + state);
+            //console.log("Restaurant State " + state);
             zipCode = restaurantSnapshot.val().zipCode;
-            console.log("Restaurant Zip Code " + zipCode);
+            //console.log("Restaurant Zip Code " + zipCode);
             phone = restaurantSnapshot.val().phone;
-            console.log("Restaurant Phone " + phone);
+            //console.log("Restaurant Phone " + phone);
 
             $(`${dataTargetId}`).append(
                 `
@@ -331,7 +331,7 @@ function getScale(avgScaleValue, fontAwesomeIcon) {
 
         $(".filter-menu").on("click", function () {
             $(".filter-modal").modal('show');
-            console.log('filter');
+            //console.log('filter');
         });
 
 // SEARCH FUNCTION *********************************************************************************
@@ -353,7 +353,7 @@ $("#search-btn").on("click", function () {
 
     // capture search string
     const searchInput = $("#search-input").val();
-    console.log(searchInput);
+    //console.log(searchInput);
 
     var dishes = db.ref('dishes');
     var restaurants = db.ref('restaurants');
@@ -366,7 +366,7 @@ $("#search-btn").on("click", function () {
             // if dish name contains search string, display results on screen
             if (childSnapshot.val().name.includes(searchInput)) {
                 matches++;
-                console.log(childSnapshot.val().name);
+                //console.log(childSnapshot.val().name);
                 const keyValue = childSnapshot.ref.key;
                 dishes.child("/" + keyValue).once('value', function (dishesSnapshot) {
                     restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function (restaurantSnapshot) {
@@ -405,7 +405,7 @@ $("#search-btn").on("click", function () {
                 });
             };
         });
-        console.log(matches);
+        //console.log(matches);
         // console.log(dishArray);
         // createTiles(dishArray); // this function is not working to populate screen
         // displays message if no search results returned
@@ -643,7 +643,7 @@ function addToMap(restaurauntName, position) {
 // initializes the map object
 function initMap() {
     // The location of Atlanta
-    console.log("initMap() triggered.");
+    //console.log("initMap() triggered.");
     var atlanta = {
         lat: 33.753746,
         lng: -84.386330
