@@ -78,6 +78,15 @@ span {
     background-color: #f7f4f3;
 }
 
+.modal-content {
+    background-color: #f7f4f3;
+}
+
+.modal-header {
+    background-color: #588b8b;
+    color: white;
+}
+
 #yelp-logo-div {
     font-size: 10px;
     color: white;
