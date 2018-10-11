@@ -24,8 +24,8 @@ if ($("body").attr("data-title") === "index-page") { // functions run on load of
 
 $(document).on("click", "#rate-btn", function () {
     dishId = ($(this).attr("dish-id-value"));
-    let restaurantsArray = [];
     console.log(dishId);
+    rateMe = true;
 
     // TODO: auto-fill user responses if it exists
         
@@ -37,42 +37,47 @@ $(document).on("click", "#rate-btn", function () {
 
             dishImage = dishesSnapshot.val().image;
             dishName = dishesSnapshot.val().name;
-            restName = restaurantSnapshot.val().name;
+            /* restName = restaurantSnapshot.val().name;
             address = restaurantSnapshot.val().address;
             city = restaurantSnapshot.val().city;
             state = restaurantSnapshot.val().state;
             zipCode = restaurantSnapshot.val().zipCode;
             phone = restaurantSnapshot.val().phone;
 
-            restaurantsArray.push(restName);
-            console.log(restName);
-            console.log(restaurantsArray);
-            console.log(restaurantSnapshot.val());
+            restaurantsArray.push(restName); */
+            
+            const selectedDish = dishesSnapshot.val();
+            const selectedRest = restaurantSnapshot.val();
             console.log(rateMe);
+             //localStorage.setItem("dishImage", dishImage);
+            //localStorage.setItem("dishName", dishName);
+            //localStorage.setItem("dishId", dishId);
+            localStorage.setItem("dishSnapshot", JSON.stringify(selectedDish));
+            localStorage.setItem("restaurantSnapshot", JSON.stringify(selectedRest));
+            localStorage.setItem("rateMe", rateMe);
 
-            //window.location.href="newdish.html"
+            window.location.href="newdish.html"
 
-            /* localStorage.setItem("dishImage", dishImage);
-            localStorage.setItem("dishName", dishName);
-            localStorage.setItem("dishId", dishId);
-            localStorage.setItem("restaurants", restaurantsArray);
-            localStorage.setItem("rIndex", 0);
-            localStorage.setItem("rAddress", address);
-            localStorage.setItem("rCity", city);
-            local.Storage.setItem("rState", state);
-            localStorage.setItem("rZip", zipCode);
-            localStorage.setItem("rPhone", phone);
-            localStorage.setItem("rateMe", rateMe); */
+           
         });
     });
 });
 
 if ($("body").attr("data-title") === "newdish-page") {
     $(document).ready(function () {
-        console.log(restName);
-        console.log(address);
-        console.log(phone);        
+
+        const dishSnap = JSON.parse(localStorage.getItem("dishSnapshot"));
+        const restSnap = JSON.parse(localStorage.getItem("restaurantSnapshot"));
+        const rateMeStored = localStorage.getItem("rateMe");
+        console.log(rateMeStored);
+        populateFields(dishSnap, restSnap, rateMeStored);
     });
 };
+
+function populateFields(dishSnap, restSnap, rateMeStored) {
+    if (rateMeStored === true) {
+        console.log("do stuff here");
+    }
+}
 
 
