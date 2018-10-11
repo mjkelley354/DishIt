@@ -233,7 +233,7 @@ function addRestaurant() {
     for (var i in yelpDataObject.categories) {
         cuisine.push(yelpDataObject.categories[i].title);
     }
-    rPrice = yelpDataObject.price;
+    rPrice = changePriceToNum(yelpDataObject.price);
     console.log(rPrice);
 
     restaurantRecords.orderByChild('yelpId').equalTo(yelpId).once('value', function(snap) {
@@ -246,6 +246,19 @@ function addRestaurant() {
                 });
             };
     }); 
+};
+
+function changePriceToNum(price) {
+    switch(price) {
+        case "$": return 1;
+            break;
+        case "$$": return 2;
+            break;
+        case "$$$": return 3;
+            break;
+        case "$$$$": return 4;
+            break;
+    };
 };
 
 // add dish to firebase if it does not exist for that restaurant

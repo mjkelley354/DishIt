@@ -168,11 +168,11 @@ function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, d
 
 // TODO: use this function later for populating filtered results
 function createTiles(dishArray) {
-    console.log("I'm creating tiles");
-    console.log(dishArray);
+    //console.log("I'm creating tiles");
+    //console.log(dishArray);
     // FIX: this section below is not working to populate tiles after the search btn is clicked; disabled or now
     for (let i in dishArray) {
-        console.log(dishArray[i].dishName);
+        //console.log(dishArray[i].dishName);
         $("tbody").prepend(
             `
                 <tr class="dish-tile" id="heading${i}" dish-id-value="${dishArray[i].dishId}" data-toggle="collapse" data-target="#collapse${i}">
@@ -190,14 +190,14 @@ function createTiles(dishArray) {
 
 $(document).on("click", ".dish-tile", function () {
 
-    console.log($(this));
-    console.log($(this).attr("dish-id-value"));
+    //console.log($(this));
+    //console.log($(this).attr("dish-id-value"));
     let dishId = ($(this).attr("dish-id-value"));
     let dataTargetId = ($(this).attr("data-target"));
     $(`${dataTargetId}`).empty();
 
-    console.log(dishId);
-    console.log(dataTargetId);
+    //console.log(dishId);
+    //console.log(dataTargetId);
     $(".collapse").collapse('hide');
 
     var dishes = db.ref('dishes');
@@ -335,7 +335,7 @@ $("#search-btn").on("click", function () {
 
     // capture search string
     const searchInput = $("#search-input").val();
-    console.log(searchInput);
+    //console.log(searchInput);
 
     var dishes = db.ref('dishes');
     var restaurants = db.ref('restaurants');
@@ -348,7 +348,7 @@ $("#search-btn").on("click", function () {
             // if dish name contains search string, display results on screen
             if (childSnapshot.val().name.includes(searchInput)) {
                 matches++;
-                console.log(childSnapshot.val().name);
+                //console.log(childSnapshot.val().name);
                 const keyValue = childSnapshot.ref.key;
                 dishes.child("/" + keyValue).once('value', function (dishesSnapshot) {
                     restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function (restaurantSnapshot) {
@@ -387,7 +387,7 @@ $("#search-btn").on("click", function () {
                 });
             };
         });
-        console.log(matches);
+        //console.log(matches);
         // console.log(dishArray);
         // createTiles(dishArray); // this function is not working to populate screen
         // displays message if no search results returned
@@ -453,7 +453,7 @@ function addToMap(restaurauntName, position) {
 // initializes the map object
 function initMap() {
     // The location of Atlanta
-    console.log("initMap() triggered.");
+    //console.log("initMap() triggered.");
     var atlanta = {
         lat: 33.753746,
         lng: -84.386330
