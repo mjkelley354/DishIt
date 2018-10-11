@@ -1,5 +1,6 @@
 body {
     background-image: url(https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Ffood-background.jpg?alt=media&token=e099d38a-f43b-4a4d-88ab-df229981417d);
+    padding-top: 70px;
 }
 
 .navbar {
