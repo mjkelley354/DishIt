@@ -29,6 +29,15 @@ body {
     margin: 0px auto 10px auto;
 }
 
+.location-map {
+    overflow: hidden;
+}
+
+#map-canvas {
+    display: block;
+    max-width: 100%
+}
+
 .ratings-view {
     line-height: 13px;
 }
