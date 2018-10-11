@@ -107,7 +107,7 @@ function getTopX(recordsToReturn) {
                     lat: restaurantSnapshot.val().lat,
                     lng: restaurantSnapshot.val().long,
                 };
-                addToMap(restaurantSnapshot.val().name, restaurantLatLong);
+                addToMap(keyValue, restaurantSnapshot.val().name, restaurantLatLong);
             });
         });
     });
@@ -283,7 +283,9 @@ $(".filter-menu").on("click", function () {
 
 // on click of search button, determine if dish name contains search string
 $("#search-btn").on("click", function () {
-    
+
+    // remove all the map markers
+    removeAllMarker();
 
     // empty screen of existing results
     $(".tile-div").empty();
@@ -347,6 +349,8 @@ $("#search-btn").on("click", function () {
                             lat: restaurantSnapshot.val().lat,
                             lng: restaurantSnapshot.val().long,
                         };
+
+                        addToMap(keyValue, restaurantSnapshot.val().name, restaurantLatLong);
                     });
                 });
             };
@@ -386,11 +390,12 @@ $(".map-menu").on("click", function () {
     $(".map-modal").modal('show');
 });
 
-function addToMap(restaurauntName, position) {
+function addToMap(dishId, restaurauntName, position) {
     // add a marker
     let marker = new google.maps.Marker({
         position: position,
         map: map,
+        dishId: dishId
     });
 
     // add an info window which shows details of dish / restauraunt
@@ -412,6 +417,8 @@ function addToMap(restaurauntName, position) {
     google.maps.event.addListener(marker, 'mouseout', function () {
         marker.info.close();
     });
+
+    mapPins.push(marker);
 };
 
 // initializes the map object
@@ -432,6 +439,32 @@ function initMap() {
     // The marker, positioned at Atlanta
     //var marker = new google.maps.Marker({position: atlanta, map: map});
 };
+
+// hide the marker for the specific dishId
+function hideMarker(dishId) {
+    for (let i = 0; i < mapPins.length; i++) {
+        if (mapPins[i].dishId === dishId) {
+            mapPins[i].setMap(null);
+        }
+    }
+}
+
+// remove all the map markers
+function removeAllMarker() {
+    for (let i = 0; i < mapPins.length; i++) {
+        mapPins[i].setMap(null);
+    }
+
+    // clear the array
+    mapPins = [];
+}
+
+// reveal any hidden markers if they exist
+function revealAllMarker() {
+    for (let i = 0; i < mapPins.length; i++) {
+        mapPins[i].setMap(map);
+    }
+}
 
 // SLIDER SETTINGS ***********************************************************************
 // changed all sliders to be on a scale of 1-5

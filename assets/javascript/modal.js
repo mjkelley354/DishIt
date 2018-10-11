@@ -26,7 +26,8 @@ $(".apply-filter").on("click", function () {
         //console.log("Price Scale - min: " + priceMin + " max: " + priceMax + " actual: " + dishArray[i].price);
         if (dishArray[i].price != 0 && dishArray[i].price != null && !isInRange(dishArray[i].price, priceMin, priceMax)) {
             //console.log("Hiding tr for dishId: ", dishArray[i].dishId);
-            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
+            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();
+            hideMarker(dishArray[i].dishId);
             continue;
         } else {
             //console.log("Price is in range.");
@@ -34,7 +35,8 @@ $(".apply-filter").on("click", function () {
         //console.log("Rating Scale - min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgRating);
         if (dishArray[i].avgRating != 0 && dishArray[i].avgRating != null && !isInRange(dishArray[i].avgRating, ratingMin, ratingMax)) {
             //console.log("Hiding tr for dishId: ", dishArray[i].dishId);
-            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
+            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();
+            hideMarker(dishArray[i].dishId);
             continue;
         } else {
             //console.log("Rating is in range.");
@@ -42,7 +44,8 @@ $(".apply-filter").on("click", function () {
         //console.log("Sour scale - min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgSour);
         if (dishArray[i].avgSour != 0 && dishArray[i].avgSour != null && !isInRange(dishArray[i].avgSour, sourMin, sourMax)) {
             //console.log("Hiding tr for dishId: ", dishArray[i].dishId);
-            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
+            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();
+            hideMarker(dishArray[i].dishId);
             continue;
         } else {
             //console.log("Sour scale  is in range.");
@@ -50,7 +53,8 @@ $(".apply-filter").on("click", function () {
         //console.log("Sweet scale - min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgSweet);
         if (dishArray[i].avgSweet != 0 && dishArray[i].avgSweet != null && !isInRange(dishArray[i].avgSweet, sweetMin, sweetMax)) {
             //console.log("Hiding tr for dishId: ", dishArray[i].dishId);
-            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
+            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();
+            hideMarker(dishArray[i].dishId);
             continue;
         } else {
             //console.log("Sweet scale is in range.");
@@ -58,7 +62,8 @@ $(".apply-filter").on("click", function () {
         //console.log("Spicy scale - min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgSpicy);
         if (dishArray[i].avgSpicy != 0 && dishArray[i].avgSpicy != null && !isInRange(dishArray[i].avgSpicy, spicyMin, spicyMax)) {
             //console.log("Hiding tr for dishId: ", dishArray[i].dishId);
-            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
+            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();
+            hideMarker(dishArray[i].dishId);
             continue;
         } else {
             //console.log("Spicy scale is in range.");
@@ -66,7 +71,8 @@ $(".apply-filter").on("click", function () {
         //console.log("Salty scale - min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgSalty)
         if (dishArray[i].avgSalty != 0 && dishArray[i].avgSalty != null && !isInRange(dishArray[i].avgSalty, saltyMin, saltyMax)) {;
             //console.log("Hiding tr for dishId: ", dishArray[i].dishId);
-            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
+            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();
+            hideMarker(dishArray[i].dishId);
             continue;
         } else {
             //console.log("Salty scale is in range.");
@@ -74,7 +80,8 @@ $(".apply-filter").on("click", function () {
         //console.log("Umami scale - min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgUmami);
         if (dishArray[i].avgUmami != 0 && dishArray[i].avgUmami != null && !isInRange(dishArray[i].avgUmami, umamiMin, umamiMax)) {
             //console.log("Hiding tr for dishId: ", dishArray[i].dishId);
-            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
+            $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();
+            hideMarker(dishArray[i].dishId);
             continue;
         } else {
             //console.log("Umami scale is in range.");
@@ -156,6 +163,8 @@ $(".remove-filter").on("click", function () {
     for (let i = 0; i < rowLength; i++){
         $(table.rows[i]).show();
     }
+
+    revealAllMarker();
 
     $(".filter-modal").modal('hide');
 });
