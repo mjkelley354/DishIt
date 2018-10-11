@@ -35,11 +35,12 @@ $(document).on("click", "#rate-btn", function () {
             phone = restaurantSnapshot.val().phone;
 
             console.log(restName);
-            //window.location.href="newdish.html"
+            console.log(address);
+            console.log(phone);
+            window.location.href="newdish.html"
         });
     });
 
-    pageInit();
 });
 /* 
 function pageInit() {
