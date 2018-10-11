@@ -8,12 +8,29 @@ body {
 }
 
 .container {
-    max-width: 720px;
+    max-width: 780px;
 }
 
 .card-body, tr {
     background-color: #f7f4f3;
     padding: 0px 20px 0px 20px;
+}
+
+.picture-view {
+    display: block;
+    overflow: hidden;
+    height: 145px;
+    background-position: center center;
+}
+
+.full-picture {
+    display: block;
+    max-height: 100%;
+    margin: 0px auto 10px auto;
+}
+
+.ratings-view {
+    line-height: 13px;
 }
 
 table {
