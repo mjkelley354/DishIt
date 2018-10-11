@@ -2,11 +2,13 @@
 // TODO: after xx seconds retrieve existing dish data if user has entered same dish restaurant info
 $("#dish-name-input").change(function () {
     const dishInput = $("#dish-name-input").val().trim();
+    event.preventDefault();
 
     // wait 3 seconds to run next function
     // TODO: add functionality to auto title case stringgit 
     // if city, state, restaurant, and dish name equal to user's existing rating, then retrieve rating and set values on form
     getDishRating();
+    
     // else do nothing
 });
 
@@ -231,12 +233,7 @@ function calculateRatingAvg() {
         let avgSweet = dishSnapshot.val().avgSweetScale;
         let avgUmami = dishSnapshot.val().avgUmamiScale;
         
-        console.log(avgUmami);
         console.log(avgRating);
-        console.log(avgSalty);
-        console.log(avgSour);
-        console.log(avgSweet);
-        console.log(avgSpicy);
 
         // calculate averages
         avgRating = (avgRating + rating)/numRatings;
@@ -247,12 +244,8 @@ function calculateRatingAvg() {
         avgUmami = (avgUmami + umami)/numRatings;
         
         console.log(avgRating);
-        console.log(avgSalty);
-        console.log(avgSour);
-        console.log(avgSpicy);
-        console.log(avgSweet);
-        console.log(avgUmami);
         console.log(numRatings);
+        console.log(downloadURL);
 
         dishAvg.update({
             avgRating: avgRating,

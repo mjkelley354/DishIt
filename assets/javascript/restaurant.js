@@ -26,7 +26,7 @@ $("#find-restaurant").on("click", function () {
     getRestaurant(location, rNameInput);
 
     // USING THIS FOR TESTING - GETTING DATA FROM LOCAL STORAGE
-    const restaurants = JSON.parse(localStorage.getItem("restaurants"));
+    //const restaurants = JSON.parse(localStorage.getItem("restaurants"));
     /* // console.log(restaurants);
     $("#restaurant-results").empty()
     for (var i in restaurants) {

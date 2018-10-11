@@ -1,4 +1,3 @@
-let rateMe = false;
 let restName = "";
 let address = "";
 let city = "";
@@ -8,6 +7,16 @@ let dishImage = "";
 let dishName = "";
 let phone = "";
 let dishId = "";
+let rateMe = false;
+
+if ($("body").attr("data-title") === "index-page") { // functions run on load of index-page
+
+    $(document).ready(() => {
+        rateMe = false;
+        localStorage.setItem("rateMe", rateMe);
+
+    });
+};
 
 // if rate-btn clicked, the new dish page will open and autofill with restaurant name 
 // (in local storage as an array of one, with rIndex = 0)
@@ -15,6 +24,7 @@ let dishId = "";
 
 $(document).on("click", "#rate-btn", function () {
     dishId = ($(this).attr("dish-id-value"));
+    let restaurantsArray = [];
     console.log(dishId);
 
     // TODO: auto-fill user responses if it exists
@@ -34,20 +44,35 @@ $(document).on("click", "#rate-btn", function () {
             zipCode = restaurantSnapshot.val().zipCode;
             phone = restaurantSnapshot.val().phone;
 
+            restaurantsArray.push(restName);
             console.log(restName);
-            console.log(address);
-            console.log(phone);
-            window.location.href="newdish.html"
+            console.log(restaurantsArray);
+            console.log(restaurantSnapshot.val());
+            console.log(rateMe);
+
+            //window.location.href="newdish.html"
+
+            /* localStorage.setItem("dishImage", dishImage);
+            localStorage.setItem("dishName", dishName);
+            localStorage.setItem("dishId", dishId);
+            localStorage.setItem("restaurants", restaurantsArray);
+            localStorage.setItem("rIndex", 0);
+            localStorage.setItem("rAddress", address);
+            localStorage.setItem("rCity", city);
+            local.Storage.setItem("rState", state);
+            localStorage.setItem("rZip", zipCode);
+            localStorage.setItem("rPhone", phone);
+            localStorage.setItem("rateMe", rateMe); */
         });
     });
-
 });
-/* 
-function pageInit() {
-    if ($("body").attr("data-title") === "newdish-page") {
-        $(document).ready(function () {
-            // enter code for autofilling new dish page here
-    
-        });
-    }; 
-} */
+
+if ($("body").attr("data-title") === "newdish-page") {
+    $(document).ready(function () {
+        console.log(restName);
+        console.log(address);
+        console.log(phone);        
+    });
+};
+
+
