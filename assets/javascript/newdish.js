@@ -173,6 +173,7 @@ let spicy = "";
 let salty = "";
 let umami = "";
 let comment = "";
+let timestamp;
 function addRating() {
 
     rating = $("#dish-rating").slider("value");
@@ -182,7 +183,7 @@ function addRating() {
     salty = $("#salty-rating").slider("value");
     umami = $("#umami-rating").slider("value");
     comment = $("#dish-comment").val();
-    const timestamp = moment().format("MMM D YYYY hh:mm A z");
+    timestamp = moment().format("MMM D YYYY hh:mm A z");
 
     // retrieve user details
     const userId = localStorage.getItem("dish-it-user-id");
@@ -190,7 +191,9 @@ function addRating() {
     let matches = 0;
     ratingsRecords.orderByChild("userId").equalTo(userId).once("value", function(ratingSnapshot){
         if (ratingSnapshot.val() === null) {
-            ratingId = writeRatingData(dishIdFirebase,dName,yelpId,rIdFirebase,userId,sour,sweet,spicy,salty,umami,rating,downloadURL,comment,timestamp);
+            // with comment field
+            //ratingId = writeRatingData(dishIdFirebase,dName,yelpId,rIdFirebase,userId,sour,sweet,spicy,salty,umami,rating,downloadURL,comment,timestamp);
+            ratingId = writeRatingData(dishIdFirebase,dName,yelpId,rIdFirebase,userId,sour,sweet,spicy,salty,umami,rating,downloadURL,timestamp);
         } else {
             ratingSnapshot.forEach(function(childSnapshot){
                 const dishRating = childSnapshot.val();
@@ -201,7 +204,9 @@ function addRating() {
                 };
             });
             if (matches === 0 ) {
-                ratingId = writeRatingData(dishIdFirebase,dName,yelpId,rIdFirebase,userId,sour,sweet,spicy,salty,umami,rating,downloadURL,comment,timestamp);
+                // with comment field
+                // ratingId = writeRatingData(dishIdFirebase,dName,yelpId,rIdFirebase,userId,sour,sweet,spicy,salty,umami,rating,downloadURL,comment,timestamp);
+                ratingId = writeRatingData(dishIdFirebase,dName,yelpId,rIdFirebase,userId,sour,sweet,spicy,salty,umami,rating,downloadURL,timestamp);
             };
         };
         calculateRatingAvg();
@@ -210,6 +215,8 @@ function addRating() {
 
 function calculateRatingAvg() {
     console.log(downloadURL);
+    console.log(timestamp);
+
     const dishAvg = dishRecords.child(dishIdFirebase);
 
     dishAvg.once("value", function(dishSnapshot){
@@ -224,12 +231,12 @@ function calculateRatingAvg() {
         let avgSweet = dishSnapshot.val().avgSweetScale;
         let avgUmami = dishSnapshot.val().avgUmamiScale;
         
-        /* console.log(avgUmami);
+        console.log(avgUmami);
         console.log(avgRating);
         console.log(avgSalty);
         console.log(avgSour);
         console.log(avgSweet);
-        console.log(avgSpicy); */
+        console.log(avgSpicy);
 
         // calculate averages
         avgRating = (avgRating + rating)/numRatings;
@@ -239,13 +246,13 @@ function calculateRatingAvg() {
         avgSweet = (avgSweet + sweet)/numRatings;
         avgUmami = (avgUmami + umami)/numRatings;
         
-        /* console.log(avgRating);
+        console.log(avgRating);
         console.log(avgSalty);
         console.log(avgSour);
         console.log(avgSpicy);
         console.log(avgSweet);
         console.log(avgUmami);
-        console.log(numRatings); */
+        console.log(numRatings);
 
         dishAvg.update({
             avgRating: avgRating,
@@ -254,7 +261,7 @@ function calculateRatingAvg() {
             avgSpicyScale: avgSpicy,
             avgSweetScale: avgSweet,
             avgUmamiScale: avgUmami,
-            comments: comments,
+            //comments: comments,
             image: downloadURL,
             numRatings: numRatings,
         });
@@ -265,8 +272,9 @@ function calculateRatingAvg() {
 
 // WRITE INFORMATION TO FIREBASE ******************************************************
 
+// removing comment field from next to last field
 function writeRatingData(dishId, dishName, yelpId, rIdFirebase, userId, sourScale, sweetScale, spicyScale,
-    saltyScale, umamiScale, rating, image, text, timestamp) {
+    saltyScale, umamiScale, rating, image, timestamp) {
     let insertedData = db.ref('ratings/').push({
         dishId,
         dishName,
@@ -280,7 +288,7 @@ function writeRatingData(dishId, dishName, yelpId, rIdFirebase, userId, sourScal
         umamiScale,
         rating,
         image,
-        text,
+        // text,
         timestamp,
     });
     return insertedData.getKey();
@@ -303,6 +311,7 @@ function writeRestaurantData(yelpId, name, address, city, state, zipCode, lat, l
     return insertedData.getKey();
 }
 
+// removed comments field (next to last) for time being
 function writeDishData(name, restaurantId, price, avgSourScale, avgSweetScale, avgSpicyScale,
     avgSaltyScale, avgUmamiScale, avgRating, image, comments, numRatings) {
     let insertedData = db.ref('dishes/').push({

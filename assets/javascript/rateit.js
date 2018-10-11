@@ -35,18 +35,18 @@ $(document).on("click", "#rate-btn", function () {
             phone = restaurantSnapshot.val().phone;
 
             console.log(restName);
-            window.location.href="newdish.html"
+            //window.location.href="newdish.html"
         });
     });
 
     pageInit();
 });
-
+/* 
 function pageInit() {
     if ($("body").attr("data-title") === "newdish-page") {
         $(document).ready(function () {
             // enter code for autofilling new dish page here
     
         });
-    };
-}
+    }; 
+} */
