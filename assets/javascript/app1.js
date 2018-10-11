@@ -166,7 +166,7 @@ function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, d
     i++;
 };
 
-// TODO: use this function later for populating filtered results
+/* // TODO: use this function later for populating filtered results
 function createTiles(dishArray) {
     //console.log("I'm creating tiles");
     //console.log(dishArray);
@@ -186,7 +186,7 @@ function createTiles(dishArray) {
             `
         );
     }
-};
+}; */
 
 $(document).on("click", ".dish-tile", function () {
 
@@ -324,14 +324,14 @@ $("#search-btn").on("click", function () {
     // empty screen of existing results
     $(".tile-div").empty();
 
-    $(".tile-div").append(
-        `
-    <table class="w-100 rounded table text-center">
-        <tbody id="dish-list">
-        </tbody>
-    </table>
-`
-    );
+    $(".tile-div").append(`
+        <div class="card card-body">
+        <table class="table text-center">
+            <tbody id="dish-list">
+            </tbody>
+        </table>
+        </div>
+`);
 
     // capture search string
     const searchInput = $("#search-input").val();

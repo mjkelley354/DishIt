@@ -60,6 +60,18 @@ table {
     -ms-interpolation-mode: bicubic;
 }
 
+@media only screen and (max-width: 400px) {
+    #new-image-view {
+        margin-left: 45px;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    #new-image-view {
+        margin-right: 35px;
+    }
+}
+
 .rating-icons {
     color: goldenrod;
 }
