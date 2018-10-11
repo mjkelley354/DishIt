@@ -26,8 +26,8 @@ $("#find-restaurant").on("click", function () {
     getRestaurant(location, rNameInput);
 
     // USING THIS FOR TESTING - GETTING DATA FROM LOCAL STORAGE
-    /* const restaurants = JSON.parse(localStorage.getItem("restaurants"));
-    console.log(restaurants);
+    const restaurants = JSON.parse(localStorage.getItem("restaurants"));
+    /* // console.log(restaurants);
     $("#restaurant-results").empty()
     for (var i in restaurants) {
         showRestOptions(restaurants[i], i);
@@ -57,7 +57,7 @@ function getRestaurant(location, rName) {
         $("#restaurant-results").empty()
             .removeClass("errorMessage");
 
-        console.log(response);
+        //console.log(response);
         const restaurants = response.businesses;
 
         // parse response into variables (some of these may not be needed here -- delete later)      
@@ -82,7 +82,7 @@ function getRestaurant(location, rName) {
 };
 
 function showRestOptions(restaurant, i) {
-    console.log(restaurant, i);
+    // console.log(restaurant, i);
     matchingRestaurants.push(restaurant);
 
     $("#restaurant-results").append(
@@ -104,13 +104,11 @@ function showRestOptions(restaurant, i) {
 // save matching restaurants to local storage with index of selected restaurant
 $("#select-restaurant-btn").on("click", function () {
     const selected = $("input[name=r-option]:checked")
-    console.log(selected);
     console.log(selected.attr("phone"));
 
     // save matching restaurants and index of selected restaurant to local storage
     // TURNED OFF FOR TESTING - TURN BACK ON WHEN DONE WITH DEVELOPMENT
     localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
-
     localStorage.setItem("rIndex", selected.attr("index"));
 
     // show selected restaurant name in restaurant-input field
