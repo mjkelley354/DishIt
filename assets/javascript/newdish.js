@@ -123,6 +123,7 @@ $("#select-restaurant-btn").on("click", function () {
 
     // TODO: disable input into location and restaurant name fields
     // TODO: add reset button to enable these fields again
+
 });
 
 // ENTER DISH NAME AND CHECK AND PRE-POPULATE WITH USER'S RATING IF AVAILABLE
@@ -142,16 +143,13 @@ function getDishRating() {
 // IMAGES ********************************************************************************
 // following event listeners is used to work with buttons added to support image upload
 // by someone adding a rating
+let downloadURL = "";
+
 $(".file-select").on("change", function (e) {
     selectedFile = e.target.files[0];
     console.log(selectedFile);
     $("#image-file-name").text(`File Name: ${selectedFile.name}`);
-});
 
-// following event listeners is used to work with buttons added to support image upload
-// by someone adding a rating
-let downloadURL = "";
-$(".file-submit").on("click", function (e) {
     //create a child directory called images, and place the file inside this directory
     const uploadTask = storageRef.child(`images/${selectedFile.name}`).put(selectedFile);
     uploadTask.on('state_changed', (snapshot) => {
@@ -171,6 +169,30 @@ $(".file-submit").on("click", function (e) {
         // show new picture in view area
         $("#new-image-view").attr("src", downloadURL);
     });
+});
+
+// following event listeners is used to work with buttons added to support image upload
+// by someone adding a rating
+$(".file-submit").on("click", function (e) {
+    /* //create a child directory called images, and place the file inside this directory
+    const uploadTask = storageRef.child(`images/${selectedFile.name}`).put(selectedFile);
+    uploadTask.on('state_changed', (snapshot) => {
+        // Observe state change events such as progress, pause, and resume
+
+        // the downloadURL is critical to capture here
+        // on image upload capture URL and save to firebase in the .image property so we can use it to access image later
+        downloadURL = uploadTask.snapshot.downloadURL;
+        console.log(downloadURL);
+    }, (error) => {
+        // Handle unsuccessful uploads
+        console.log(error);
+    }, () => {
+        // Do something once upload is complete
+        console.log('success');
+        console.log("photo");
+        // show new picture in view area
+        $("#new-image-view").attr("src", downloadURL);
+    }); */
 });
 
 // DISH RATING AND FLAVOR PROFILE **********************************************
@@ -196,13 +218,11 @@ $("#cancel-dish-btn").on("click", function () {
 }); */
 
 $("#add-dish-btn").on("click", function () {
-    
     addRestaurant();
     addDish();
     addRating();
 
     // determine if dish is already in firebase
-    calculateRatingAvg();
     // TODO: Go to dish average rating page on home screen
 });
 
@@ -214,8 +234,9 @@ let rPrice = "";
 let rIdFirebase = "";
 
 // add new restaurant if it does not already exist in firebase storage
+const restaurantRecords = db.ref("restaurants");
+
 function addRestaurant() {
-    const restaurantRecords = db.ref("restaurants");
 
     rIndex = localStorage.getItem("rIndex");
     rStorage = JSON.parse(localStorage.getItem("restaurants"));
@@ -234,7 +255,6 @@ function addRestaurant() {
         cuisine.push(yelpDataObject.categories[i].title);
     }
     rPrice = changePriceToNum(yelpDataObject.price);
-    console.log(rPrice);
 
     restaurantRecords.orderByChild('yelpId').equalTo(yelpId).once('value', function(snap) {
     if (snap.val() === null) {
@@ -264,16 +284,19 @@ function changePriceToNum(price) {
 // add dish to firebase if it does not exist for that restaurant
 let dishIdFirebase = "";
 let dishExists = false;
-const dName = $("#dish-name-input").val().trim();
+let dName = "";
+let comments = [];
+const dishRecords = db.ref("dishes");
+
 function addDish() {
-    const dishRecords = db.ref("dishes");
+    dName = $("#dish-name-input").val();
 
     let matches = 0;
     dishRecords.orderByChild("name").equalTo(dName).once("value", function(dishSnapshot){
         // console.log(dishSnapshot.val());
         // console.log(downloadURL);
         if (dishSnapshot.val() === null) {
-            dishIdFirebase = writeDishData(dName, rIdFirebase, rPrice, 0, 0, 0, 0, 0, 0, downloadURL, 0);
+            dishIdFirebase = writeDishData(dName, rIdFirebase, rPrice, 0, 0, 0, 0, 0, 0, downloadURL, comments, 0);
         } else {
             dishSnapshot.forEach(function(childSnapshot){
                 // console.log(childSnapshot.val());
@@ -285,31 +308,32 @@ function addDish() {
             });
             // console.log("outside", matches);
             if (matches === 0) {
-                dishIdFirebase = writeDishData(dName, rIdFirebase, rPrice, 0, 0, 0, 0, 0, 0, downloadURL, 0);
+                dishIdFirebase = writeDishData(dName, rIdFirebase, rPrice, 0, 0, 0, 0, 0, 0, downloadURL, comments, 0);
             };
         };
     });
 };
 
 // add ratings for the dish by user
+const ratingsRecords = db.ref("ratings");
 let ratingIdFirebase = "";
+let rating = "";
+let sour = "";
+let sweet = "";
+let spicy = "";
+let salty = "";
+let umami = "";
+let comment = "";
 function addRating() {
-    const ratingsRecords = db.ref("ratings");
 
-    const rating = $("#dish-rating").slider("value");
-    const sour = $("#sour-rating").slider("value");
-    const sweet = $("#sweet-rating").slider("value");
-    const spicy = $("#spicy-rating").slider("value");
-    const salty = $("#salty-rating").slider("value");
-    const umami = $("#umami-rating").slider("value");
-    const comment = $("#dish-comment").val();
+    rating = $("#dish-rating").slider("value");
+    sour = $("#sour-rating").slider("value");
+    sweet = $("#sweet-rating").slider("value");
+    spicy = $("#spicy-rating").slider("value");
+    salty = $("#salty-rating").slider("value");
+    umami = $("#umami-rating").slider("value");
+    comment = $("#dish-comment").val();
     const timestamp = moment().format("MMM D YYYY hh:mm A z");
-
-    console.log(timestamp);;
-    /* console.log(downloadURL);
-    console.log(rating, sour, sweet, spicy, salty, umami, comment);
-    console.log(dishIdFirebase);
-    console.log(rIdFirebase); */
 
     // retrieve user details
     const userId = localStorage.getItem("dish-it-user-id");
@@ -321,7 +345,7 @@ function addRating() {
         } else {
             ratingSnapshot.forEach(function(childSnapshot){
                 const dishRating = childSnapshot.val();
-                console.log(dishRating);
+                // console.log(dishRating);
                 if (dishRating.dishId === dishIdFirebase) {
                     ratingIdFirebase = childSnapshot.ref.key;
                     matches++;
@@ -331,11 +355,69 @@ function addRating() {
                 ratingId = writeRatingData(dishIdFirebase,dName,yelpId,rIdFirebase,userId,sour,sweet,spicy,salty,umami,rating,downloadURL,comment,timestamp);
             };
         };
-        
+        calculateRatingAvg();
     });
 };
 
-function calculateRatingAvg(num) {
+function calculateRatingAvg() {
+    //console.log(rIdFirebase);
+    //console.log(ratingIdFirebase);
+    //console.log(dishIdFirebase);
+    console.log(downloadURL);
+    const dishAvg = dishRecords.child(dishIdFirebase);
+
+    dishAvg.once("value", function(dishSnapshot){
+        let numRatings = dishSnapshot.val().numRatings;
+        console.log(numRatings);
+
+        if (numRatings === 0) {
+            dishAvg.update({
+
+            })
+        }
+
+        numRatings++;
+
+        // retrieve average values    
+        let avgRating = dishSnapshot.val().avgRating;
+        console.log(avgRating);
+        let avgSalty = dishSnapshot.val().avgSaltyScale;
+        console.log(avgSalty);
+        let avgSour = dishSnapshot.val().avgSourScale;
+        console.log(avgSour);
+        let avgSpicy = dishSnapshot.val().avgSpicyScale;
+        console.log(avgSpicy);
+        let avgSweet = dishSnapshot.val().avgSweetScale;
+        console.log(avgSweet);
+        let avgUmami = dishSnapshot.val().avgUmamiScale;
+        console.log(avgUmami);
+
+        avgRating = (avgRating + rating)/numRatings;
+        console.log(avgRating);
+        avgSalty = (avgSalty + salty)/numRatings;
+        console.log(avgSalty);
+        avgSour = (avgSour + sour)/numRatings;
+        console.log(avgSour);
+        avgSpicy = (avgSpicy + spicy)/numRatings;
+        console.log(avgSpicy);
+        avgSweet = (avgSweet + sweet)/numRatings;
+        console.log(avgSweet);
+        avgUmami = (avgUmami + umami)/numRatings;
+        console.log(avgUmami);
+        console.log(numRatings);
+
+        dishAvg.update({
+            avgRating: avgRating,
+            avgSaltyScale: avgSalty,
+            avgSourScale: avgSour,
+            avgSpicyScale: avgSpicy,
+            avgSweetScale: avgSweet,
+            avgUmamiScale: avgUmami,
+            comments: comments,
+            numRatings: numRatings,
+        })
+
+    });
 
     // average rating
 
@@ -386,7 +468,7 @@ function writeRestaurantData(yelpId, name, address, city, state, zipCode, lat, l
 }
 
 function writeDishData(name, restaurantId, price, avgSourScale, avgSweetScale, avgSpicyScale,
-    avgSaltyScale, avgUmamiScale, avgRating, image, numRatings) {
+    avgSaltyScale, avgUmamiScale, avgRating, image, comments, numRatings) {
     let insertedData = db.ref('dishes/').push({
         name,
         restaurantId,
@@ -399,6 +481,7 @@ function writeDishData(name, restaurantId, price, avgSourScale, avgSweetScale, a
         avgUmamiScale,
         avgRating,
         image,
+        comments,
         numRatings,
     });
     return insertedData.getKey();
