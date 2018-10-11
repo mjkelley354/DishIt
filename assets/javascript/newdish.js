@@ -68,7 +68,7 @@ function getRestaurant(location, rName) {
             const rName = restaurants[i].name;
             if (rName.toLowerCase().includes(rNameInput.toLowerCase())) {
                 matches++;
-                console.log(`${rName} matches ${rNameInput}`);
+                //console.log(`${rName} matches ${rNameInput}`);
                 showRestOptions(restaurants[i], i);
             };
         };
@@ -77,7 +77,7 @@ function getRestaurant(location, rName) {
             $("#restaurant-results").empty()
                 .addClass("errorMessage")
                 .text("No matches found. Try a different search.");
-        }
+        };
     });
 };
 
@@ -174,23 +174,27 @@ $(".file-submit").on("click", function (e) {
 });
 
 // DISH RATING AND FLAVOR PROFILE **********************************************
+// sliders with single value selector for rating dishes
+$(".slider-rate-1-5").slider({
+    range: false,
+    min: 1,
+    max: 5,
+    step: 1,
+    value: 3,
+    change: function (event, ui) { },
+});
 
-        // sliders with single value selector for rating dishes
-        $(".slider-rate-1-5").slider({
-            range: false,
-            min: 1,
-            max: 5,
-            step: 1,
-            value: 3,
-            change: function (event, ui) {},
-        });
+// CANCEL OR SUBMIT RESULTS AND CALCULATE AVERAGE ******************************
+// return to homepage if cancel button is clicked
+$("#cancel-dish-btn").on("click", function () {
+    window.location.href = "index.html";
+});
 
-        // CANCEL OR SUBMIT RESULTS AND CALCULATE AVERAGE ******************************
+// TODO: fix functionality if time
+/* $("#reset-dish-btn").on("click", function () {
+    $("#add-dish-form").trigger("reset");
+}); */
 
-        // return to homepage if cancel button is clicked
-        $("#cancel-dish-btn").on("click", function () {
-            window.location.href = "index.html";
-        });
 $("#add-dish-btn").on("click", function () {
     
     addRestaurant();
@@ -229,11 +233,11 @@ function addRestaurant() {
     for (var i in yelpDataObject.categories) {
         cuisine.push(yelpDataObject.categories[i].title);
     }
-    rPrice = yelpDataObject.price;
+    rPrice = changePriceToNum(yelpDataObject.price);
     console.log(rPrice);
 
     restaurantRecords.orderByChild('yelpId').equalTo(yelpId).once('value', function(snap) {
-      if (snap.val() === null) {
+    if (snap.val() === null) {
                 rIdFirebase = writeRestaurantData(yelpId, rName, address, city, state, zip, lat, long, phone, cuisine, rPrice);
             } else {
                 snap.forEach(function(childSnapshot) {
@@ -244,36 +248,51 @@ function addRestaurant() {
     }); 
 };
 
+function changePriceToNum(price) {
+    switch(price) {
+        case "$": return 1;
+            break;
+        case "$$": return 2;
+            break;
+        case "$$$": return 3;
+            break;
+        case "$$$$": return 4;
+            break;
+    };
+};
+
+// add dish to firebase if it does not exist for that restaurant
 let dishIdFirebase = "";
+let dishExists = false;
+const dName = $("#dish-name-input").val().trim();
 function addDish() {
     const dishRecords = db.ref("dishes");
 
-    const dName = $("#dish-name-input").val();
-    console.log(dName);
-
     let matches = 0;
     dishRecords.orderByChild("name").equalTo(dName).once("value", function(dishSnapshot){
-        console.log(dishSnapshot.val());
-        console.log(downloadURL);
+        // console.log(dishSnapshot.val());
+        // console.log(downloadURL);
         if (dishSnapshot.val() === null) {
             dishIdFirebase = writeDishData(dName, rIdFirebase, rPrice, 0, 0, 0, 0, 0, 0, downloadURL, 0);
         } else {
             dishSnapshot.forEach(function(childSnapshot){
-                console.log(childSnapshot.val());
+                // console.log(childSnapshot.val());
                 if (childSnapshot.val().restaurantId === rIdFirebase) {
                     dishIdFirebase = childSnapshot.ref.key;
                     matches++;
-                }; 
+                    dishExists = true;
+                };
             });
             // console.log("outside", matches);
             if (matches === 0) {
                 dishIdFirebase = writeDishData(dName, rIdFirebase, rPrice, 0, 0, 0, 0, 0, 0, downloadURL, 0);
             };
-            console.log(dishIdFirebase);
         };
     });
 };
 
+// add ratings for the dish by user
+let ratingIdFirebase = "";
 function addRating() {
     const ratingsRecords = db.ref("ratings");
 
@@ -284,17 +303,36 @@ function addRating() {
     const salty = $("#salty-rating").slider("value");
     const umami = $("#umami-rating").slider("value");
     const comment = $("#dish-comment").val();
-    let dishId = "";
-    console.log(downloadURL);
-    console.log(rating, sour, sweet, spicy, salty, umami, comment);
+    const timestamp = moment().format("MMM D YYYY hh:mm A z");
 
-    // dummy user settings
-    // TODO: replace with retrieval of user info from local storage
+    console.log(timestamp);;
+    /* console.log(downloadURL);
+    console.log(rating, sour, sweet, spicy, salty, umami, comment);
+    console.log(dishIdFirebase);
+    console.log(rIdFirebase); */
+
+    // retrieve user details
     const userId = localStorage.getItem("dish-it-user-id");
-    const userCity = localStorage.getItem("dish-it-city");
-    const userState = localStorage.getItem("dish-it-state");
-    const userEmail = localStorage.getItem("dish-it-email");
-    const userName = localStorage.getItem("dish-it-user");
+
+    let matches = 0;
+    ratingsRecords.orderByChild("userId").equalTo(userId).once("value", function(ratingSnapshot){
+        if (ratingSnapshot.val() === null) {
+            ratingId = writeRatingData(dishIdFirebase,dName,yelpId,rIdFirebase,userId,sour,sweet,spicy,salty,umami,rating,downloadURL,comment,timestamp);
+        } else {
+            ratingSnapshot.forEach(function(childSnapshot){
+                const dishRating = childSnapshot.val();
+                console.log(dishRating);
+                if (dishRating.dishId === dishIdFirebase) {
+                    ratingIdFirebase = childSnapshot.ref.key;
+                    matches++;
+                };
+            });
+            if (matches === 0 ) {
+                ratingId = writeRatingData(dishIdFirebase,dName,yelpId,rIdFirebase,userId,sour,sweet,spicy,salty,umami,rating,downloadURL,comment,timestamp);
+            };
+        };
+        
+    });
 };
 
 function calculateRatingAvg(num) {
@@ -307,31 +345,25 @@ function calculateRatingAvg(num) {
     // if updated rating, do not increase number of total ratings for dish, subtract old rating, and calculate with new rating
 };
 
-function writeUserData(name, email, city, state) {
-    let insertedData = db.ref('users/').push({
-        name,
-        email,
-        city,
-        state,
-    });
-    return insertedData.getKey();
-}
+// WRITE INFORMATION TO FIREBASE ******************************************************
 
-function writeRatingData(dishId, dishName, yelpId, userId, text, sourScale, sweetScale, spicyScale,
-    saltyScale, umamiScale, rating, image) {
+function writeRatingData(dishId, dishName, yelpId, rIdFirebase, userId, sourScale, sweetScale, spicyScale,
+    saltyScale, umamiScale, rating, image, text, timestamp) {
     let insertedData = db.ref('ratings/').push({
         dishId,
         dishName,
         yelpId,
+        rIdFirebase,
         userId,
-        text,
         sourScale,
         sweetScale,
         spicyScale,
         saltyScale,
         umamiScale,
         rating,
-        image
+        image,
+        text,
+        timestamp,
     });
     return insertedData.getKey();
 }

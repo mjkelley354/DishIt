@@ -44,7 +44,7 @@
     <div class="container add-dish-form mt-3 mb-3 rounded">
         <h3 class="text-center pt-2">Rate a New Dish</h3>
         <hr>
-        <form onsubmit="return false" class="w-100">
+        <form onsubmit="return false" class="w-100" id="add-dish-form">
             <div class="row location">
                 <div class="col-md-9 col-sm-12 form-group">
                     <label class="form-label" for="city-input"><strong>City</strong></label>
@@ -213,6 +213,7 @@
                 </div>
                 <div class="d-flex justify-content-end">
                     <button class="btn btn-outline-dark mb-3 mr-2" id="cancel-dish-btn">Cancel</button>
+                    <button class="btn btn-outline-dark mb-3 mr-2" id="reset-dish-btn">Reset</button>
                     <button class="btn btn-outline-dark mb-3" id="add-dish-btn">Submit It!</button>
                 </div>
             </div>
@@ -236,8 +237,8 @@
     <!-- <script src="assets/javascript/jquery.range-min.js"></script> -->
     <script src="assets/javascript/app1.js"></script>
     <script src="assets/javascript/newdish.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
 
 
 </body>
-
 </html>

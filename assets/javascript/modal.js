@@ -122,7 +122,6 @@ function isInRange(testValue, minValue, maxValue) {
     return inRange;
 }
 
-
 // called when the remove filter button on the filter modal is clicked
 $(".remove-filter").on("click", function () {
 
