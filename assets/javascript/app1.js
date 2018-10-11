@@ -275,7 +275,7 @@ function getScale(avgScaleValue, fontAwesomeIcon) {
     }
 
     if (Math.round(avgScaleValue * 2) / 2 - flavor === 1) {
-        scaleValue = scaleValue.concat(`<i class=${fontAwesomeIcon}></i>`);
+        scaleValue = scaleValue.concat(`<i class="${fontAwesomeIcon}"></i>`);
     }
 
     if (Math.round(avgScaleValue * 2) / 2 - flavor === .5) {
