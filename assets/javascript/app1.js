@@ -166,28 +166,6 @@ function createTile(dishId, dishName, restaurantId, restaurantName, avgRating, d
     i++;
 };
 
-/* // TODO: use this function later for populating filtered results
-function createTiles(dishArray) {
-    //console.log("I'm creating tiles");
-    //console.log(dishArray);
-    // FIX: this section below is not working to populate tiles after the search btn is clicked; disabled or now
-    for (let i in dishArray) {
-        //console.log(dishArray[i].dishName);
-        $("tbody").prepend(
-            `
-                <tr class="dish-tile" id="heading${i}" dish-id-value="${dishArray[i].dishId}" data-toggle="collapse" data-target="#collapse${i}">
-                    <td><img class="dish-tile-img" src="assets/images"></td>
-                    <td class="align-middle"><h6>${dishArray[i].dishName}<br>@${dishArray[i].restaurantName}</h6></td>
-                    <td class="align-middle">${getRating(dishArray[i].avgRating)}<br>${getPrice(dishArray[i].dishPrice)}</td>
-                </tr>
-                <tr>
-                    <td colspan=5 class="collapse" id="collapse${i}">placeholder</td>
-                </tr>
-            `
-        );
-    }
-}; */
-
 $(document).on("click", ".dish-tile", function () {
 
     //console.log($(this));
@@ -202,63 +180,49 @@ $(document).on("click", ".dish-tile", function () {
 
     var dishes = db.ref('dishes');
     var restaurants = db.ref('restaurants');
-    let avgSaltyScale = "";
-    let avgSourScale = "";
-    let avgSpicyScale = "";
-    let avgSweetScale = "";
-    let avgUmamiScale = "";
-    let restName = "";
-    let address = "";
-    let city = "";
-    let state = "";
-    let zipCode = "";
-    let dishImage = "";
-    let dishName = "";
-    let phone = "";
+    
 
     dishes.child("/" + dishId).once('value', function (dishesSnapshot) {
         restaurants.child("/" + dishesSnapshot.val().restaurantId).once('value', function (restaurantSnapshot) {
 
-            avgSaltyScale = dishesSnapshot.val().avgSaltyScale;
-            avgSourScale = dishesSnapshot.val().avgSourScale;
-            avgSpicyScale = dishesSnapshot.val().avgSpicyScale;
-            avgSweetScale = dishesSnapshot.val().avgSweetScale;
-            avgUmamiScale = dishesSnapshot.val().avgUmamiScale;
-            dishImage = dishesSnapshot.val().image;
-            dishName = dishesSnapshot.val().name;
-            restName = restaurantSnapshot.val().name;
-            address = restaurantSnapshot.val().address;
-            city = restaurantSnapshot.val().city;
-            state = restaurantSnapshot.val().state;
-            zipCode = restaurantSnapshot.val().zipCode;
-            phone = restaurantSnapshot.val().phone;
+            const avgSaltyScale = dishesSnapshot.val().avgSaltyScale;
+            const avgSourScale = dishesSnapshot.val().avgSourScale;
+            const avgSpicyScale = dishesSnapshot.val().avgSpicyScale;
+            const avgSweetScale = dishesSnapshot.val().avgSweetScale;
+            const avgUmamiScale = dishesSnapshot.val().avgUmamiScale;
+            const dishImage = dishesSnapshot.val().image;
+            const dishName = dishesSnapshot.val().name;
+            const restName = restaurantSnapshot.val().name;
+            const address = restaurantSnapshot.val().address;
+            const city = restaurantSnapshot.val().city;
+            const state = restaurantSnapshot.val().state;
+            const zipCode = restaurantSnapshot.val().zipCode;
+            const phone = restaurantSnapshot.val().phone;
 
             $(`${dataTargetId}`).append(
                 `
                     <div class="row dish-details-row">
-                        <div class="col-md-6">
+                        
+                        <div class="col-md-4">
                             <div class="card-body"> 
-                                <b>Salty: </b>${getScale(avgSaltyScale, "fas fa-cubes")}
-                                <br>
-                                <b>Sour:</b> ${getScale(avgSourScale, "fas fa-lemon")}
-                                <br>
-                                <b>Spicy:</b> ${getScale(avgSpicyScale, "fab fa-hotjar")}
-                                <br>
-                                <b>Sweet:</b> ${getScale(avgSweetScale, "fas fa-cookie-bite")}
-                                <br>
-                                <b>Umami:</b> ${getScale(avgUmamiScale, "fas fa-crow")}
+                                <p class="ratings-view"><b>Salty: </b> ${getScale(avgSaltyScale, "fas fa-cubes")}</P>
+                                <p class="ratings-view"><b>Sour:</b> ${getScale(avgSourScale, "fas fa-lemon")}</p>
+                                <p class="ratings-view"><b>Spicy:</b> ${getScale(avgSpicyScale, "fab fa-hotjar")}</p>
+                                <p class="ratings-view"><b>Sweet:</b>  ${getScale(avgSweetScale, "fas fa-cookie-bite")}<p>
+                                <p class="ratings-view"><b>Umami:</b> ${getScale(avgUmamiScale, "fas fa-crow")}</p>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <b>${restName}</b>
-                            <br>
-                            <i>${address}</i>
-                            <br>
-                            <i>${city}
-                            ${state}
-                            ${zipCode}</i>
-                            <br>
-                            ${phone}
+                        <div class="col-md-4">
+                            <div class="card-body picture-view">
+                                <img class="full-picture" src="${dishImage}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <p><b>${restName}</b><br>
+                            <i>${address}</i><br>
+                            <i>${city}, ${state} ${zipCode}</i><br>
+                            ${phone}</p>
+                            <button class="btn btn-outline-dark" id="rate-btn" dish-id-value="${dishId}">Rate It!</button>
                         </div>
                     </div>
                 `
@@ -319,6 +283,7 @@ $(".filter-menu").on("click", function () {
 
 // on click of search button, determine if dish name contains search string
 $("#search-btn").on("click", function () {
+    
 
     // empty screen of existing results
     $(".tile-div").empty();
@@ -329,11 +294,11 @@ $("#search-btn").on("click", function () {
             <tbody id="dish-list">
             </tbody>
         </table>
-        </div>
-`);
+        </div>`   
+)   ;
 
     // capture search string
-    const searchInput = $("#search-input").val();
+    const searchInput = $("#search-input").val().toLowerCase();
     //console.log(searchInput);
 
     var dishes = db.ref('dishes');
@@ -345,7 +310,7 @@ $("#search-btn").on("click", function () {
     dishes.orderByChild("avgRating").on('value', function (snapshot) {
         snapshot.forEach(function (childSnapshot) {
             // if dish name contains search string, display results on screen
-            if (childSnapshot.val().name.includes(searchInput)) {
+            if (childSnapshot.val().name.toLowerCase().includes(searchInput)) {
                 matches++;
                 //console.log(childSnapshot.val().name);
                 const keyValue = childSnapshot.ref.key;

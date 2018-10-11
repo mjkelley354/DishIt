@@ -1,8 +1,10 @@
 // ENTER DISH NAME AND CHECK AND PRE-POPULATE WITH USER'S RATING IF AVAILABLE
 // TODO: after xx seconds retrieve existing dish data if user has entered same dish restaurant info
 $("#dish-name-input").change(function () {
+    const dishInput = $("#dish-name-input").val().trim();
 
     // wait 3 seconds to run next function
+    // TODO: add functionality to auto title case stringgit 
     // if city, state, restaurant, and dish name equal to user's existing rating, then retrieve rating and set values on form
     getDishRating();
     // else do nothing
@@ -136,7 +138,7 @@ let comments = [];
 const dishRecords = db.ref("dishes");
 
 function addDish() {
-    dName = $("#dish-name-input").val();
+    dName = $("#dish-name-input").val().trim();
 
     let matches = 0;
     dishRecords.orderByChild("name").equalTo(dName).once("value", function(dishSnapshot){

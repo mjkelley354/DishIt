@@ -122,4 +122,6 @@ $("#select-restaurant-btn").on("click", function () {
     $("#address2-view").text(selected.attr("address2"));
     $("#phone-view").text(selected.attr("phone"));
 
+    $(".dish-div").collapse("show");
+
 });
