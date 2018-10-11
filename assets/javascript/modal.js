@@ -5,6 +5,7 @@
 
 // called when the apply filter button on the filter modal is clicked
 $(".apply-filter").on("click", function () {
+    console.log(dishArray);
     const priceMin = $("#slider-price-range").slider("values")[0];
     const priceMax = $("#slider-price-range").slider("values")[1];
     const ratingMin = $("#slider-rating-range").slider("values")[0];
@@ -21,54 +22,62 @@ $(".apply-filter").on("click", function () {
     const umamiMax = $("#slider-umami-range").slider("values")[1];
 
     for (let i = 0; i < dishArray.length; i++) {
-        if (!isInRange(getPriceAsNumber(dishArray[i].price), priceMin, priceMax)) {
-            console.log("Price is out of range! min: " + priceMin + " max: " + priceMax + " actual: " + dishArray[i].price);
+        //console.log("dishName: ", dishArray[i].dishName, " restaurant: ", dishArray[i].restaurantName);
+        //console.log("Price Scale - min: " + priceMin + " max: " + priceMax + " actual: " + dishArray[i].price);
+        if (dishArray[i].price != 0 && dishArray[i].price != null && !isInRange(dishArray[i].price, priceMin, priceMax)) {
+            //console.log("Hiding tr for dishId: ", dishArray[i].dishId);
             $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
             continue;
         } else {
-            console.log("Price is in range.");
+            //console.log("Price is in range.");
         }
-        if (!isInRange(dishArray[i].avgRating, ratingMin, ratingMax)) {
-            console.log("Rating is out of range! min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgRating);
+        //console.log("Rating Scale - min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgRating);
+        if (dishArray[i].avgRating != 0 && dishArray[i].avgRating != null && !isInRange(dishArray[i].avgRating, ratingMin, ratingMax)) {
+            //console.log("Hiding tr for dishId: ", dishArray[i].dishId);
             $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
             continue;
         } else {
-            console.log("Rating is in range.");
+            //console.log("Rating is in range.");
         }
-        if (!isInRange(dishArray[i].avgSourScale, sourMin, sourMax)) {
-            console.log("Sour scale is out of range! min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgSourScale);
+        //console.log("Sour scale - min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgSour);
+        if (dishArray[i].avgSour != 0 && dishArray[i].avgSour != null && !isInRange(dishArray[i].avgSour, sourMin, sourMax)) {
+            //console.log("Hiding tr for dishId: ", dishArray[i].dishId);
             $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
             continue;
         } else {
-            console.log("Sour scale  is in range.");
+            //console.log("Sour scale  is in range.");
         }
-        if (!isInRange(dishArray[i].avgSweetScale, sweetMin, sweetMax)) {
-            console.log("Sweet scale is out of range! min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgSweetScale);
+        //console.log("Sweet scale - min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgSweet);
+        if (dishArray[i].avgSweet != 0 && dishArray[i].avgSweet != null && !isInRange(dishArray[i].avgSweet, sweetMin, sweetMax)) {
+            //console.log("Hiding tr for dishId: ", dishArray[i].dishId);
             $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
             continue;
         } else {
-            console.log("Sweet scale is in range.");
+            //console.log("Sweet scale is in range.");
         }
-        if (!isInRange(dishArray[i].avgSpicyScale, spicyMin, spicyMax)) {
-            console.log("Spicy scale is out of range! min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgSpicyScale);
+        //console.log("Spicy scale - min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgSpicy);
+        if (dishArray[i].avgSpicy != 0 && dishArray[i].avgSpicy != null && !isInRange(dishArray[i].avgSpicy, spicyMin, spicyMax)) {
+            //console.log("Hiding tr for dishId: ", dishArray[i].dishId);
             $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
             continue;
         } else {
-            console.log("Spicy scale is in range.");
+            //console.log("Spicy scale is in range.");
         }
-        if (!isInRange(dishArray[i].avgSaltyScale, saltyMin, saltyMax)) {
-            console.log("Salty scale is out of range! min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgSaltyScale);
+        //console.log("Salty scale - min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgSalty)
+        if (dishArray[i].avgSalty != 0 && dishArray[i].avgSalty != null && !isInRange(dishArray[i].avgSalty, saltyMin, saltyMax)) {;
+            //console.log("Hiding tr for dishId: ", dishArray[i].dishId);
             $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
             continue;
         } else {
-            console.log("Salty scale is in range.");
+            //console.log("Salty scale is in range.");
         }
-        if (!isInRange(dishArray[i].avgUmamiScale, umamiMin, umamiMax)) {
-            console.log("Umami scale is out of range! min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgUmamiScale);
+        //console.log("Umami scale - min: " + ratingMin + " max: " + priceMax + " actual: " + dishArray[i].avgUmami);
+        if (dishArray[i].avgUmami != 0 && dishArray[i].avgUmami != null && !isInRange(dishArray[i].avgUmami, umamiMin, umamiMax)) {
+            //console.log("Hiding tr for dishId: ", dishArray[i].dishId);
             $("tr[dish-id-value='" + dishArray[i].dishId +"']").hide();;
             continue;
         } else {
-            console.log("Umami scale is in range.");
+            //console.log("Umami scale is in range.");
         }
     }
 
@@ -115,6 +124,7 @@ function getPriceAsNumber(price) {
 }
 
 function isInRange(testValue, minValue, maxValue) {
+    console.log("testValue: ", testValue, " minValue: ", minValue, " maxValue: ", maxValue)
     let inRange = false;
     if (testValue >= minValue && testValue <= maxValue) {
         inRange = true;
