@@ -222,7 +222,6 @@ $(document).on("click", ".dish-tile", function () {
                             <i>${address}</i><br>
                             <i>${city}, ${state} ${zipCode}</i><br>
                             ${phone}</p>
-                            <button class="btn btn-outline-dark" id="rate-btn" dish-id-value="${dishId}">Rate It!</button>
                         </div>
                     </div>
                 `
