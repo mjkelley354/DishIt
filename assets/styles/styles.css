@@ -1,5 +1,6 @@
 body {
     background-image: url(https://firebasestorage.googleapis.com/v0/b/dish-it.appspot.com/o/images%2Ffood-background.jpg?alt=media&token=e099d38a-f43b-4a4d-88ab-df229981417d);
+    padding-top: 70px;
 }
 
 .navbar {
@@ -58,6 +59,18 @@ table {
     min-height: 100%;
     max-width: 350px;
     -ms-interpolation-mode: bicubic;
+}
+
+@media only screen and (max-width: 400px) {
+    #new-image-view {
+        margin-left: 45px;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    #new-image-view {
+        margin-right: 35px;
+    }
 }
 
 .rating-icons {

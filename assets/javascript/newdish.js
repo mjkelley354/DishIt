@@ -1,130 +1,3 @@
-if ($("body").attr("data-title") === "newdish-page") {
-    $(document).ready(function () {
-
-        // TODO: trying to auto-populate state field on newdish.html - the below does not work
-        /* const states = ["AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IA", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NE", "NH", "NV", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
-
-for (var i; i < states.length; i++) {
-    const state = states[i];
-    $("#state-input").append(
-        `
-            <option value="${states[i]}">${states[i]}</option>
-        `
-    )
-} */
-
-    });
-};
-
-let rNameInput = "";
-$("#find-restaurant").on("click", function () {
-    const location = $("#city-input").val().trim() + ", " + $("#state-input").val().trim();
-    rNameInput = $("#restaurant-input").val().trim();
-
-    // initiate ajax call to yelp
-    // TURN THIS BACK ON FOR REAL DATA CALLS - USE TESTING DATA BELOW FOR DEVELOPMENT
-    // getRestaurant(location, rNameInput);
-
-    // USING THIS FOR TESTING - GETTING DATA FROM LOCAL STORAGE
-    const restaurants = JSON.parse(localStorage.getItem("restaurants"));
-    console.log(restaurants);
-    $("#restaurant-results").empty()
-    for (var i in restaurants) {
-        showRestOptions(restaurants[i], i);
-    }
-
-    // show restaurant results section
-    $("#restaurant-results-view").collapse("show");
-});
-
-let matchingRestaurants = [];
-
-function getRestaurant(location, rName) {
-    const restaurantURL = `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?` + $.param({
-        term: rName,
-        location: location,
-        categories: "restaurants",
-        limit: 3,
-    });
-
-    $.ajax({
-        url: restaurantURL,
-        method: "GET",
-        headers: {
-            'Authorization': 'Bearer lC3zgwezYWCKbJZW03Yepl4A52o_fhrqd9a1x0_MapVxItu97aAHOUOGfsRzDJswOWzWlaHv0zvw8keaePumFEkXJWyOgcTcLg7ekQOQ9skybUd_wy02lE3hnQy0W3Yx',
-        }
-    }).then(function (response) {
-        $("#restaurant-results").empty()
-            .removeClass("errorMessage");
-
-        console.log(response);
-        const restaurants = response.businesses;
-
-        // parse response into variables (some of these may not be needed here -- delete later)      
-        let matches = 0;
-        for (let i in restaurants) {
-
-            // only capture restaurant name if search string is included in some part of restaurant's name
-            const rName = restaurants[i].name;
-            if (rName.toLowerCase().includes(rNameInput.toLowerCase())) {
-                matches++;
-                //console.log(`${rName} matches ${rNameInput}`);
-                showRestOptions(restaurants[i], i);
-            };
-        };
-
-        if (matches === 0) {
-            $("#restaurant-results").empty()
-                .addClass("errorMessage")
-                .text("No matches found. Try a different search.");
-        };
-    });
-};
-
-function showRestOptions(restaurant, i) {
-    console.log(restaurant, i);
-    matchingRestaurants.push(restaurant);
-
-    $("#restaurant-results").append(
-        `
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="r-option" id="r-option-${i}" 
-                value="${restaurant.id}" index="${i}" r-name="${restaurant.name}" 
-                address1="${restaurant.location.address1}"
-                address2="${restaurant.location.city}, ${restaurant.location.state} ${restaurant.location.zip_code}"
-                phone="${restaurant.display_phone}">
-                <label class="form-check-label" for="r-option-${i}">
-                    ${restaurant.name}: ${restaurant.location.address1}, ${restaurant.location.city}, ${restaurant.location.state} ${restaurant.location.zip_code}
-                </label>
-            </div>
-        `
-    );
-};
-
-// save matching restaurants to local storage with index of selected restaurant
-$("#select-restaurant-btn").on("click", function () {
-    const selected = $("input[name=r-option]:checked")
-    console.log(selected);
-    console.log(selected.attr("phone"));
-
-    // save matching restaurants and index of selected restaurant to local storage
-    // TURNED OFF FOR TESTING - TURN BACK ON WHEN DONE WITH DEVELOPMENT
-    // localStorage.setItem("restaurants", JSON.stringify(matchingRestaurants));
-    localStorage.setItem("rIndex", selected.attr("index"));
-
-    // show selected restaurant name in restaurant-input field
-    $("#restaurant-input").val(selected.attr("r-name"));
-    $("#restaurant-results-view").collapse("hide");
-    $("#restaurant-details-view").collapse("show");
-
-    $("#address1-view").text(selected.attr("address1"));
-    $("#address2-view").text(selected.attr("address2"));
-    $("#phone-view").text(selected.attr("phone"));
-
-    // TODO: disable input into location and restaurant name fields
-    // TODO: add reset button to enable these fields again
-});
-
 // ENTER DISH NAME AND CHECK AND PRE-POPULATE WITH USER'S RATING IF AVAILABLE
 // TODO: after xx seconds retrieve existing dish data if user has entered same dish restaurant info
 $("#dish-name-input").change(function () {
@@ -142,16 +15,14 @@ function getDishRating() {
 // IMAGES ********************************************************************************
 // following event listeners is used to work with buttons added to support image upload
 // by someone adding a rating
+let downloadURL = "";
+
 $(".file-select").on("change", function (e) {
     selectedFile = e.target.files[0];
     console.log(selectedFile);
     $("#image-file-name").text(`File Name: ${selectedFile.name}`);
-});
 
-// following event listeners is used to work with buttons added to support image upload
-// by someone adding a rating
-let downloadURL = "";
-$(".file-submit").on("click", function (e) {
+    // previous activated by clicking submit button
     //create a child directory called images, and place the file inside this directory
     const uploadTask = storageRef.child(`images/${selectedFile.name}`).put(selectedFile);
     uploadTask.on('state_changed', (snapshot) => {
@@ -196,14 +67,10 @@ $("#cancel-dish-btn").on("click", function () {
 }); */
 
 $("#add-dish-btn").on("click", function () {
-    
     addRestaurant();
     addDish();
     addRating();
 
-    // determine if dish is already in firebase
-    calculateRatingAvg();
-    // TODO: Go to dish average rating page on home screen
 });
 
 let rIndex = "";
@@ -214,8 +81,9 @@ let rPrice = "";
 let rIdFirebase = "";
 
 // add new restaurant if it does not already exist in firebase storage
+const restaurantRecords = db.ref("restaurants");
+
 function addRestaurant() {
-    const restaurantRecords = db.ref("restaurants");
 
     rIndex = localStorage.getItem("rIndex");
     rStorage = JSON.parse(localStorage.getItem("restaurants"));
@@ -234,7 +102,6 @@ function addRestaurant() {
         cuisine.push(yelpDataObject.categories[i].title);
     }
     rPrice = changePriceToNum(yelpDataObject.price);
-    console.log(rPrice);
 
     restaurantRecords.orderByChild('yelpId').equalTo(yelpId).once('value', function(snap) {
     if (snap.val() === null) {
@@ -264,16 +131,19 @@ function changePriceToNum(price) {
 // add dish to firebase if it does not exist for that restaurant
 let dishIdFirebase = "";
 let dishExists = false;
-const dName = $("#dish-name-input").val().trim();
+let dName = "";
+let comments = [];
+const dishRecords = db.ref("dishes");
+
 function addDish() {
-    const dishRecords = db.ref("dishes");
+    dName = $("#dish-name-input").val();
 
     let matches = 0;
     dishRecords.orderByChild("name").equalTo(dName).once("value", function(dishSnapshot){
         // console.log(dishSnapshot.val());
         // console.log(downloadURL);
         if (dishSnapshot.val() === null) {
-            dishIdFirebase = writeDishData(dName, rIdFirebase, rPrice, 0, 0, 0, 0, 0, 0, downloadURL, 0);
+            dishIdFirebase = writeDishData(dName, rIdFirebase, rPrice, 0, 0, 0, 0, 0, 0, downloadURL, comments, 0);
         } else {
             dishSnapshot.forEach(function(childSnapshot){
                 // console.log(childSnapshot.val());
@@ -285,31 +155,32 @@ function addDish() {
             });
             // console.log("outside", matches);
             if (matches === 0) {
-                dishIdFirebase = writeDishData(dName, rIdFirebase, rPrice, 0, 0, 0, 0, 0, 0, downloadURL, 0);
+                dishIdFirebase = writeDishData(dName, rIdFirebase, rPrice, 0, 0, 0, 0, 0, 0, downloadURL, comments, 0);
             };
         };
     });
 };
 
 // add ratings for the dish by user
+const ratingsRecords = db.ref("ratings");
 let ratingIdFirebase = "";
+let rating = "";
+let sour = "";
+let sweet = "";
+let spicy = "";
+let salty = "";
+let umami = "";
+let comment = "";
 function addRating() {
-    const ratingsRecords = db.ref("ratings");
 
-    const rating = $("#dish-rating").slider("value");
-    const sour = $("#sour-rating").slider("value");
-    const sweet = $("#sweet-rating").slider("value");
-    const spicy = $("#spicy-rating").slider("value");
-    const salty = $("#salty-rating").slider("value");
-    const umami = $("#umami-rating").slider("value");
-    const comment = $("#dish-comment").val();
+    rating = $("#dish-rating").slider("value");
+    sour = $("#sour-rating").slider("value");
+    sweet = $("#sweet-rating").slider("value");
+    spicy = $("#spicy-rating").slider("value");
+    salty = $("#salty-rating").slider("value");
+    umami = $("#umami-rating").slider("value");
+    comment = $("#dish-comment").val();
     const timestamp = moment().format("MMM D YYYY hh:mm A z");
-
-    console.log(timestamp);;
-    /* console.log(downloadURL);
-    console.log(rating, sour, sweet, spicy, salty, umami, comment);
-    console.log(dishIdFirebase);
-    console.log(rIdFirebase); */
 
     // retrieve user details
     const userId = localStorage.getItem("dish-it-user-id");
@@ -321,7 +192,7 @@ function addRating() {
         } else {
             ratingSnapshot.forEach(function(childSnapshot){
                 const dishRating = childSnapshot.val();
-                console.log(dishRating);
+                // console.log(dishRating);
                 if (dishRating.dishId === dishIdFirebase) {
                     ratingIdFirebase = childSnapshot.ref.key;
                     matches++;
@@ -331,18 +202,63 @@ function addRating() {
                 ratingId = writeRatingData(dishIdFirebase,dName,yelpId,rIdFirebase,userId,sour,sweet,spicy,salty,umami,rating,downloadURL,comment,timestamp);
             };
         };
-        
+        calculateRatingAvg();
     });
 };
 
-function calculateRatingAvg(num) {
+function calculateRatingAvg() {
+    console.log(downloadURL);
+    const dishAvg = dishRecords.child(dishIdFirebase);
 
-    // average rating
+    dishAvg.once("value", function(dishSnapshot){
+        let numRatings = dishSnapshot.val().numRatings;
+        numRatings++;
 
-    //db.ref('dishes').orderByChild('')
-    //TODO: calculate rating avg and store values in local storage for future calculation
-    // if new rating, increase total number of ratings by one and calculate average
-    // if updated rating, do not increase number of total ratings for dish, subtract old rating, and calculate with new rating
+        // retrieve average values    
+        let avgRating = dishSnapshot.val().avgRating;
+        let avgSalty = dishSnapshot.val().avgSaltyScale;
+        let avgSour = dishSnapshot.val().avgSourScale;
+        let avgSpicy = dishSnapshot.val().avgSpicyScale;
+        let avgSweet = dishSnapshot.val().avgSweetScale;
+        let avgUmami = dishSnapshot.val().avgUmamiScale;
+        
+        /* console.log(avgUmami);
+        console.log(avgRating);
+        console.log(avgSalty);
+        console.log(avgSour);
+        console.log(avgSweet);
+        console.log(avgSpicy); */
+
+        // calculate averages
+        avgRating = (avgRating + rating)/numRatings;
+        avgSalty = (avgSalty + salty)/numRatings;
+        avgSour = (avgSour + sour)/numRatings;
+        avgSpicy = (avgSpicy + spicy)/numRatings;
+        avgSweet = (avgSweet + sweet)/numRatings;
+        avgUmami = (avgUmami + umami)/numRatings;
+        
+        /* console.log(avgRating);
+        console.log(avgSalty);
+        console.log(avgSour);
+        console.log(avgSpicy);
+        console.log(avgSweet);
+        console.log(avgUmami);
+        console.log(numRatings); */
+
+        dishAvg.update({
+            avgRating: avgRating,
+            avgSaltyScale: avgSalty,
+            avgSourScale: avgSour,
+            avgSpicyScale: avgSpicy,
+            avgSweetScale: avgSweet,
+            avgUmamiScale: avgUmami,
+            comments: comments,
+            image: downloadURL,
+            numRatings: numRatings,
+        });
+
+    });
+    window.location.href="index.html";
 };
 
 // WRITE INFORMATION TO FIREBASE ******************************************************
@@ -386,7 +302,7 @@ function writeRestaurantData(yelpId, name, address, city, state, zipCode, lat, l
 }
 
 function writeDishData(name, restaurantId, price, avgSourScale, avgSweetScale, avgSpicyScale,
-    avgSaltyScale, avgUmamiScale, avgRating, image, numRatings) {
+    avgSaltyScale, avgUmamiScale, avgRating, image, comments, numRatings) {
     let insertedData = db.ref('dishes/').push({
         name,
         restaurantId,
@@ -399,6 +315,7 @@ function writeDishData(name, restaurantId, price, avgSourScale, avgSweetScale, a
         avgUmamiScale,
         avgRating,
         image,
+        comments,
         numRatings,
     });
     return insertedData.getKey();

@@ -19,7 +19,7 @@
 
 <body data-title="newdish-page">
 
-    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" href="index.html">Dish It</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,8 @@
                 <div class="col-md-3 col-sm-12 form-group">
                     <label class="form-label" for="state-input"><strong>State</strong></label>
                     <!-- change this to dropdown once js logic is fixed -->
-                    <input id="state-input" class="form-control" value="GA" placeholder="GA"></input>
+                    <select id="state-input" class="form-control">
+                    </select>
                 </div>
                 <!--  <div class="col-3 form-group d-flex align-items-end">
                     <button class="btn" type="button" data-toggle="collapse" data-target="#location-results-view" id="find-city">Find City</button>
@@ -75,13 +76,13 @@
                     <label class="form-label" for="restaurant-input"><strong>Restaurant Name</strong></label>
                     <input type="text" class="form-control" id="restaurant-input">
                 </div>
+                <div class="col-md-3 col-sm-12 form-group d-flex align-items-end">
+                    <button class="btn btn-outline-dark" id="find-restaurant">Find Restaurant</button>
+                </div>
                 <div class="col-12 collapse mb-2" id="restaurant-details-view">
                     <p class="restaurant-details" id="address1-view">test</p>
                     <p class="restaurant-details" id="address2-view">test</p>
                     <p class="restaurant-details" id="phone-view">test</p>
-                </div>
-                <div class="col-md-3 col-sm-12 form-group d-flex align-items-end">
-                    <button class="btn btn-outline-dark" id="find-restaurant">Find Restaurant</button>
                 </div>
                 <div class="col-12 collapse mb-2" id="restaurant-results-view">
                     <p><i>Verify the location of the restaurant</i></p>
@@ -104,7 +105,7 @@
                 <div class="row dish-details">
                     <div class="col-md-6 col-sm-12">
                         <label class="form-label" for="dish-name-input"><strong>Dish Name</strong></label>
-                        <input type="text" class="form-control" id="dish-name-input" value="cheese pizza">
+                        <input type="text" class="form-control" id="dish-name-input">
                         <img id="myimg">
                         <!-- following div is used to upload image files to firebase cloud storage.  These should be included in whatever div
                                 opens to enable the user to add a new rating.  -->
@@ -114,7 +115,7 @@
                             <label class="custom-file-select border border-dark rounded px-2 py-2">
                                 <input id="file-select" type="file" class="file-select" accept="image/*" />Choose File
                             </label>
-                            <button class="file-submit mt-2 mb-2 py-2 btn btn-outline-dark">Submit</button>
+                            <!-- <button class="file-submit mt-2 mb-2 py-2 btn btn-outline-dark">Submit</button> -->
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-12 d-flex justify-content-center mt-3" id="new-image-box">
@@ -122,17 +123,6 @@
                     </div>
                 </div>
                 <hr>
-                <!-- sample vertical style slider -->
-                <!--  <div class="row dish-rating">
-                <div class="col ml-0 d-flex flex-column justify-content-center">
-                    <h5 class="align-middle"><i class="fas fa-star"></i> Rate It!</h5>
-                    <p class="p-0 m-0">The Best! - 5</p>
-                    <form onsubmit="return false">
-                        <div class="slider-vertical-1-5 mb-3" id="dish-rating"></div>
-                    </form>
-                    <p class="p-0 m-0">1 - The Worst!</p>
-                </div>
-            </div> -->
                 <div class="row dish-rating">
                     <div class="col-12 ml-0 d-inline-flex">
                         <h5 class="align-middle"><i class="fas fa-star"></i> Rate It!</h5>
@@ -213,7 +203,7 @@
                 </div>
                 <div class="d-flex justify-content-end">
                     <button class="btn btn-outline-dark mb-3 mr-2" id="cancel-dish-btn">Cancel</button>
-                    <button class="btn btn-outline-dark mb-3 mr-2" id="reset-dish-btn">Reset</button>
+                    <!-- <button class="btn btn-outline-dark mb-3 mr-2" id="reset-dish-btn">Reset</button> -->
                     <button class="btn btn-outline-dark mb-3" id="add-dish-btn">Submit It!</button>
                 </div>
             </div>
@@ -237,6 +227,7 @@
     <!-- <script src="assets/javascript/jquery.range-min.js"></script> -->
     <script src="assets/javascript/app1.js"></script>
     <script src="assets/javascript/newdish.js"></script>
+    <script src="assets/javascript/restaurant.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
 
 
