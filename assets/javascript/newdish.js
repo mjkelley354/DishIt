@@ -2,17 +2,17 @@ if ($("body").attr("data-title") === "newdish-page") {
     $(document).ready(function () {
 
         // TODO: trying to auto-populate state field on newdish.html - the below does not work
-        /* const states = ["AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IA", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NE", "NH", "NV", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+        const states = ["AL", "AK", "AR", "AZ", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IA", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NE", "NH", "NV", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+        let option = '';
 
-for (var i; i < states.length; i++) {
-    const state = states[i];
-    $("#state-input").append(
-        `
-            <option value="${states[i]}">${states[i]}</option>
-        `
-    )
-} */
-
+        for (let i = 0; i< states.length; i++) {
+            if (states[i] === "GA") {
+                option += `<option selected value="${states[i]}">${states[i]}</option>`;
+            } else {
+                option += `<option value="${states[i]}">${states[i]}</option>`;
+            }
+        };
+        $("#state-input").append(option);
     });
 };
 
@@ -121,9 +121,6 @@ $("#select-restaurant-btn").on("click", function () {
     $("#address2-view").text(selected.attr("address2"));
     $("#phone-view").text(selected.attr("phone"));
 
-    // TODO: disable input into location and restaurant name fields
-    // TODO: add reset button to enable these fields again
-
 });
 
 // ENTER DISH NAME AND CHECK AND PRE-POPULATE WITH USER'S RATING IF AVAILABLE
@@ -150,6 +147,7 @@ $(".file-select").on("change", function (e) {
     console.log(selectedFile);
     $("#image-file-name").text(`File Name: ${selectedFile.name}`);
 
+    // previous activated by clicking submit button
     //create a child directory called images, and place the file inside this directory
     const uploadTask = storageRef.child(`images/${selectedFile.name}`).put(selectedFile);
     uploadTask.on('state_changed', (snapshot) => {
@@ -169,30 +167,6 @@ $(".file-select").on("change", function (e) {
         // show new picture in view area
         $("#new-image-view").attr("src", downloadURL);
     });
-});
-
-// following event listeners is used to work with buttons added to support image upload
-// by someone adding a rating
-$(".file-submit").on("click", function (e) {
-    /* //create a child directory called images, and place the file inside this directory
-    const uploadTask = storageRef.child(`images/${selectedFile.name}`).put(selectedFile);
-    uploadTask.on('state_changed', (snapshot) => {
-        // Observe state change events such as progress, pause, and resume
-
-        // the downloadURL is critical to capture here
-        // on image upload capture URL and save to firebase in the .image property so we can use it to access image later
-        downloadURL = uploadTask.snapshot.downloadURL;
-        console.log(downloadURL);
-    }, (error) => {
-        // Handle unsuccessful uploads
-        console.log(error);
-    }, () => {
-        // Do something once upload is complete
-        console.log('success');
-        console.log("photo");
-        // show new picture in view area
-        $("#new-image-view").attr("src", downloadURL);
-    }); */
 });
 
 // DISH RATING AND FLAVOR PROFILE **********************************************
@@ -222,8 +196,6 @@ $("#add-dish-btn").on("click", function () {
     addDish();
     addRating();
 
-    // determine if dish is already in firebase
-    // TODO: Go to dish average rating page on home screen
 });
 
 let rIndex = "";
@@ -360,51 +332,43 @@ function addRating() {
 };
 
 function calculateRatingAvg() {
-    //console.log(rIdFirebase);
-    //console.log(ratingIdFirebase);
-    //console.log(dishIdFirebase);
     console.log(downloadURL);
     const dishAvg = dishRecords.child(dishIdFirebase);
 
     dishAvg.once("value", function(dishSnapshot){
         let numRatings = dishSnapshot.val().numRatings;
-        console.log(numRatings);
-
-        if (numRatings === 0) {
-            dishAvg.update({
-
-            })
-        }
-
         numRatings++;
 
         // retrieve average values    
         let avgRating = dishSnapshot.val().avgRating;
-        console.log(avgRating);
         let avgSalty = dishSnapshot.val().avgSaltyScale;
-        console.log(avgSalty);
         let avgSour = dishSnapshot.val().avgSourScale;
-        console.log(avgSour);
         let avgSpicy = dishSnapshot.val().avgSpicyScale;
-        console.log(avgSpicy);
         let avgSweet = dishSnapshot.val().avgSweetScale;
-        console.log(avgSweet);
         let avgUmami = dishSnapshot.val().avgUmamiScale;
-        console.log(avgUmami);
-
-        avgRating = (avgRating + rating)/numRatings;
+        
+        /* console.log(avgUmami);
         console.log(avgRating);
-        avgSalty = (avgSalty + salty)/numRatings;
         console.log(avgSalty);
-        avgSour = (avgSour + sour)/numRatings;
         console.log(avgSour);
-        avgSpicy = (avgSpicy + spicy)/numRatings;
-        console.log(avgSpicy);
-        avgSweet = (avgSweet + sweet)/numRatings;
         console.log(avgSweet);
+        console.log(avgSpicy); */
+
+        // calculate averages
+        avgRating = (avgRating + rating)/numRatings;
+        avgSalty = (avgSalty + salty)/numRatings;
+        avgSour = (avgSour + sour)/numRatings;
+        avgSpicy = (avgSpicy + spicy)/numRatings;
+        avgSweet = (avgSweet + sweet)/numRatings;
         avgUmami = (avgUmami + umami)/numRatings;
+        
+        /* console.log(avgRating);
+        console.log(avgSalty);
+        console.log(avgSour);
+        console.log(avgSpicy);
+        console.log(avgSweet);
         console.log(avgUmami);
-        console.log(numRatings);
+        console.log(numRatings); */
 
         dishAvg.update({
             avgRating: avgRating,
@@ -418,13 +382,6 @@ function calculateRatingAvg() {
         })
 
     });
-
-    // average rating
-
-    //db.ref('dishes').orderByChild('')
-    //TODO: calculate rating avg and store values in local storage for future calculation
-    // if new rating, increase total number of ratings by one and calculate average
-    // if updated rating, do not increase number of total ratings for dish, subtract old rating, and calculate with new rating
 };
 
 // WRITE INFORMATION TO FIREBASE ******************************************************
