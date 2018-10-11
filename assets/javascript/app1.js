@@ -32,8 +32,8 @@ let mapPins = [];
 
 if ($("body").attr("data-title") === "index-page") { // functions run on load of index-page
 
-$(document).ready(() => {
-    // createTestData(); // do not uncomment unless you want to add test data back to firebase
+    $(document).ready(() => {
+        // createTestData(); // do not uncomment unless you want to add test data back to firebase
         getTopX(20); // get top 20 records by average rating
         readLocalStorage(); // function to get user info from local storage
 
@@ -237,26 +237,26 @@ $(document).on("click", ".dish-tile", function () {
                 `
                     <div class="row dish-details-row">
                         <div class="col-md-6">
-                            <div class="card-body">
-                                Salty: ${getScale(avgSaltyScale, "fas fa-cubes")}
+                            <div class="card-body"> 
+                                <b>Salty: </b>${getScale(avgSaltyScale, "fas fa-cubes")}
                                 <br>
-                                Sour: ${getScale(avgSourScale, "fas fa-lemon")}
+                                <b>Sour:</b> ${getScale(avgSourScale, "fas fa-lemon")}
                                 <br>
-                                Spicy: ${getScale(avgSpicyScale, "fab fa-hotjar")}
+                                <b>Spicy:</b> ${getScale(avgSpicyScale, "fab fa-hotjar")}
                                 <br>
-                                Sweet: ${getScale(avgSweetScale, "fas fa-cookie-bite")}
+                                <b>Sweet:</b> ${getScale(avgSweetScale, "fas fa-cookie-bite")}
                                 <br>
-                                Umami: ${getScale(avgUmamiScale, "fas fa-crow")}
+                                <b>Umami:</b> ${getScale(avgUmamiScale, "fas fa-crow")}
                             </div>
                         </div>
                         <div class="col-md-6">
-                            ${restName}
+                            <b>${restName}</b>
                             <br>
-                                ${address}
+                            <i>${address}</i>
                             <br>
-                            ${city}
+                            <i>${city}
                             ${state}
-                            ${zipCode}
+                            ${zipCode}</i>
                             <br>
                             ${phone}
                         </div>
@@ -268,23 +268,22 @@ $(document).on("click", ".dish-tile", function () {
 });
 
 function getScale(avgScaleValue, fontAwesomeIcon) {
-    const salt = Math.floor(avgScaleValue);
+    const flavor = Math.floor(avgScaleValue);
     let scaleValue = "";
-    for (var i = 0; i < salt; i++) {
+    for (var i = 0; i < flavor; i++) {
+        scaleValue = scaleValue.concat(`<i class="${fontAwesomeIcon}"></i>`);
+    }
+
+    if (Math.round(avgScaleValue * 2) / 2 - flavor === 1) {
         scaleValue = scaleValue.concat(`<i class=${fontAwesomeIcon}></i>`);
     }
 
-    if (Math.round(avgScaleValue * 2) / 2 - salt === 1) {
-
-        scaleValue = scaleValue.concat(`<i class=${fontAwesomeIcon}></i>`);
-    }
-
-    if (Math.round(avgScaleValue * 2) / 2 - salt === .5) {
+    if (Math.round(avgScaleValue * 2) / 2 - flavor === .5) {
         scaleValue = scaleValue.concat(`&#189`);
     }
-
     return scaleValue;
-} 
+
+}
 
 function getPrice(price) {
     let priceValue = "";
@@ -395,8 +394,8 @@ $("#search-btn").on("click", function () {
             noResults();
         };
     });
-}); 
-    
+});
+
 // returns message if no search results returned.
 // this section requires some UI work
 function noResults() {
@@ -413,7 +412,7 @@ function noResults() {
     );
 };
 
-$(document).on("click", "#new-dish-btn", function() {
+$(document).on("click", "#new-dish-btn", function () {
     window.location.href = "newdish.html";
 });
 
@@ -461,9 +460,9 @@ function initMap() {
 
     map = new google.maps.Map(
         document.getElementById('map-canvas'), {
-        center: atlanta,
-        zoom: 10
-    });
+            center: atlanta,
+            zoom: 10
+        });
 
     // The marker, positioned at Atlanta
     //var marker = new google.maps.Marker({position: atlanta, map: map});
