@@ -17,3 +17,17 @@ You're the boss - as a Dish It user, you can add your own dishes, restaurants an
 ### Brintz Miles
 ### Meeyoung Park
 ### Michael Kelley
+
+## Built With
+* HTML
+* CSS
+* Bootstrap
+* Font Awesome
+* MomentJS
+* jQuery
+* Plug-ins
+  * JQuery Range Slider
+
+## Links
+[Application](https://github.com/mjkelley354/DishIt)
+[Github Repo](https://mjkelley354.github.io/DishIt)
