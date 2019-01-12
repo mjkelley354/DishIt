@@ -29,5 +29,5 @@ You're the boss - as a Dish It user, you can add your own dishes, restaurants an
   * JQuery Range Slider
 
 ## Links
-[Application](https://github.com/mjkelley354/DishIt)
-[Github Repo](https://mjkelley354.github.io/DishIt)
+[Application](https://mjkelley354.github.io/DishIt)
+[Github Repo](https://github.com/mjkelley354/DishIt)
